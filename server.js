@@ -1,25 +1,25 @@
 // Make sure proper variables have been set.
-if(!process.env.sessionSecret ||
-    !process.env.secretKey ||
-    !process.env.googleClientID ||
-    !process.env.googleClientSecret ||
-    !process.env.googleCallbackURL ||
-    !process.env.mongoDBURL) {
+if(!process.env.SESSION_SECRET ||
+    !process.env.SECRET_KEY ||
+    !process.env.GOOGLE_CLIENT_ID ||
+    !process.env.GOOGLE_CLIENT_SECRET ||
+    !process.env.GOOGLE_CALLBACK_URL ||
+    !process.env.MONGO_DB_URL) {
         console.error("Error: Please set the proper authentication config variables in heroku.");
         process.exit(1);
 }
 
 // Create authentication object with all necessary info.
 const auth = {
-    sessionSecret: process.env.sessionSecret,
-    secretKey: process.env.secretKey,
+    sessionSecret: process.env.SESSION_SECRET,
+    secretKey: process.env.SECRET_KEY,
     google: {
-        clientID: process.env.googleClientID,
-        clientSecret: process.env.googleClientSecret,
-        callbackURL: process.env.googleCallbackURL
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CALLBACK_URL
     },
     mongoDB: {
-        URL: process.env.mongoDBURL
+        URL: process.env.MONGO_DB_URL
     }
 };
 
