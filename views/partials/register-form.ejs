@@ -1,0 +1,343 @@
+<!-- views/partials/register-form.ejs -->
+
+<!-- Personal info -->
+<fieldset id="f0">
+    <% if(!isUserRegistered) { %>
+        <h3 class="text-success text-center">Successfully connected with Google!</h3>
+    <% } %>
+    <div class="col-sm-10 profile-card">
+        <div class="row well bg-primary" style="background-color: #2780e3; padding: 35px 19px;">
+            <div class="col-sm-4">
+                <div class="btn-circle-lg btn-photo" style="background-image: url('<%= user.photoUrl %>')"></div>
+            </div>
+            <div class="col-sm-8">
+                <h1 style="margin-bottom: 0px;"><%= user.name %></h1>
+                <p><%= user.email %></p>
+            </div>
+        </div>
+    </div>
+    <% if(!isUserRegistered) { %>
+        <p class="text-center">Almost done! Press continue to complete your registration.</p>
+    <% } else { %>
+        <p class="text-center">Press continue to edit your profile.</p>
+    <% } %>
+</fieldset>
+<!-- Google info -->
+<fieldset id="f1">
+    <div class="form-group row">
+        <label for="age" class="col-sm-3 col-form-label">Age</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" name="age" id="age" placeholder="Enter age" min="18" max="100" aria-describedby="ageHelp" value="<%= (isUserRegistered) ? user.age : '' %>" required />
+                <span class="input-group-addon">years</span>
+            </div>
+            <small id="ageHelp" class="form-text text-muted">Your age will not be visible. It is used only for matching.</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="field" class="col-sm-3 col-form-label">Field of work</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="field" name="field" required>
+                <option value="null" <%= (isUserRegistered) ? '' : 'selected' %> disabled>Please select one</option>
+                <option value="cloud" <%= (isUserRegistered && user.field == 'cloud') ? 'selected' : '' %>>Google Cloud</option>
+                <option value="tech" <%= (isUserRegistered && user.field == 'tech') ? 'selected' : '' %>>Engineering & Technology</option>
+                <option value="sales" <%= (isUserRegistered && user.field == 'sales') ? 'selected' : '' %>>Sales, Service & Support</option>
+                <option value="marketing" <%= (isUserRegistered && user.field == 'marketing') ? 'selected' : '' %>>Marketing & Communications</option>
+                <option value="design" <%= (isUserRegistered && user.field == 'design') ? 'selected' : '' %>>Design</option>
+                <option value="business" <%= (isUserRegistered && user.field == 'business') ? 'selected' : '' %>>Business Strategy</option>
+                <option value="finance" <%= (isUserRegistered && user.field == 'finance') ? 'selected' : '' %>>Finance</option>
+                <option value="legal" <%= (isUserRegistered && user.field == 'legal') ? 'selected' : '' %>>Legal</option>
+                <option value="people" <%= (isUserRegistered && user.field == 'people') ? 'selected' : '' %>>People</option>
+                <option value="facilities" <%= (isUserRegistered && user.field == 'facilities') ? 'selected' : '' %>>Facilities</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="role" class="col-sm-3 col-form-label">Role</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="role" name="role" required>
+                <option value="null" <%= (isUserRegistered) ? '' : 'selected' %> disabled>Please select one</option>
+                <option value="full-time" <%= (isUserRegistered && user.role == 'full-time') ? 'selected' : '' %>>Full-time</option>
+                <option value="resident" <%= (isUserRegistered && user.role == 'resident') ? 'selected' : '' %>>Resident</option>
+                <option value="intern" <%= (isUserRegistered && user.role == 'intern') ? 'selected' : '' %>>Intern</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="start-date" class="col-sm-3 col-form-label">Start date</label>
+        <div class="col-sm-9">
+            <input type="month" class="form-control" id="start-date" name="startDate" min="2017-01" value="<%= (isUserRegistered) ? user.startDate : '' %>" required />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="start-location" class="col-sm-3 col-form-label">Start location</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="start-location" name="startLocation" required>
+                <% var count = 0; %>
+                <% for(var i=0; i<locations.length; i++) {%>
+                    <optgroup label="<%= locations[i].continent %>">
+                    <% for(var j=0; j<locations[i].cities.length; j++) {%>
+                        <option value="<%= count %>" 
+                            <%= (isUserRegistered ? (user.startLocation == count ? 'selected' : '') : 
+                                (locations[i].cities[j].includes("Mountain View") ? 'selected' : '')) %>>
+                            <%= locations[i].cities[j] %>
+                        </option>
+                        <% count++; %>
+                    <% } %>
+                    </optgroup>
+                <% } %>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-3">Goal</label>
+      <div class="col-sm-9">
+        <div class="form-check">
+          <label class="form-check-label" style="font-weight: normal;">
+            <input class="form-check-input" type="radio" name="hasPlace" id="has-no-place" value="no" 
+                <%= (isUserRegistered && user.hasPlace == true) ? '' : 'checked' %> />
+            I'm looking for a place to live, and roommates.
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label" style="font-weight: normal;">
+            <input class="form-check-input" type="radio" name="hasPlace" id="has-place" value="yes"
+                <%= (isUserRegistered && user.hasPlace == true) ? 'checked' : '' %> />
+            I already have a place. I'm just looking for roommates.
+          </label>
+        </div>
+      </div>
+    </div>
+</fieldset>
+<!-- Preferences -->
+<fieldset id="f2">
+    <div class="form-group row">
+        <label for="pref-locations" class="col-sm-3 col-form-label">Preferred living location(s)</label>
+        <div class="col-sm-9">
+            <select multiple class="form-control" id="pref-locations" name="prefLocations" aria-describedby="locationHelp">
+                <% if(isUserRegistered && !user.hasPlace && user.preferences.locations) { %>
+                    <% for(var i=0; i<user.preferences.locations.length; i++) { %>
+                        <option selected value="<%= user.preferences.locations[i] %>"><%= user.preferences.locations[i] %></option>
+                    <% } %>
+                <% } %>
+            </select>
+            <small id="locationHelp" class="form-text text-muted">Please list every city where you would consider living.</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="pref-residence" class="col-sm-3 col-form-label">Preferred residence</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="pref-residence" name="prefResidenceType">
+                <option value="null" <%= (isUserRegistered && !user.hasPlace) ? '' : 'selected' %> disabled>Please select one</option>
+                <option value="apartment" <%= (isUserRegistered && !user.hasPlace && user.preferences.residenceType == 'apartment') ? 'selected' : '' %>>Apartment</option>
+                <option value="condo" <%= (isUserRegistered && !user.hasPlace && user.preferences.residenceType == 'condo') ? 'selected' : '' %>>Condominium</option>
+                <option value="house" <%= (isUserRegistered && !user.hasPlace && user.preferences.residenceType == 'house') ? 'selected' : '' %>>House</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="pref-number-roommates" class="col-sm-3 col-form-label">Preferred number of roommates</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="pref-number-roommates" name="prefRoommates" value="<%= (isUserRegistered && !user.hasPlace) ? user.preferences.roommates : '' %>" aria-describedby="roommatesHelp" min="1" max="10"/>
+                <span class="input-group-addon">roommates</span>
+            </div>
+            <small id="roommatesHelp" class="form-text text-muted">How many other people do you want to live with?</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="pref-duration" class="col-sm-3 col-form-label">Duration of stay</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="pref-duration" name="prefDuration" value="<%= (isUserRegistered && !user.hasPlace) ? user.preferences.durationInMonths : '' %>" aria-describedby="leaseDurationHelp" min="3" max="144" />
+                <span class="input-group-addon">months</span>
+            </div>
+            <small id="leaseDurationHelp" class="form-text text-muted">How long do you want to live here for?</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="pref-max-commute-time" class="col-sm-3 col-form-label">Max preferred commute time</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="pref-max-commute-time" name="prefMaxCommuteTime" value="<%= (isUserRegistered && !user.hasPlace) ? user.preferences.maxCommuteTimeInMins : '' %>" aria-describedby="maxCommuteHelp" min="10" max="200" />
+                <span class="input-group-addon">minutes</span>
+            </div>
+            <small id="maxCommuteHelp" class="form-text text-muted">How long are you willing to commute to work?</small>
+        </div>
+    </div>
+</fieldset>
+<!-- About living space -->
+<fieldset id="f3">
+    <div class="form-group row">
+        <label for="res-location" class="col-sm-3 col-form-label">Location of residence</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="res-location" name="resLocation" placeholder="(i.e. San Francisco)" aria-describedby="resLocationHelp" value="<%= (isUserRegistered && user.hasPlace) ? user.currentResidence.location : '' %>" />
+            <small id="resLocationHelp" class="form-text text-muted">Please indicate what city your residence is located in.</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="res-type" class="col-sm-3 col-form-label">Type of residence</label>
+        <div class="col-sm-9">
+            <select class="form-control" id="res-type" name="resType">
+                <option value="null" <%= (isUserRegistered && user.hasPlace) ? '' : 'selected' %> disabled>Please select one</option>
+                <option value="apartment" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'apartment') ? 'selected' : '' %>>Apartment</option>
+                <option value="condo" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'condo') ? 'selected' : '' %>>Condominium</option>
+                <option value="house" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'house') ? 'selected' : '' %>>House</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="res-bedrooms" class="col-sm-3 col-form-label">Available bedrooms</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="res-bedrooms" name="resBedrooms" aria-describedby="resBedroomsHelp" min="1" max="20" value="<%= (isUserRegistered && user.hasPlace) ? user.currentResidence.vacantRooms : '' %>" />
+                <span class="input-group-addon">bedrooms</span>
+            </div>
+            <small id="resBedroomsHelp" class="form-text text-muted">How many bedrooms are currently available/vacant?</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="res-bathrooms" class="col-sm-3 col-form-label">Bathrooms</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="res-bathrooms" name="resBathrooms" aria-describedby="resBathroomsHelp" min="1" max="20" value="<%= (isUserRegistered && user.hasPlace) ? user.currentResidence.bathrooms : '' %>" />
+                <span class="input-group-addon">bathrooms</span>
+            </div>
+            <small id="resBathroomsHelp" class="form-text text-muted">How many bathrooms does your residence have?</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="res-lease-duration" class="col-sm-3 col-form-label">Lease duration</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="res-lease-duration" name="resDuration" aria-describedby="resLeaseDurationHelp" min="3" max="144" value="<%= (isUserRegistered && user.hasPlace) ? user.currentResidence.durationInMonths : '' %>" />
+                <span class="input-group-addon">months</span>
+            </div>
+            <small id="resLeaseDurationHelp" class="form-text text-muted">How long is the lease/agreement/contract for?</small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="res-commute-time" class="col-sm-3 col-form-label">Commute time</label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input type="number" class="form-control" id="res-commute-time" name="resCommuteTime" aria-describedby="resCommuteHelp" min="10" max="200" value="<%= (isUserRegistered && user.hasPlace) ? user.currentResidence.commuteTimeInMins : '' %>" />
+                <span class="input-group-addon">minutes</span>
+            </div>
+            <small id="resCommuteHelp" class="form-text text-muted">Approx. how long does it take to get to Google campus from your residence?</small>
+        </div>
+    </div>
+</fieldset>
+<!-- Factors -->
+<fieldset id="f4">
+    <h3 class="text-center" style="margin-bottom: 30px;">How important are these factors to you?</h3>
+    <div class="form-group row">
+        <label class="col-xs-4 col-form-label"></label>
+        <div class="col-xs-7" style="font-size: 0.9em; padding: 0;">
+            <div class="col-xs-4" style="padding: 0;">(not very)</div>
+            <div class="col-xs-4 text-center" style="padding: 0;">(somewhat)</div>
+            <div class="col-xs-4 text-right" style="padding: 0;">(very)</div>
+        </div>
+    </div>
+    <div class="form-group row no-place">
+        <div class="col-xs-4 text-right">
+            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in one of the preferred locations you listed?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            Location
+        </div>
+        <div class="col-xs-7">
+            <input id="important-location" name="factorLocation" type="text" class="slider"
+            data-slider-value="<%= (isUserRegistered && user.factors.location) ? user.factors.location : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row no-place">
+        <div class="col-xs-4 text-right">
+            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in the type of residence you selected?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            Type of residence
+        </div>
+        <div class="col-xs-7">
+            <input id="important-residence" name="factorResidence" type="text" class="slider"
+            data-slider-value="<%= (isUserRegistered && user.factors.residenceType) ? user.factors.residenceType : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row no-place">
+        <div class="col-xs-4" style="text-align: right;">Own bedroom</div>
+        <div class="col-xs-7">
+            <input id="important-own-room" name="factorOwnBedroom" type="text" class="slider"
+            data-slider-value="<%= (isUserRegistered && user.factors.ownBedroom) ? user.factors.ownBedroom : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row no-place">
+        <div class="col-xs-4" style="text-align: right;">Own bathroom</div>
+        <div class="col-xs-7">
+            <input id="important-own-bathroom" name="factorOwnBathroom" type="text" class="slider"
+            data-slider-value="<%= (isUserRegistered && user.factors.ownBathroom) ? user.factors.ownBathroom : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row no-place">
+        <div class="col-xs-4" style="text-align: right;">Short commute time</div>
+        <div class="col-xs-7">
+            <input id="important-commute-time" name="factorCommuteTime" type="text" class="slider"
+            data-slider-value="<%= (isUserRegistered && user.factors.commuteTime) ? user.factors.commuteTime : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4" style="text-align: right;">Cleanliness</div>
+        <div class="col-xs-7">
+            <input id="important-cleanliness" name="factorCleanliness" type="text" class="slider" required
+            data-slider-value="<%= (isUserRegistered) ? user.factors.cleanliness : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4" style="text-align: right;">Quiet time</div>
+        <div class="col-xs-7">
+            <input id="important-quiet" name="factorQuietTime" type="text" class="slider" required
+            data-slider-value="<%= (isUserRegistered) ? user.factors.quietTime : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4 text-right">
+            <a href="#" data-toggle="tooltip" data-placement="auto top" title="No smoking, alcohol, drugs, etc."><span class="glyphicon glyphicon-question-sign"></span></a>
+            Substance-free</div>
+        <div class="col-xs-7">
+            <input id="important-substance-free" name="factorSubstanceFree" type="text" class="slider" required
+            data-slider-value="<%= (isUserRegistered) ? user.factors.substanceFree : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4 text-right">
+            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all the same gender as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            Same gender</div>
+        <div class="col-xs-7">
+            <input id="important-same-gender" name="factorSameGender" type="text" class="slider" required
+            data-slider-value="<%= (isUserRegistered) ? user.factors.sameGender : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4 text-right">
+            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all around the same age as you? (+/- 5 years)"><span class="glyphicon glyphicon-question-sign"></span></a>
+            Same age</div>
+        <div class="col-xs-7">
+            <input id="important-same-age" name="factorSameAge" type="text" class="slider" required
+            data-slider-value="<%= (isUserRegistered) ? user.factors.sameAge : '1' %>" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4 text-right">
+            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates all work in the same field as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            Same field of work</div>
+        <div class="col-xs-7">
+            <input id="important-same-field" name="factorSameField" type="text" class="slider" required
+            data-slider-value="<%= (isUserRegistered) ? user.factors.sameField : '1' %>" />
+        </div>
+    </div>
+</fieldset>
+<!-- About You -->
+<fieldset id="f5">
+    <div class="form-group">
+        <h3>About yourself</h3>
+        <small id="aboutMeHelp" class="form-text">Consider listing hobbies, interests, favorite videogames, favorite foods, where you're from, etc. This info is displayed to other users.</small>
+    </div>
+    <div class="form-group">
+        <textarea class="form-control" id="about-me" name="aboutMe" aria-describedby="aboutMeHelp" required rows="8" 
+        noresize><%= (isUserRegistered && user.aboutMe) ? user.aboutMe : '' %></textarea>
+    </div>
+</fieldset>

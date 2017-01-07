@@ -1,0 +1,107 @@
+<% var isUserRegistered = (user && user.age) ? true : false; %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>roomM8 (for Nooglers)</title>
+    <% include ../partials/imports/jquery.ejs %>
+    <% include ../partials/imports/bootstrap.ejs %>
+    <% include ../partials/imports/bootstrap-tagsinput.ejs %>
+    <% include ../partials/imports/bootstrap-slider.ejs %>
+    <% include ../partials/imports/bootstrap-theme.ejs %>
+    <% include ../partials/imports/async.ejs %>
+    <% include ../partials/imports/angular.ejs %>
+    <!-- Custom stylesheets -->
+    <link rel="stylesheet" href="css/index.css">
+    <!-- Custom scripts -->
+    <script src="js/index.js"></script>
+</head>
+<body>
+    <div class="container">
+        <% include ../partials/top.ejs %>
+        <div class="jumbotron">
+            <% if(!isUserRegistered) { %>
+                <h1>Relocating for Google?</h1>
+                <p>I am too, and I created this simple app to help fellow Nooglers find other Nooglers who could be potentially good roommates.*</p>
+            <% } else { %>
+                <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>
+                <p>As more users sign up for roomM8, you should begin to receive emails with potential roommates. In the mean time, you can search through the current userbase to see if anyone catches your eye.</p>
+            <% } %>
+            <p>
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">
+                    <%= (isUserRegistered) ? "Edit profile" : "Get matched!" %>
+                </button>
+                <% if(isUserRegistered) { %>
+                    <a href="/logout" class="btn btn-warning btn-lg" role="button">Sign out</a>
+                <% } %>
+                <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#infoModal">Learn more</button>
+            </p>
+        </div>
+        <p style="font-size: 0.8em; line-height: 0px; font-weight: bold;">
+            *This app is an independent project. It is not an official Google product/service.
+        </p>
+        <% if(isUserRegistered) { %>
+            <div class="jumbotron">
+                <h1>Search for roommates</h1>
+            </div>
+            <div class="container" role="main">
+                <div class="container roomies">
+                    <% for(var i=0; i<roomies.length; i++) {%>
+                        <div class="roomie">
+                            <span class="name"><%= roomies[i].name %></span>
+                            <span class="location"><%= roomies[i].location %></span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+    </div>
+    <!-- Registration Form Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal">
+        <div class="modal-dialog" role="document">
+            <% if (user) { %>
+                <div class="modal-content">
+                    <form action="/" method="post" class="registration-form">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="registerModal">
+                                <%= (isUserRegistered) ? "Edit Profile" : "Sign up" %>
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger error-message" style="font-weight: bold;" data-message="Please complete the missing or invalid fields."></div>
+                            <% include ../partials/register-form.ejs %>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-xs-4 text-left">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
+                                <div class="col-xs-8">
+                                    <button type="button" class="btn btn-default btn-previous">Back</button>
+                                    <button type="button" class="btn btn-primary btn-next">Continue</button>
+                                    <button type="button" class="btn btn-success btn-register">
+                                        <%= (isUserRegistered) ? "Submit Changes" : "Complete Registration" %>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <% } else { %>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="registerModal">Sign up</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger error-message" style="font-weight: bold;" data-message="Please complete the missing or invalid fields."></div>
+                        <div class="alert alert-success success-message" style="font-weight: bold;" data-message="Success!"></div>
+                        <% include ../partials/key-form.ejs %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

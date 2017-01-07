@@ -1,0 +1,126 @@
+{
+    "locations": [
+        {
+            "continent": "North America",
+            "cities": [
+                "Ann Arbor",
+                "Atlanta",
+                "Austin",
+                "Berkeley County",
+                "Birmingham",
+                "Boulder",
+                "Cambridge",
+                "Chapel Hill",
+                "Chicago",
+                "Council Bluffs",
+                "Dallas",
+                "Douglas County",
+                "Kitchener-Waterloo",
+                "Lenoir",
+                "Los Angeles",
+                "Madison",
+                "Mayes County",
+                "Miami",
+                "Montreal",
+                "Mountain View (Global HQ)",
+                "New York",
+                "Orange County",
+                "Pittsburgh",
+                "Portland",
+                "Reston",
+                "San Bruno (YouTube)",
+                "San Francisco",
+                "Seattle/Kirkland",
+                "The Dalles",
+                "Toronto",
+                "Washington D.C."
+            ]
+        },
+        {
+            "continent": "Latin America",
+            "cities": [
+                "Belo Horizonte",
+                "Bogota",
+                "Buenos Aires",
+                "Lima",
+                "Mexico City",
+                "Santiago",
+                "Sao Paulo"
+            ]
+        },
+        {
+            "continent": "Europe",
+            "cities": [
+                "Aarhus",
+                "Amsterdam",
+                "Athens",
+                "Berlin",
+                "Bratislava",
+                "Brussels",
+                "Budapest",
+                "Copenhagen",
+                "Dublin (EU HQ)",
+                "Eemshaven",
+                "Frankfurt",
+                "Hamburg",
+                "Hamina",
+                "Helsinki",
+                "Lisbon",
+                "London",
+                "Lubeck",
+                "Madrid",
+                "Milan",
+                "Moscow",
+                "Munich",
+                "Oslo",
+                "Paris",
+                "Prague",
+                "Rome",
+                "Saint-Ghislain",
+                "Stockholm",
+                "Vienna",
+                "Warsaw",
+                "Wroclaw",
+                "Zagreb",
+                "Zurich"
+            ]
+        },
+        {
+            "continent": "Asia Pacific",
+            "cities": [
+                "Auckland",
+                "Bangalore",
+                "Bangkok",
+                "Beijing",
+                "Changhua County",
+                "Guangzhou",
+                "Gurgaon",
+                "Hong Kong",
+                "Hyderabad",
+                "Jakarta",
+                "Kuala Lumpur",
+                "Manila",
+                "Mumbai",
+                "Osaka",
+                "Seoul",
+                "Shanghai",
+                "Singapore",
+                "Sydney",
+                "Taipei",
+                "Tokyo"
+            ]
+        },
+        {
+            "continent": "Africa & Middle East",
+            "cities": [
+                "Dakar",
+                "Dubai",
+                "Istanbul",
+                "Johannesburg",
+                "Lagos",
+                "Nairobi",
+                "Tel Aviv & Haifa"
+            ]
+        }
+    ]
+}

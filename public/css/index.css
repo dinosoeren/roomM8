@@ -1,0 +1,122 @@
+.bootstrap-tagsinput {
+    width: 100%;
+    border-radius: 0px;
+    margin-bottom: 0px;
+    padding: 10px 18px;
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.bootstrap-tagsinput.focused {
+    z-index: 3;
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+}
+.tt-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+    cursor: pointer;
+}
+.tt-suggestion {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    color: #333333;
+    white-space: nowrap;
+}
+.tt-suggestion:hover, .tt-suggestion:focus, .tt-cursor {
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    background-color: #428bca;
+}
+.slider.slider-horizontal {
+    width: 100%;
+}
+form.registration-form fieldset {
+    display: none;
+}
+.input-error {
+    border-color: #d03e3e;
+    color: #d03e3e;
+}
+input[type="radio"], input[type="checkbox"] {
+    margin: 4px;
+}
+.profile-card {
+    margin: auto;
+    float: none;
+}
+.btn-photo {
+    background-color: black;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Blank_woman_placeholder.svg/1024px-Blank_woman_placeholder.svg.png');
+    background-size: cover;
+    cursor: default;
+    margin-left: auto;
+    border: 2px solid white;
+}
+.btn-circle-lg {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    padding: 13px 0;
+    font-size: 30px;
+    line-height: 2.00;
+    border-radius: 80px;
+}
+.form-control-lg, .input-group-lg>.form-control, .input-group-lg>.input-group-addon, .input-group-lg>.input-group-btn>.btn {
+    padding: 3.05rem 3.5rem;
+    font-size: 2.25rem;
+}
+.btn-google {
+    display: block;
+    width: 191px;
+    height: 46px;
+    background-color: transparent;
+    margin: 10px auto;
+    border: 0px;
+    background-image: url('../img/btn_google_signin_light_normal_web.png');
+}
+.btn-google:hover, .btn-google:focus {
+    background-image: url('../img/btn_google_signin_light_focus_web.png');
+}
+.btn-google:active {
+    background-image: url('../img/btn_google_signin_light_pressed_web.png');
+}
+.btn-google-2x {
+    width: 382px;
+    height: 92px;
+    background-image: url('../img/btn_google_signin_light_normal_web@2x.png');
+}
+.btn-google-2x:hover, .btn-google-2x:focus {
+    background-image: url('../img/btn_google_signin_light_focus_web@2x.png');
+}
+.btn-google-2x:active {
+    background-image: url('../img/btn_google_signin_light_pressed_web@2x.png');
+}
+
+@media (max-width: 768px) { 
+    .btn-photo {
+        margin-right: auto;
+    }
+}
