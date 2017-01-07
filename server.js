@@ -56,7 +56,7 @@ app.use(session({
     secret: auth.sessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: true }
 }));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
