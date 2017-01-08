@@ -10,6 +10,7 @@ var userSchema = mongoose.Schema({
     age: Number,
     field: String,
     role: String,
+    position: String,
     startDate: String,
     startLocation: Number,
     hasPlace: Boolean,
@@ -73,6 +74,11 @@ userSchema.statics.findPotentialRoommatesLike = function(query, user, callback) 
     limit(20).
     select(selectRows).
     exec(callback);
+};
+userSchema.statics.removeByGoogleId = function(user, callback) {
+    this.find({
+        googleId: user.googleId
+    }).remove().exec(callback);
 };
 
 module.exports = mongoose.model('User', userSchema);

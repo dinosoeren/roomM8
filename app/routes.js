@@ -105,6 +105,24 @@ module.exports = function(app, auth, passport) {
         res.redirect('/');
     });
 
+    // Delete this user!
+    app.post('/deleteMe', isLoggedIn, isRegistered, (req, res) => {
+        if(!isset(req.body.agreeToDelete)) {
+            req.flash('error', 'Your account was not deleted. Please indicate that you agree to the consequences.');
+            return res.redirect('/');
+        }
+        User.removeByGoogleId(req.user, (err) => {
+            if(err) {
+                req.flash('error', 'Your account was not deleted. Please try again.');
+                return res.redirect('/');;
+            }
+            // Deletion successful. Logout.
+            req.logout();
+            req.flash('success', 'Your account was successfully deleted.');
+            res.redirect('/');
+        });
+    });
+
     // Send to Google to do the authentication.
     // Profile gets basic info including name.
     app.get('/auth/google',
@@ -150,6 +168,14 @@ module.exports = function(app, auth, passport) {
         })(req, res, next);
     });
 
+    // Redis session check (during auto-reconnect).
+    app.use((req, res, next) => {
+        if (!req.session) {
+            req.flash('error', 'Your session is temporarily unavailable.');
+        }
+        next();
+    });
+
 };
 
 // Route middleware to make sure user has entered keyphrase.
@@ -181,30 +207,38 @@ function isRegistered(req, res, next) {
 
 // Route middleware to make sure registration form is valid.
 function isValidRegistrationForm(req, res, next) {
-    if(req.body.age && 
-            req.body.field && 
-            req.body.role && 
-            req.body.startDate && 
-            req.body.startLocation &&
-            req.body.hasPlace &&
-            req.body.factorCleanliness &&
-            req.body.factorQuietTime &&
-            req.body.factorSubstanceFree &&
-            req.body.factorSameGender &&
-            req.body.factorSameAge &&
-            req.body.factorSameField) {
+    if(isset(req.body.age) && 
+            isset(req.body.field) && 
+            isset(req.body.role) && 
+            isset(req.body.position) && 
+            isset(req.body.startDate) && 
+            isset(req.body.startLocation) &&
+            isset(req.body.hasPlace) &&
+            isset(req.body.factorCleanliness) &&
+            isset(req.body.factorQuietTime) &&
+            isset(req.body.factorSubstanceFree) &&
+            isset(req.body.factorSameGender) &&
+            isset(req.body.factorSameAge) &&
+            isset(req.body.factorSameField) &&
+            // Either preferences or current residence.
+            (isset(req.body.prefLocations) || 
+                isset(req.body.resLocation))) {
         return next();
     }
     req.flash('error', 'You did not fill in all the required fields. Please try again.');
     res.redirect('/');
 }
+function isset(a) {
+    return typeof a !== "undefined" && a !== null && a !== "";
+}
 
-// Convert form data into user object.
+// Parse form data into user object.
 function parseUserData(body) {
     var newData = {
         age: body.age,
         field: body.field,
         role: body.role,
+        position: body.position,
         startDate: body.startDate,
         startLocation: body.startLocation,
         hasPlace: (body.hasPlace === "yes"),
