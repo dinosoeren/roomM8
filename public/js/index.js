@@ -5,7 +5,7 @@ var tagsInputInitialized = false;
 var isModalReady = true;
 
 $(document).ready(function(){
-    lastStep = $('.registration-form fieldset').length-1;
+    lastStep = $('#registration-form fieldset:not(#confirmDelete)').length-1;
 
     // Focus on first input and load city data when modal is opened.
     $('#registerModal').on('shown.bs.modal', function() {
@@ -32,23 +32,53 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
     $('.error-message').hide();
     $('.success-message').hide();
-    $('.registration-form .btn-register').hide();
-    $('.registration-form .btn-previous').hide();
-    $('.registration-form fieldset#f0').fadeIn('slow');
-    $('.registration-form .btn-register').on('click', function() {
-        $('.registration-form').submit();
+    $('#registration-form .btn-register').hide();
+    $('#registration-form .btn-previous').hide();
+    $('#registration-form fieldset#f0').fadeIn('slow');
+    $('#registration-form .btn-register').on('click', function() {
+        $('#registration-form').submit();
     });
-    $('.registration-form .form-control').on('focus', function () {
+    $('#registration-form .form-control').on('focus', function () {
         $(this).removeClass('input-error');
     });
+    if($("#editText").length > 0)
+        $("#continueText").hide();
+    // Handle 'delete profile' button click.
+    $("#registration-form .btn-delete").on('click', function() {
+        if(!isModalReady)
+            return;
+        isModalReady = false;
+        if(currentStep == -1) { // already in confirm dialog
+            // Make sure they check the agree box.
+            if(!$("#agreeToDelete").is(":checked")) {
+                showErrorMessage("Please indicate that you understand the consequences.");
+                isModalReady = true;
+                return;
+            }
+            // Delete user profile!
+            console.log("Deleting user profile!");
+            $('#registration-form').attr('action', "/deleteMe").submit();
+            isModalReady = true;
+            return;
+        }
+        var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
+        currentStep = -1;
+        parent_fieldset.fadeOut(200, function () {
+            $('#registration-form fieldset#confirmDelete').fadeIn(200, function() {
+                isModalReady = true;
+                inConfirmDeleteDialog = true;
+            });
+            evalBtns();
+        });
+    });
     // Handle 'Continue' button click.
-    $('.registration-form .btn-next').on('click', function () {
+    $('#registration-form .btn-next').on('click', function () {
         if(!isModalReady)
             return;
         if(currentStep >= lastStep)
             return;
         isModalReady = false;
-        var parent_fieldset = $('.registration-form fieldset#f'+currentStep);
+        var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
         var next_step = true;
         $(parent_fieldset).find('.form-control:not(.optional)').each(function () {
             var tagsInput = $(this).prev('.bootstrap-tagsinput');
@@ -82,7 +112,7 @@ $(document).ready(function(){
             }
             currentStep++;
             parent_fieldset.fadeOut(200, function () {
-                $('.registration-form fieldset#f'+currentStep).fadeIn(200, function() {
+                $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
                     isModalReady = true;
                 });
                 evalBtns();
@@ -93,13 +123,20 @@ $(document).ready(function(){
         }
     });
     // Handle 'Back' button click.
-    $('.registration-form .btn-previous').on('click', function () {
+    $('#registration-form .btn-previous').on('click', function () {
         if(!isModalReady)
             return;
         if(currentStep == 0)
             return;
         isModalReady = false;
-        var parent_fieldset = $('.registration-form fieldset#f'+currentStep);
+        var parent_fieldset;
+        if(currentStep === -1) {
+            $('#agreeToDelete').prop('checked', false); // uncheck agree box
+            parent_fieldset = $('#registration-form fieldset#confirmDelete');
+            currentStep = 1; // go back to step 0 after this.
+        } else {
+            parent_fieldset = $('#registration-form fieldset#f'+currentStep);
+        }
         $(parent_fieldset).fadeOut(200, function () {
             if(currentStep === 3 || (currentStep === 4 && !userHasPlace())) {
                 // Go back to step 1 from step 3 if the user already has a place.
@@ -107,7 +144,7 @@ $(document).ready(function(){
                 currentStep--;
             }
             currentStep--;
-            $('.registration-form fieldset#f'+currentStep).fadeIn(200, function() {
+            $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
                 isModalReady = true;
             });
             evalBtns();
@@ -196,17 +233,33 @@ function userHasPlace() {
 }
 // Hide/show previous and next buttons based on step.
 function evalBtns() {
-    if(currentStep <= 0) {
-        $('.registration-form .btn-previous').hide();
+    if(currentStep === -1) {
+        // Delete button was pressed. Take user to confirmation dialog.
+        $('#registration-form .btn-next').hide();
+        $('#registration-form .btn-previous').show();
+        return;
+    }
+    if(currentStep === 0) {
+        $('#registration-form .btn-previous').hide();
+        if($("#editText").length > 0) {
+            $("#registration-form .btn-delete").show();
+            $("#editText").show();
+            $("#continueText").hide();
+        }
     } else {
-        $('.registration-form .btn-previous').show();
+        $('#registration-form .btn-previous').show();
+        if($("#editText").length > 0) {
+            $("#registration-form .btn-delete").hide();
+            $("#editText").hide();
+            $("#continueText").show();
+        }
     }
     if(currentStep >= lastStep) {
-        $('.registration-form .btn-next').hide();
-        $('.registration-form .btn-register').show();
+        $('#registration-form .btn-next').hide();
+        $('#registration-form .btn-register').show();
     } else {
-        $('.registration-form .btn-register').hide();
-        $('.registration-form .btn-next').show();
+        $('#registration-form .btn-register').hide();
+        $('#registration-form .btn-next').show();
     }
 }
 // Show an error message in the registration form.

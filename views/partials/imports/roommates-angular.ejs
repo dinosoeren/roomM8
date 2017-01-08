@@ -1,0 +1,51 @@
+<!-- views/partials/imports/roommates-angular.ejs -->
+<script>
+var app = angular.module('roommatesApp', []);
+app.filter('roommateFilter', function() {
+    return function(input, name, startDate) {
+        if(!name)
+            return input;
+        var output = [];
+        angular.forEach(input, (roomie) => {
+            if (roomie.name.match(new RegExp(name, 'i')) !== null) {
+                output.push(roomie);
+            }
+        });
+        return output;
+    };
+});
+app.controller('roomiesCtrl', ['$scope', '$http', 
+    function($scope, $http) {
+        var potentialRoomies = [
+            <% for(var i=0; i<roomies.length; i++) { %>
+                <%- roomies[i] %>
+                <%= (i == roomies.length - 1) ? '' : ',' %>
+            <% } %>
+        ];
+        $scope.roomies = potentialRoomies;
+        $scope.find = function() {
+            var query = $scope.query;
+            if(query === "") {
+                $scope.roomies = potentialRoomies;
+                return;
+            }
+            /* http post code adapted from: http://stackoverflow.com/a/23966224/3673087 */
+            var xsrf = $.param({ query: query });
+            $http({
+                method: 'POST',
+                url: '/api/search',
+                data: xsrf,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(
+                function (response) {
+                    if(response.data.error) {
+                        console.error("(Query: "+query+") Error: "+response.data.error);
+                    } else {
+                        $scope.roomies = response.data;
+                    }
+                }
+            );
+        };
+    }
+]);
+</script>

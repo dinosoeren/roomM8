@@ -1,3 +1,8 @@
+/* Ensure AngularJS does not show FOUC. */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
 .text-white {
     color: white;
 }
@@ -56,12 +61,17 @@
 .btn .glyphicon, .alert .glyphicon {
     margin-right: 3px;
 }
+.btn .glyphicon-arrow-right {
+    margin-left: 3px;
+    margin-right: 0;
+}
 .mx-auto, .top .alert {
     margin-left: auto;
     margin-right: auto;
     float: none;
 }
 
+/* Roommate Search Input */
 #roomieSearchContainer {
     background: #e6e6e6;
     width: 100%;
@@ -102,6 +112,8 @@
     margin-top: 10px;
     line-height: 1.2;
 }
+
+/* Roommate Results */
 #roomiesContainer {
     display: flex;
     align-content: space-around;
@@ -118,8 +130,6 @@
 }
 #roomiesContainer .roomie > div {
     padding: 30px 20px;
-    height: 250px;
-    overflow: hidden;
 }
 #roomiesContainer .roomie > div h1 {
     margin: 0px;
@@ -128,6 +138,7 @@
     margin-right: auto;
 }
 
+/* Tags input */
 .bootstrap-tagsinput {
     width: 100%;
     border-radius: 0px;
@@ -180,11 +191,13 @@
     outline: 0;
     background-color: #428bca;
 }
+
+/* Registration form */
+form#registration-form fieldset {
+    display: none;
+}
 .slider.slider-horizontal {
     width: 100%;
-}
-form.registration-form fieldset {
-    display: none;
 }
 .input-error {
     border-color: #d03e3e;
@@ -193,6 +206,8 @@ form.registration-form fieldset {
 input[type="radio"], input[type="checkbox"] {
     margin: 4px;
 }
+
+/* User/roommate profile */
 .profile-card {
     margin: auto;
     float: none;
@@ -214,6 +229,8 @@ input[type="radio"], input[type="checkbox"] {
     line-height: 2.00;
     border-radius: 80px;
 }
+
+/* Sign in form */
 .form-control-lg, .input-group-lg>.form-control, .input-group-lg>.input-group-addon, .input-group-lg>.input-group-btn>.btn {
     padding: 3.05rem 3.5rem;
     font-size: 2.25rem;

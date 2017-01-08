@@ -1,4 +1,16 @@
 <!-- views/partials/register-form.ejs -->
+<% if(isUserRegistered) { %>
+    <!-- Delete profile confirmation -->
+    <fieldset id="confirmDelete">
+        <h3 class="text-danger text-center" style="margin-top: 0px;">Are you sure?</h3>
+        <p class="text-center">All your info will be erased from roomM8.<br/>This action cannot be undone.</p>
+        <div class="text-center">
+            <label>
+                <input type="checkbox" id="agreeToDelete" name="agreeToDelete" value="yes" /> Yes, I understand the consequences.
+            </label>
+        </div>
+    </fieldset>
+<% } %>
 <!-- Personal info -->
 <fieldset id="f0">
     <% if(!isUserRegistered) { %>
@@ -17,8 +29,6 @@
     </div>
     <% if(!isUserRegistered) { %>
         <p class="text-center">Almost done! Press continue to complete your registration.</p>
-    <% } else { %>
-        <p class="text-center">Press continue to edit your profile.</p>
     <% } %>
 </fieldset>
 <!-- Google info -->
@@ -60,6 +70,12 @@
                 <option value="resident" <%= (isUserRegistered && user.role == 'resident') ? 'selected' : '' %>>Resident</option>
                 <option value="intern" <%= (isUserRegistered && user.role == 'intern') ? 'selected' : '' %>>Intern</option>
             </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="position" class="col-sm-3 col-form-label">Position</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="position" id="position" placeholder="(i.e. Software Engineer)" aria-describedby="ageHelp" value="<%= (isUserRegistered) ? user.position : '' %>" required />
         </div>
     </div>
     <div class="form-group row">
