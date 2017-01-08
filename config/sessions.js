@@ -4,12 +4,7 @@ var RedisStore = require('connect-redis')(expressSession);
 
 module.exports = function(auth) {
     const ONE_HOUR = 3600000;
-    var store = new RedisStore({
-        port: auth.redis.port,
-        host: auth.redis.host,
-        db: auth.redis.database,
-        pass: auth.redis.password
-    });
+    var store = new RedisStore({ url: auth.redisURL });
     var session = expressSession({
         secret: auth.sessionSecret,
         store: store,

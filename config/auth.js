@@ -1,5 +1,3 @@
-const url = require('url');
-
 function isset(a) {
     return typeof a !== "undefined";
 }
@@ -30,19 +28,7 @@ const auth = {
     mongoDB: {
         URL: process.env.MONGO_DB_URL
     },
-    redis: {}
+    redisURL: process.env.REDISCLOUD_URL
 };
-
-// Parse redis data from Url
-// Code adapted from: http://stackoverflow.com/a/17246578/3673087
-var redisUrl = url.parse(process.env.REDISCLOUD_URL);
-auth.redis.protocol = redisUrl.protocol.substr(0, 
-                        redisUrl.protocol.length - 1); // Remove trailing ':'
-auth.redis.username = redisUrl.auth.split(':')[0];
-auth.redis.password = redisUrl.auth.split(':')[1];
-auth.redis.host = redisUrl.hostname;
-auth.redis.port = redisUrl.port;
-auth.redis.database = redisUrl.path == null ? 0 : 
-    parseInt(redisUrl.path.substring(1));
 
 module.exports = auth;
