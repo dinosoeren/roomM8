@@ -7,13 +7,12 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const passport = require('passport');
-const mongoose = require('mongoose');
 const bodyParser= require('body-parser');
 const cookieParser= require('cookie-parser');
 const session = require('./config/sessions');
 
-// Connect to MongoDB database.
-mongoose.connect(auth.mongoDB.URL);
+// Configure mongoDB database.
+require('./config/database')(auth)
 
 // Configure passport.
 require('./config/passport')(auth, passport);
@@ -28,13 +27,11 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 // Use flash to send messages over middleware.
 app.use(flash());
-
-// Init session for passport.
+// Init session for passport authentication library.
 app.use(session(auth));
-// TODO: add connect-redis session check.
-// https://github.com/tj/connect-redis#how-do-i-handle-lost-connections-to-redis
 app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
+ // Persistent login sessions.
+app.use(passport.session());
 
 // Load routes: pass in app, auth info, and fully configured passport.
 require('./app/routes')(app, auth, passport);
