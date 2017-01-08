@@ -221,9 +221,9 @@ function evalBtns() {
 // Show an error message in the registration form.
 function showErrorMessage(msg) {
     if(msg) {
-        $('.error-message').text(msg);
+        $('.error-message .msg').text(msg);
     } else {
-        $('.error-message').text($('.error-message').attr("data-message"));
+        $('.error-message .msg').text($('.error-message').attr("data-message"));
     }
     $('.error-message').slideDown(200);
     $('.error-message').delay(3000).slideUp(200);
@@ -231,9 +231,9 @@ function showErrorMessage(msg) {
 // Show a success message in the registration form.
 function showSuccessMessage(msg) {
     if(msg) {
-        $('.success-message').text(msg);
+        $('.success-message .msg').text(msg);
     } else {
-        $('.success-message').text($('.success-message').attr("data-message"));
+        $('.success-message .msg').text($('.success-message').attr("data-message"));
     }
     $('.success-message').slideDown(200);
     $('.success-message').delay(3000).slideUp(200);
