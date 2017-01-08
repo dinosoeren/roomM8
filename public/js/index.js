@@ -226,9 +226,7 @@ function showErrorMessage(msg) {
         $('.error-message').text($('.error-message').attr("data-message"));
     }
     $('.error-message').slideDown(200);
-    $('.error-message').delay(3000).slideUp(200, function() {
-        $('.error-message').text("");
-    });
+    $('.error-message').delay(3000).slideUp(200);
 }
 // Show a success message in the registration form.
 function showSuccessMessage(msg) {
@@ -238,9 +236,7 @@ function showSuccessMessage(msg) {
         $('.success-message').text($('.success-message').attr("data-message"));
     }
     $('.success-message').slideDown(200);
-    $('.success-message').delay(3000).slideUp(200, function() {
-        $('.success-message').text("");
-    });
+    $('.success-message').delay(3000).slideUp(200);
 }
 
 // Check if the secret code the user entered is valid.
