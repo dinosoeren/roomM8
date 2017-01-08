@@ -1,21 +1,31 @@
-<div class="page-header">
-    <h1><a href="/" style="text-decoration: none;">room<span class="text-success">M8</span></a></h1>
+<div class="container top">
+    <div class="page-header">
+        <h1>
+            <a href="/">
+                <span>room</span><span class="text-success">M8</span>
+            </a>
+        </h1>
+    </div>
+    <% if (errors.length > 0) { %>
+        <div class="alert alert-danger alert-dismissable col-sm-9">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>
+                <span class="glyphicon glyphicon-remove"></span> Woops!
+            </strong>
+            <% for(var i=0; i<errors.length; i++) {%>
+                <%= errors[i] %>
+            <% } %>
+        </div>
+    <% } %>
+    <% if (success.length > 0) { %>
+        <div class="alert alert-success alert-dismissable col-sm-9">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>
+                <span class="glyphicon glyphicon-ok"></span> Noice!
+            </strong>
+            <% for(var i=0; i<success.length; i++) {%>
+                <%= success[i] %>
+            <% } %>
+        </div>
+    <% } %>
 </div>
-<% if (errors.length > 0) { %>
-    <div class="alert alert-danger alert-dismissable">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Woops!</strong>
-        <% for(var i=0; i<errors.length; i++) {%>
-            <%= errors[i] %>
-        <% } %>
-    </div>
-<% } %>
-<% if (success.length > 0) { %>
-    <div class="alert alert-success alert-dismissable">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Noice!</strong>
-        <% for(var i=0; i<success.length; i++) {%>
-            <%= success[i] %>
-        <% } %>
-    </div>
-<% } %>

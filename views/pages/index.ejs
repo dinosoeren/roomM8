@@ -17,29 +17,44 @@
     <script src="js/index.js"></script>
 </head>
 <body>
-    <div class="container">
-        <% include ../partials/top.ejs %>
-        <div class="jumbotron">
-            <% if(!isUserRegistered) { %>
-                <h1>Relocating for Google?</h1>
-                <p>I am too, and I created this simple app to help fellow Nooglers find other Nooglers who could be potentially good roommates.*</p>
-            <% } else { %>
-                <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>
-                <p>As more users sign up for roomM8, you should begin to receive emails with potential roommates. In the mean time, you can search through the current userbase to see if anyone catches your eye.</p>
-            <% } %>
-            <p>
-                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registerModal">
-                    <%= (isUserRegistered) ? "Edit profile" : "Get matched!" %>
-                </button>
-                <% if(isUserRegistered) { %>
-                    <a href="/logout" class="btn btn-warning btn-lg" role="button">Sign out</a>
+    <% include ../partials/top.ejs %>
+    <div class="container head bg-primary">
+        <div class="container">
+            <div class="jumbotron">
+                <% if(!isUserRegistered) { %>
+                    <h1>Relocating for Google?</h1>
+                    <p>I am too, and I created this simple app to help fellow Nooglers find other Nooglers who could be potentially good roommates.</p>
+                <% } else { %>
+                    <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>
+                    <p>As more users sign up for roomM8, you should begin to receive emails with potential roommates. In the mean time, you can search through the current userbase to see if anyone catches your eye.</p>
                 <% } %>
-                <button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#infoModal">Learn more</button>
+                <p>
+                    <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#registerModal">
+                        <% if(isUserRegistered) { %>
+                            <span class="glyphicon glyphicon-pencil"></span> Edit profile
+                        <% } else { %>
+                            <span class="glyphicon glyphicon-ok"></span> Get started!
+                        <% } %>
+                    </button>
+                    <% if(isUserRegistered) { %>
+                        <a href="/logout" class="btn btn-warning btn-lg" role="button">
+                            <span class="glyphicon glyphicon-log-out"></span> Sign out
+                        </a>
+                    <% } %>
+                    <button type="button" class="btn btn-white btn-lg" data-toggle="modal" data-target="#infoModal">
+                        <span class="glyphicon glyphicon-apple"></span> Learn more
+                    </button>
+                </p>
+            </div>
+            <p class="text-right" style="font-size: 0.8em; font-weight: bold;">
+                This app is an independent project.<br/>It is not an official Google product/service.
             </p>
         </div>
-        <p style="font-size: 0.8em; line-height: 0px; font-weight: bold;">
-            *This app is an independent project. It is not an official Google product/service.
-        </p>
+    </div>
+    <div class="container author">
+        Created by <a href="http://www.soerenwalls.com/">Soeren</a>. View the Source Code on <a href="https://github.com/SWalls/roomM8">Github</a>.
+    </div>
+    <div class="container">
         <% if(isUserRegistered) { %>
             <div class="jumbotron">
                 <h1>Search for roommates</h1>

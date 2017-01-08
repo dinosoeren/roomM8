@@ -1,3 +1,50 @@
+.text-white {
+    color: white;
+}
+.bg-white, .btn-white {
+    background-color: white;
+    color: #2780e3;
+}
+.btn-white:hover, .btn-white:focus {
+    background-color: lightgray;
+    color: #333;
+}
+
+.page-header {
+    border: 0px;
+    text-align: center;
+}
+.page-header h1 a {
+    text-decoration: none;
+    border-bottom: 1px solid #ddd;
+    padding: 0px;
+    transition: 1s;
+}
+.page-header h1 a:hover {
+    border-bottom: 1px solid #333;
+    padding: 0 10px;
+}
+.author {
+    padding: 20px;
+    text-align: center;
+}
+.head {
+    width: 100%;
+    padding: 40px 0px 10px 0px;
+}
+.head .jumbotron {
+    background: transparent;
+    margin-bottom: 0px;
+}
+.head .jumbotron .btn .glyphicon, .alert .glyphicon {
+    margin-right: 3px;
+}
+.top .alert {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+}
+
 .bootstrap-tagsinput {
     width: 100%;
     border-radius: 0px;
