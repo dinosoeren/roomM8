@@ -9,19 +9,48 @@ module.exports = function(app, auth, passport) {
     app.get('/', (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
-        // Render index page.
-        res.render('pages/index', {
+        var pageData = {
             roomies: [],
             locations: locations,
             user: req.user,
             allowedAccess: req.session.allowedAccess,
             errors: req.flash('error'),
             success: req.flash('success')
+        };
+        if(req.isAuthenticated() && typeof req.user.age !== "undefined") {
+            // Get roomies.
+            User.findPotentialRoommates(req.user, (err, roomies) => {
+                if(err)
+                    console.log(err);
+                for(var i=0; i<roomies.length; i++) {
+                    roomies[i]['_id'] = undefined;
+                }
+                // Render index page.
+                pageData.roomies = roomies;
+                res.render('pages/index', pageData);
+            });
+        } else {
+            // Render index page.
+            res.render('pages/index', pageData);
+        }
+    });
+
+    // Post roommates search query.
+    app.post('/api/search', (req, res) => {
+        if (!req.isAuthenticated() || typeof req.user.age === "undefined")
+            return res.json({ error: 'Not authenticated.' });
+        if (typeof req.body.query === "undefined")
+            return res.json({ error: 'Invalid query.' });
+        var query = sanitize(req.body.query);
+        User.findPotentialRoommatesLike(query, req.user, (err, roomies) => {
+            if(err)
+                return res.json({ error: err });
+            res.json(roomies);
         });
     });
 
     // Parse registration form.
-    app.post('/', isLoggedIn, validRegistrationForm, (req, res) => {
+    app.post('/', isLoggedIn, isValidRegistrationForm, (req, res) => {
         var user = req.user;
         var isUpdate = user.age ? true : false; // If age is already set, this is an update.
         var query = { 'googleId' : sanitize(user.googleId) };
@@ -47,12 +76,12 @@ module.exports = function(app, auth, passport) {
 
     // Post keyphrase.
     app.post('/api/access', (req, res) => {
+        if (typeof req.body.key === "undefined")
+            return res.json({ error: 'Invalid key.' });
         var sess = req.session;
         // only allow 5 incorrect attempts per session
-        if(sess.accessAttempts && sess.accessAttempts >= 5) {
-            res.json({error: 'Too many attempts.'});
-            return;
-        }
+        if(sess.accessAttempts && sess.accessAttempts >= 5)
+            return res.json({ error: 'Too many attempts.' });
         var key_given = req.body.key;
         if (key_given === auth.secretKey) {
             sess.allowedAccess = true;
@@ -65,12 +94,12 @@ module.exports = function(app, auth, passport) {
             } else {
                 sess.accessAttempts = 1;
             }
-            res.json({error: 'Incorrect key. '+(5-sess.accessAttempts)+' more attempts.'});
+            res.json({ error: 'Incorrect key. '+(5-sess.accessAttempts)+' more attempts.' });
         }
     });
 
     // Logout
-    app.get('/logout', (req, res) => {
+    app.get('/logout', isLoggedIn, (req, res) => {
         req.logout();
         req.flash('success', 'You have successfully signed out.');
         res.redirect('/');
@@ -140,8 +169,18 @@ function isLoggedIn(req, res, next) {
     res.redirect('/');
 }
 
+// Route middleware to make sure a user has fully completed their registration.
+function isRegistered(req, res, next) {
+    // If user has a value for the age field, carry on.
+    if (typeof req.user.age !== 'undefined')
+        return next();
+    // If it doesn't, redirect them to the home page.
+    req.flash('error', 'You have not completed your registration. Please finish signing up and try again.');
+    res.redirect('/');
+}
+
 // Route middleware to make sure registration form is valid.
-function validRegistrationForm(req, res, next) {
+function isValidRegistrationForm(req, res, next) {
     if(req.body.age && 
             req.body.field && 
             req.body.role && 

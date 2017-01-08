@@ -27,25 +27,8 @@ $(document).ready(function(){
         step: 1,
         tooltip: 'hide'
     });
-    
-    // Get profile picture from gravatar using email.
-    /*
-    $('#email').on('blur', function() {
-        if(isFieldValid(this)) {
-            var md5email = md5($.trim($(this).val()));
-            var imgUrl = "http://www.gravatar.com/avatar/"+md5email+"?d=404&s=100";
-            $.ajax(imgUrl).done(function() {
-                // success
-                $('.btn-photo').css('background-image', "url('"+imgUrl+"')");
-                $('#photo-url').val(imgUrl);
-            }).fail(function() {
-                // error
-            });
-        }
-    });
-    */
 
-    // Init form stuff
+    // Init registration form stuff.
     $('[data-toggle="tooltip"]').tooltip();
     $('.error-message').hide();
     $('.success-message').hide();
@@ -136,10 +119,18 @@ $(document).ready(function(){
         checkSecretKey();
     });
     $('#secretKey').keypress(function (e) {
-        if (e.which == 13) { // enter key
+        if (e.which == 13) { // 'Enter' key.
             checkSecretKey();
             return false;
         }
+    });
+
+    // Handle roommate search box events.
+    $('#roommateSearchBox').on('focus', function() {
+        $(this).parent('.input-group').addClass('focus');
+    });
+    $('#roommateSearchBox').on('blur', function() {
+        $(this).parent('.input-group').removeClass('focus');
     });
 });
 
@@ -158,7 +149,7 @@ function readAndInitCityTags() {
                 callback(null, newObj);
             }
         }, function(err, results) {
-            // results is now an array of objects
+            // Results is now an array of objects.
             initializeCityTagsInput(results);
         });
     });

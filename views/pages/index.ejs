@@ -23,22 +23,31 @@
             <div class="jumbotron">
                 <% if(!isUserRegistered) { %>
                     <h1>Relocating for Google?</h1>
-                    <p>I am too, and I created this simple app to help fellow Nooglers find other Nooglers who could be potentially good roommates.</p>
+                    <p>
+                        I am too, and I created this simple app to help fellow 
+                        Nooglers find other Nooglers who could be potentially 
+                        good roommates.
+                    </p>
                 <% } else { %>
                     <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>
-                    <p>As more users sign up for roomM8, you should begin to receive emails with potential roommates. In the mean time, you can search through the current userbase to see if anyone catches your eye.</p>
+                    <p>
+                        As more users sign up for roomM8, you should begin to 
+                        receive emails with potential roommates. In the mean 
+                        time, you can search through the current userbase to 
+                        see if anyone catches your eye.
+                    </p>
                 <% } %>
                 <p>
                     <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#registerModal">
                         <% if(isUserRegistered) { %>
-                            <span class="glyphicon glyphicon-pencil"></span> Edit profile
+                            <span class="glyphicon glyphicon-pencil text-success"></span> Edit profile
                         <% } else { %>
-                            <span class="glyphicon glyphicon-ok"></span> Get started!
+                            <span class="glyphicon glyphicon-ok text-success"></span> Get started!
                         <% } %>
                     </button>
                     <% if(isUserRegistered) { %>
                         <a href="/logout" class="btn btn-warning btn-lg" role="button">
-                            <span class="glyphicon glyphicon-log-out"></span> Sign out
+                            <span class="glyphicon glyphicon-log-out text-warning"></span> Sign out
                         </a>
                     <% } %>
                     <button type="button" class="btn btn-white btn-lg" data-toggle="modal" data-target="#infoModal">
@@ -47,30 +56,18 @@
                 </p>
             </div>
             <p class="text-right" style="font-size: 0.8em; font-weight: bold;">
-                This app is an independent project.<br/>It is not an official Google product/service.
+                This app is an independent project.<br/>
+                It is not an official Google product/service.
             </p>
         </div>
     </div>
     <div class="container author">
-        Created by <a href="http://www.soerenwalls.com/">Soeren</a>. View the Source Code on <a href="https://github.com/SWalls/roomM8">Github</a>.
+        Created by <a href="http://www.soerenwalls.com/">Soeren</a>. 
+        View the Source Code on <a href="https://github.com/SWalls/roomM8">Github</a>.
     </div>
-    <div class="container">
-        <% if(isUserRegistered) { %>
-            <div class="jumbotron">
-                <h1>Search for roommates</h1>
-            </div>
-            <div class="container" role="main">
-                <div class="container roomies">
-                    <% for(var i=0; i<roomies.length; i++) {%>
-                        <div class="roomie">
-                            <span class="name"><%= roomies[i].name %></span>
-                            <span class="location"><%= roomies[i].location %></span>
-                        </div>
-                    <% } %>
-                </div>
-            </div>
-        <% } %>
-    </div>
+    <% if(isUserRegistered) { %>
+        <% include ../partials/roommates-list.ejs %>
+    <% } %>
     <!-- Registration Form Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal">
         <div class="modal-dialog" role="document">
@@ -78,16 +75,20 @@
                 <div class="modal-content">
                     <form action="/" method="post" class="registration-form">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                             <h4 class="modal-title" id="registerModal">
                                 <%= (isUserRegistered) ? "Edit Profile" : "Sign up" %>
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <div class="alert alert-danger error-message" style="font-weight: bold;" data-message="Please complete the missing or invalid fields.">
+                            <div class="alert alert-danger error-message" style="font-weight: bold;" 
+                                    data-message="Please complete the missing or invalid fields.">
                                 <span class="glyphicon glyphicon-remove"></span> <span class="msg"></span>
                             </div>
-                            <div class="alert alert-success success-message" style="font-weight: bold;" data-message="Success!">
+                            <div class="alert alert-success success-message" style="font-weight: bold;" 
+                                    data-message="Success!">
                                 <span class="glyphicon glyphicon-ok"></span> <span class="msg"></span>
                             </div>
                             <% include ../partials/register-form.ejs %>
@@ -98,9 +99,14 @@
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                 </div>
                                 <div class="col-xs-8">
-                                    <button type="button" class="btn btn-default btn-previous">Back</button>
-                                    <button type="button" class="btn btn-primary btn-next">Continue</button>
+                                    <button type="button" class="btn btn-default btn-previous">
+                                        <span class="glyphicon glyphicon-arrow-left"></span> Back
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-next">
+                                        Continue <span class="glyphicon glyphicon-arrow-right" style="margin-left: 3px; margin-right: 0;"></span>
+                                    </button>
                                     <button type="button" class="btn btn-success btn-register">
+                                        <span class="glyphicon glyphicon-ok"></span> 
                                         <%= (isUserRegistered) ? "Submit Changes" : "Complete Registration" %>
                                     </button>
                                 </div>
@@ -111,14 +117,18 @@
             <% } else { %>
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <h4 class="modal-title" id="registerModal">Sign up</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger error-message" style="font-weight: bold;" data-message="Please complete the missing or invalid fields.">
+                        <div class="alert alert-danger error-message" style="font-weight: bold;" 
+                                data-message="Please complete the missing or invalid fields.">
                             <span class="glyphicon glyphicon-remove"></span> <span class="msg"></span>
                         </div>
-                        <div class="alert alert-success success-message" style="font-weight: bold;" data-message="Success!">
+                        <div class="alert alert-success success-message" style="font-weight: bold;" 
+                                data-message="Success!">
                             <span class="glyphicon glyphicon-ok"></span> <span class="msg"></span>
                         </div>
                         <% include ../partials/key-form.ejs %>

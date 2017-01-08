@@ -1,0 +1,66 @@
+<!-- views/partials/roommates-list.ejs -->
+<div ng-app="roommatesApp" ng-controller="roomiesCtrl">
+    <div class="container" id="roomieSearchContainer">
+        <div class="jumbotron">
+            <div class="row side-padded">
+                <div class="col-sm-9 mx-auto">
+                    <div class="input-group input-group-huge">
+                        <span class="input-group-addon glyphicon glyphicon-search"></span>
+                        <input type="text" class="h1" id="roommateSearchBox" 
+                            ng-model="query" ng-blur="find()" placeholder="Search" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="roomiesContainer" role="main">
+        <div class="roomie" ng-repeat="x in roomies">
+            <div class="row bg-primary">
+                <div class="col-sm-4">
+                    <div class="btn-circle-lg btn-photo" style="background-image: url('{{ x.photoUrl }}');"></div>
+                </div>
+                <div class="col-sm-8">
+                    <h1>{{ x.name }}</h1>
+                    <p>{{ x.aboutMe.substring(0, 100) }}...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+angular.module('roommatesApp', []).controller('roomiesCtrl', ['$scope', '$http', 
+    function($scope, $http) {
+        var potentialRoomies = [
+            <% for(var i=0; i<roomies.length; i++) { %>
+                <%- roomies[i] %>
+                <%= (i == roomies.length - 1) ? '' : ',' %>
+            <% } %>
+        ];
+        $scope.roomies = potentialRoomies;
+        $scope.find = function() {
+            var query = $scope.query;
+            if(query === "") {
+                $scope.roomies = potentialRoomies;
+                return;
+            }
+            /* http post code adapted from: http://stackoverflow.com/a/23966224/3673087 */
+            var xsrf = $.param({ query: query });
+            $http({
+                method: 'POST',
+                url: '/api/search',
+                data: xsrf,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(
+                function (response) {
+                    if(response.data.error) {
+                        console.error("(Query: "+query+") Error: "+response.data.error);
+                    } else {
+                        $scope.roomies = response.data;
+                    }
+                }
+            );
+        };
+    }
+]);
+</script>

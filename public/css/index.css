@@ -1,12 +1,19 @@
 .text-white {
     color: white;
 }
-.bg-white, .btn-white {
+.bg-white {
     background-color: white;
     color: #2780e3;
 }
+.btn-white {
+    background-color: transparent;
+    border-bottom: 2px solid #333;
+    color: white;
+}
 .btn-white:hover, .btn-white:focus {
-    background-color: lightgray;
+    background-color: #aaa;
+}
+.btn-white .glyphicon {
     color: #333;
 }
 
@@ -36,13 +43,89 @@
     background: transparent;
     margin-bottom: 0px;
 }
-.head .jumbotron .btn .glyphicon, .alert .glyphicon {
+.head .jumbotron .btn {
+    border-width: 0px;
+    border-bottom-width: 2px;
+}
+.head .jumbotron .btn:not(:hover) {
+    background: transparent;
+}
+.head .jumbotron .btn:hover {
+    border-color: white;
+}
+.btn .glyphicon, .alert .glyphicon {
     margin-right: 3px;
 }
-.top .alert {
+.mx-auto, .top .alert {
     margin-left: auto;
     margin-right: auto;
     float: none;
+}
+
+#roomieSearchContainer {
+    background: #e6e6e6;
+    width: 100%;
+}
+#roomieSearchContainer .jumbotron {
+    background: transparent;
+    margin-bottom: 0;
+}
+.side-padded {
+    margin-left: 0;
+    margin-right: 0;
+}
+.input-group-huge {
+    border-bottom: 3px solid #ccc;
+    width: 100%;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+.input-group-huge:hover, .input-group-huge.focus {
+    border-color: #2780e3;
+}
+.input-group-huge .input-group-addon {
+    background: transparent;
+    border: 0;
+    font-size: 2.8em;
+    color: #ccc;
+    transition: 0.5s;
+}
+.input-group-huge:hover .input-group-addon, .input-group-huge.focus .input-group-addon {
+    color: #2780e3;
+}
+#roommateSearchBox {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #333;
+    margin-top: 10px;
+    line-height: 1.2;
+}
+#roomiesContainer {
+    display: flex;
+    align-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+#roomiesContainer .roomie {
+    padding: 0px 20px;
+    margin: 0px auto 20px auto;
+    flex-grow: 1;
+    min-width: 300px;
+    max-width: 500px;
+}
+#roomiesContainer .roomie > div {
+    padding: 30px 20px;
+    height: 250px;
+    overflow: hidden;
+}
+#roomiesContainer .roomie > div h1 {
+    margin: 0px;
+}
+#roomiesContainer .roomie > div .btn-photo {
+    margin-right: auto;
 }
 
 .bootstrap-tagsinput {
@@ -165,5 +248,11 @@ input[type="radio"], input[type="checkbox"] {
 @media (max-width: 768px) { 
     .btn-photo {
         margin-right: auto;
+    }
+    .head .jumbotron .btn {
+        display: block;
+        padding-left: 50px;
+        padding-right: 50px;
+        margin: 0px auto 15px auto;
     }
 }

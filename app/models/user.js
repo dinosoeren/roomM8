@@ -44,4 +44,35 @@ var userSchema = mongoose.Schema({
     aboutMe: String
 });
 
+var selectRows = { 
+    name: 1, 
+    photoUrl: 1, 
+    aboutMe: 1, 
+    startDate: 1, 
+    startLocation: 1, 
+    hasPlace: 1, 
+    'preferences.locations': 1, 
+    'currentResidence.location': 1
+};
+
+userSchema.statics.findPotentialRoommates = function(user, callback) {
+    this.find({
+        googleId: { $ne: user.googleId }, // different google id
+        startLocation: user.startLocation // same start location
+    }).
+    limit(20).
+    select(selectRows).
+    exec(callback);
+};
+userSchema.statics.findPotentialRoommatesLike = function(query, user, callback) {
+    this.find({
+        name: new RegExp(query, 'i'), // name LIKE query
+        googleId: { $ne: user.googleId }, // different google id
+        startLocation: user.startLocation // same start location
+    }).
+    limit(20).
+    select(selectRows).
+    exec(callback);
+};
+
 module.exports = mongoose.model('User', userSchema);
