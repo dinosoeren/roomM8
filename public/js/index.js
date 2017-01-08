@@ -43,7 +43,26 @@ $(document).ready(function(){
     });
     if($("#editText").length > 0)
         $("#continueText").hide();
-    // Handle 'delete profile' button click.
+    // Handle 'Cancel' button click.
+    $("#registration-form .btn-cancel").on('click', function() {
+        if(!isModalReady)
+            return;
+        isModalReady = false;
+        var parent_fieldset;
+        if(currentStep === -1) {
+            $('#agreeToDelete').prop('checked', false); // uncheck agree box
+            parent_fieldset = $('#registration-form fieldset#confirmDelete');
+        } else {
+            parent_fieldset = $('#registration-form fieldset#f'+currentStep);
+        }
+        currentStep = 0; // go back to step 0 after this.
+        parent_fieldset.fadeOut(200, function () {
+            $('#registration-form fieldset#f'+currentStep).show();
+            evalBtns();
+            isModalReady = true;
+        });
+    });
+    // Handle 'Delete Profile' button click.
     $("#registration-form .btn-delete").on('click', function() {
         if(!isModalReady)
             return;
@@ -66,7 +85,6 @@ $(document).ready(function(){
         parent_fieldset.fadeOut(200, function () {
             $('#registration-form fieldset#confirmDelete').fadeIn(200, function() {
                 isModalReady = true;
-                inConfirmDeleteDialog = true;
             });
             evalBtns();
         });
