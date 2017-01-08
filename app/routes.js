@@ -14,6 +14,7 @@ module.exports = function(app, auth, passport) {
             roomies: [],
             locations: locations,
             user: req.user,
+            allowedAccess: req.session.allowedAccess,
             errors: req.flash('error'),
             success: req.flash('success')
         });
