@@ -84,7 +84,12 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <div class="alert alert-danger error-message" style="font-weight: bold;" data-message="Please complete the missing or invalid fields."></div>
+                            <div class="alert alert-danger error-message" style="font-weight: bold;" data-message="Please complete the missing or invalid fields.">
+                                <span class="glyphicon glyphicon-remove"></span> <span class="msg"></span>
+                            </div>
+                            <div class="alert alert-success success-message" style="font-weight: bold;" data-message="Success!">
+                                <span class="glyphicon glyphicon-ok"></span> <span class="msg"></span>
+                            </div>
                             <% include ../partials/register-form.ejs %>
                         </div>
                         <div class="modal-footer">

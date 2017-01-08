@@ -58,10 +58,6 @@ $(document).ready(function(){
     $('.registration-form .form-control').on('focus', function () {
         $(this).removeClass('input-error');
     });
-    $('.registration-form .bootstrap-tagsinput input').on('focus', function () {
-        $(this).parent('.bootstrap-tagsinput').removeClass('input-error');
-        $(this).parent('.bootstrap-tagsinput').prev('.form-control').removeClass('input-error');
-    });
     // Handle 'Continue' button click.
     $('.registration-form .btn-next').on('click', function () {
         if(!isModalReady)
@@ -72,13 +68,18 @@ $(document).ready(function(){
         var parent_fieldset = $('.registration-form fieldset#f'+currentStep);
         var next_step = true;
         $(parent_fieldset).find('.form-control:not(.optional)').each(function () {
+            var tagsInput = $(this).prev('.bootstrap-tagsinput');
             if (!isFieldValid(this)) {
-                $(this).addClass('input-error');
-                $(this).next('.bootstrap-tagsinput').addClass('input-error');
+                if(tagsInput.length > 0)
+                    tagsInput.addClass('input-error');
+                else
+                    $(this).addClass('input-error');
                 next_step = false;
             } else {
-                $(this).removeClass('input-error');
-                $(this).next('.bootstrap-tagsinput').removeClass('input-error');
+                if(tagsInput.length > 0)
+                    tagsInput.removeClass('input-error');
+                else
+                    $(this).removeClass('input-error');
             }
         });
         if (next_step) {
@@ -105,6 +106,7 @@ $(document).ready(function(){
             });
         } else {
             showErrorMessage();
+            isModalReady = true;
         }
     });
     // Handle 'Back' button click.
@@ -185,18 +187,16 @@ function initializeCityTagsInput(data) {
         },
         freeInput: true
     });
-    $('.bootstrap-tagsinput input').on('focus', function() {
-        $('.bootstrap-tagsinput').addClass('focused');
-    });
-    $('.bootstrap-tagsinput input').on('blur', function() {
-        $('.bootstrap-tagsinput').removeClass('focused');
+    $('.bootstrap-tagsinput input').on('focus', function () {
+        $('.bootstrap-tagsinput').removeClass('input-error');
     });
 }
 
 // Check if a particular input field has a valid value.
 function isFieldValid(ele) {
     var supportsValidate = typeof ele.willValidate !== "undefined";
-    return $(ele).val() !== "" && $(ele).val() !== null &&
+    var value = $(ele).val();
+    return value !== "" && value !== null && value.length !== 0 &&
             (!supportsValidate || !ele.willValidate || ele.checkValidity());
 }
 // Check if user has indicated they own a place.
