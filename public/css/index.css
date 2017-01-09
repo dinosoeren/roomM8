@@ -71,73 +71,6 @@
     float: none;
 }
 
-/* Roommate Search Input */
-#roomieSearchContainer {
-    background: #e6e6e6;
-    width: 100%;
-}
-#roomieSearchContainer .jumbotron {
-    background: transparent;
-    margin-bottom: 0;
-}
-.side-padded {
-    margin-left: 0;
-    margin-right: 0;
-}
-.input-group-huge {
-    border-bottom: 3px solid #ccc;
-    width: 100%;
-    transition: 0.5s;
-    margin-bottom: 10px;
-}
-.input-group-huge:hover, .input-group-huge.focus {
-    border-color: #2780e3;
-}
-.input-group-huge .input-group-addon {
-    background: transparent;
-    border: 0;
-    font-size: 2.8em;
-    color: #ccc;
-    transition: 0.5s;
-}
-.input-group-huge:hover .input-group-addon, .input-group-huge.focus .input-group-addon {
-    color: #2780e3;
-}
-#roommateSearchBox {
-    width: 100%;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: #333;
-    margin-top: 10px;
-    line-height: 1.2;
-}
-
-/* Roommate Results */
-#roomiesContainer {
-    display: flex;
-    align-content: space-around;
-    flex-wrap: wrap;
-    margin-top: 40px;
-    margin-bottom: 20px;
-}
-#roomiesContainer .roomie {
-    padding: 0px 20px;
-    margin: 0px auto 20px auto;
-    flex-grow: 1;
-    min-width: 300px;
-    max-width: 500px;
-}
-#roomiesContainer .roomie > div {
-    padding: 30px 20px;
-}
-#roomiesContainer .roomie > div h1 {
-    margin: 0px;
-}
-#roomiesContainer .roomie > div .btn-photo {
-    margin-right: auto;
-}
-
 /* Tags input */
 .bootstrap-tagsinput {
     width: 100%;
@@ -196,6 +129,9 @@
 form#registration-form fieldset {
     display: none;
 }
+fieldset#f0 > p {
+    margin-top: 10px;
+}
 .slider.slider-horizontal {
     width: 100%;
 }
@@ -205,6 +141,92 @@ form#registration-form fieldset {
 }
 input[type="radio"], input[type="checkbox"] {
     margin: 4px;
+}
+
+/* Roommate Search Input */
+#roomieSearchContainer {
+    background: #e6e6e6;
+    width: 100%;
+}
+#roomieSearchContainer .jumbotron {
+    background: transparent;
+    margin-bottom: 0;
+}
+.side-padded {
+    margin-left: 0;
+    margin-right: 0;
+}
+.input-group-huge {
+    border-bottom: 3px solid #ccc;
+    width: 100%;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+.input-group-huge:hover, .input-group-huge.focus {
+    border-color: #2780e3;
+}
+.input-group-huge .input-group-addon {
+    background: transparent;
+    border: 0;
+    font-size: 2.8em;
+    color: #ccc;
+    transition: 0.5s;
+}
+.input-group-huge:hover .input-group-addon, .input-group-huge.focus .input-group-addon {
+    color: #2780e3;
+}
+#roommateSearchBox {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #333;
+    margin-top: 10px;
+    line-height: 1.2;
+}
+
+/* Roommate Results */
+#roomiesContainer {
+    display: flex;
+    align-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+#roomiesContainer .profile-card {
+    padding: 0px 20px;
+    margin: 0px auto 20px auto;
+    flex-grow: 1;
+    min-width: 300px;
+    max-width: 500px;
+}
+#roomiesContainer .profile-card .glyphicon {
+    margin-right: 3px;
+    color: #000;
+}
+#roomiesContainer .profile-card .inner-container {
+    border: 0px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    display: table;
+}
+#roomiesContainer .profile-card div.row {
+    margin: 0;
+    padding: 35px 20px;
+}
+#roomiesContainer .profile-card div.row .col {
+    float: none;
+    display: table-cell;
+    vertical-align: middle;
+}
+#roomiesContainer .profile-card div.row h1 {
+    margin: 0px;
+}
+#roomiesContainer .profile-card div.row p {
+    margin: 2px 0px;
+}
+#roomiesContainer .profile-card .btn-photo {
+    margin-right: auto;
 }
 
 /* User/roommate profile */
@@ -271,5 +293,6 @@ input[type="radio"], input[type="checkbox"] {
         padding-left: 50px;
         padding-right: 50px;
         margin: 0px auto 15px auto;
+        width: 250px;
     }
 }

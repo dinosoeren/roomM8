@@ -187,6 +187,21 @@ $(document).ready(function(){
     $('#roommateSearchBox').on('blur', function() {
         $(this).parent('.input-group').removeClass('focus');
     });
+
+    // Handle profile card description 'Read more' click event.
+    $('.profile-card .desc a').on('click', function(e) {
+        var descContainer = $(this).parent('.desc');
+        if($(this).is('.more')) {
+            $(this).removeClass("more");
+            $(this).text("Less");
+            descContainer.find('span').text(descContainer.attr('data-desc'));
+        } else {
+            $(this).addClass("more");
+            $(this).text("More");
+            descContainer.find('span').text(descContainer.attr('data-desc').substring(0,110)+"...");
+        }
+        e.preventDefault();
+    });
 });
 
 function readAndInitCityTags() {

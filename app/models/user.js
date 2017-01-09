@@ -46,13 +46,16 @@ var userSchema = mongoose.Schema({
 });
 
 var selectRows = { 
-    name: 1, 
-    photoUrl: 1, 
-    aboutMe: 1, 
-    startDate: 1, 
-    startLocation: 1, 
-    hasPlace: 1, 
-    'preferences.locations': 1, 
+    name: 1,
+    photoUrl: 1,
+    field: 1,
+    role: 1,
+    position: 1,
+    aboutMe: 1,
+    startDate: 1,
+    startLocation: 1,
+    hasPlace: 1,
+    'preferences.locations': 1,
     'currentResidence.location': 1
 };
 

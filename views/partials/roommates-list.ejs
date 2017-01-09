@@ -14,14 +14,27 @@
         </div>
     </div>
     <div class="container" id="roomiesContainer" role="main">
-        <div class="roomie" ng-repeat="x in roomies | roommateFilter:query" ng-cloak>
-            <div class="row bg-primary">
-                <div class="col-sm-4">
-                    <div class="btn-circle-lg btn-photo" style="background-image: url('{{ x.photoUrl }}');"></div>
+        <div class="profile-card" ng-repeat="x in roomies | roommateFilter:query" ng-cloak>
+            <div class="inner-container">
+                <div class="row {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
+                    <div class="col col-sm-4">
+                        <div class="btn-circle-lg btn-photo" style="background-image: url('{{ x.photoUrl }}');"></div>
+                    </div>
+                    <div class="col col-sm-8">
+                        <h1>{{ x.name }}</h1>
+                        <p><strong>{{ x.position }}</strong></p>
+                        <p>{{ locations[x.startLocation] }}</p>
+                    </div>
                 </div>
-                <div class="col-sm-8">
-                    <h1>{{ x.name }}</h1>
-                    <p>{{ x.aboutMe.substring(0, 100) }}...</p>
+                <div class="row">
+                    <p>
+                        <span class="glyphicon glyphicon-calendar"></span> 
+                        <strong>{{ x.startDate | dateFormat }}</strong>
+                    </p>
+                    <p class="desc" data-desc="{{ x.aboutMe }}">
+                        <span>{{ x.aboutMe.substring(0,110) }}...</span>
+                        <a href="#" class="more">More</a>
+                    </p>
                 </div>
             </div>
         </div>
