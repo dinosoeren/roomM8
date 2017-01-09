@@ -36,6 +36,10 @@ $(document).ready(function(){
     $('#registration-form .btn-previous').hide();
     $('#registration-form fieldset#f0').fadeIn('slow');
     $('#registration-form .btn-register').on('click', function() {
+        if(!areAllFieldInputsValid()) {
+            showErrorMessage();
+            return;
+        }
         $('#registration-form').submit();
     });
     $('#registration-form .form-control').on('focus', function () {
@@ -97,23 +101,7 @@ $(document).ready(function(){
             return;
         isModalReady = false;
         var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
-        var next_step = true;
-        $(parent_fieldset).find('.form-control:not(.optional)').each(function () {
-            var tagsInput = $(this).prev('.bootstrap-tagsinput');
-            if (!isFieldValid(this)) {
-                if(tagsInput.length > 0)
-                    tagsInput.addClass('input-error');
-                else
-                    $(this).addClass('input-error');
-                next_step = false;
-            } else {
-                if(tagsInput.length > 0)
-                    tagsInput.removeClass('input-error');
-                else
-                    $(this).removeClass('input-error');
-            }
-        });
-        if (next_step) {
+        if (areAllFieldInputsValid()) {
             if(currentStep === 1) {
                 if(userHasPlace()) {
                     // Skip step 2 if the user has a place already.
@@ -238,9 +226,32 @@ function initializeCityTagsInput(data) {
     });
 }
 
+function areAllFieldInputsValid() {
+    var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
+    var next_step = true;
+    $(parent_fieldset).find('.regRequired,.form-control:not(.optional)').each(function () {
+        var tagsInput = $(this).prev('.bootstrap-tagsinput');
+        if (!isFieldValid(this)) {
+            if(tagsInput.length > 0)
+                tagsInput.addClass('input-error');
+            else
+                $(this).addClass('input-error');
+            next_step = false;
+        } else {
+            if(tagsInput.length > 0)
+                tagsInput.removeClass('input-error');
+            else
+                $(this).removeClass('input-error');
+        }
+    });
+    return next_step;
+}
 // Check if a particular input field has a valid value.
 function isFieldValid(ele) {
     var supportsValidate = typeof ele.willValidate !== "undefined";
+    if($(ele).is("[type='checkbox']")) {
+        return $(ele).is(":checked");
+    }
     var value = $(ele).val();
     return value !== "" && value !== null && value.length !== 0 &&
             (!supportsValidate || !ele.willValidate || ele.checkValidity());

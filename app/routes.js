@@ -220,6 +220,7 @@ function isValidRegistrationForm(req, res, next) {
             isset(req.body.factorSameGender) &&
             isset(req.body.factorSameAge) &&
             isset(req.body.factorSameField) &&
+            isset(req.body.agree1) &&
             // Either preferences or current residence.
             (isset(req.body.prefLocations) || 
                 isset(req.body.resLocation))) {
@@ -242,6 +243,8 @@ function parseUserData(body) {
         startDate: body.startDate,
         startLocation: body.startLocation,
         hasPlace: (body.hasPlace === "yes"),
+        agree1: true,
+        agree2: true,
         factors: {
             cleanliness: body.factorCleanliness,
             quietTime: body.factorQuietTime,

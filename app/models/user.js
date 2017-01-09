@@ -42,7 +42,9 @@ var userSchema = mongoose.Schema({
         sameAge: Number,
         sameField: Number
     },
-    aboutMe: String
+    aboutMe: String,
+    agree1: Boolean,
+    agree2: Boolean
 });
 
 var selectRows = { 
