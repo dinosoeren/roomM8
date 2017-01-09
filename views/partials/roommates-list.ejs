@@ -16,25 +16,71 @@
     <div class="container" id="roomiesContainer" role="main">
         <div class="profile-card" ng-repeat="x in roomies | roommateFilter:query" ng-cloak>
             <div class="inner-container">
-                <div class="row {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
+                <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
                     <div class="col col-sm-4">
                         <div class="btn-circle-lg btn-photo" style="background-image: url('{{ x.photoUrl }}');"></div>
                     </div>
                     <div class="col col-sm-8">
-                        <h1>{{ x.name }}</h1>
-                        <p><strong>{{ x.position }}</strong></p>
+                        <h2>{{ x.name }}</h2>
+                        <p><strong>{{ x.position.capitalizeAll() }} ({{ x.role.capitalizeAll() }})</strong></p>
                         <p>{{ locations[x.startLocation] }}</p>
                     </div>
                 </div>
-                <div class="row">
-                    <p>
-                        <span class="glyphicon glyphicon-calendar"></span> 
-                        <strong>{{ x.startDate | dateFormat }}</strong>
-                    </p>
-                    <p class="desc" data-desc="{{ x.aboutMe }}">
-                        <span>{{ x.aboutMe.substring(0,110) }}...</span>
-                        <a href="#" class="more">More</a>
-                    </p>
+                <div class="data-container">
+                    <div class="row">
+                        <div class="col col-sm-6">
+                            <p>
+                                <a href="javascript:;" tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
+                                    <span class="glyphicon glyphicon-calendar"></span> 
+                                    <strong>{{ x.startDate | dateFormat }}</strong>
+                                </a>
+                            </p>
+                        </div>
+                        <div class="col col-sm-6">
+                            <p>
+                                <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="This user has a residence already">
+                                    <span class="glyphicon glyphicon-ok text-info"></span> 
+                                    <strong>Has Place</strong>
+                                </a>
+                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="This user is looking for a residence">
+                                    <span class="glyphicon glyphicon-search text-primary"></span> 
+                                    <strong>Looking</strong>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-sm-6">
+                            <p>
+                                <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Type of residence">
+                                    <span class="glyphicon glyphicon-home"></span> 
+                                    <strong>{{ x.currentResidence.residenceType.capitalize() }}</strong>
+                                </a>
+                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Residence desired">
+                                    <span class="glyphicon glyphicon-home"></span> 
+                                    <strong>{{ x.preferences.residenceType.capitalize() }}</strong>
+                                </a>
+                            </p>
+                        </div>
+                        <div class="col col-sm-6">
+                            <p>
+                                <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Vacant rooms">
+                                    <span class="glyphicon glyphicon-user"></span> 
+                                    <strong>{{ x.currentResidence.vacantRooms }}</strong>
+                                </a>
+                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
+                                    <span class="glyphicon glyphicon-user"></span> 
+                                    <strong>{{ x.preferences.roommates }}</strong>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p class="desc" data-desc="{{ x.aboutMe }}">
+                            <span>{{ x.aboutMe.substring(0,100) }}...</span>
+                            <a href="#" class="more" onclick="toggleReadMore(event,this);">More</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

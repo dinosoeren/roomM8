@@ -1,5 +1,63 @@
 <!-- views/partials/imports/roommates-angular.ejs -->
 <script>
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+String.prototype.capitalizeAll = function() {
+    var words = this.split(' ');
+    for(var i=0; i<words.length; i++) {
+        words[i] = words[i].capitalize();
+    }
+    return words.join(' ');
+};
+// Add spinner!
+var opts = {
+  lines: 11 // The number of lines to draw
+, length: 9 // The length of each line
+, width: 10 // The line thickness
+, radius: 6 // The radius of the inner circle
+, scale: 1.5 // Scales overall size of the spinner
+, corners: 1 // Corner roundness (0..1)
+, color: '#000' // #rgb or #rrggbb or array of colors
+, opacity: 0.2 // Opacity of the lines
+, rotate: 0 // The rotation offset
+, direction: 1 // 1: clockwise, -1: counterclockwise
+, speed: 1 // Rounds per second
+, trail: 52 // Afterglow percentage
+, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+, zIndex: 2e9 // The z-index (defaults to 2000000000)
+, className: 'spinner' // The CSS class to assign to the spinner
+, top: '0px' // Top position relative to parent
+, left: '50%' // Left position relative to parent
+, shadow: false // Whether to render a shadow
+, hwaccel: false // Whether to use hardware acceleration
+, position: 'absolute' // Element positioning
+}
+var spinner = new Spinner(opts).spin();
+function startSpinner() {
+    spinner.spin();
+    $('#roomiesContainer').append(spinner.el);
+}
+function stopSpinner() {
+    spinner.stop();
+}
+$(document).ready(function() {
+    startSpinner();
+});
+// Handle profile card description 'Read more' click event.
+function toggleReadMore(event, ele) {
+    var descContainer = $(ele).parent('.desc');
+    if($(ele).is('.more')) {
+        $(ele).removeClass("more");
+        $(ele).text("Less");
+        descContainer.find('span').text(descContainer.attr('data-desc'));
+    } else {
+        $(ele).addClass("more");
+        $(ele).text("More");
+        descContainer.find('span').text(descContainer.attr('data-desc').substring(0,100)+"...");
+    }
+    event.preventDefault();
+}
 var app = angular.module('roommatesApp', []);
 app.filter('roommateFilter', function() {
     return function(input, name, startDate) {
@@ -22,27 +80,46 @@ app.filter('dateFormat', function() {
         return new Date(dateString+"-02").toLocaleDateString("en-US", options);
     };
 });
+app.filter('residenceFilter', function() {
+    return function(hasPlace, preferences, currentResidence) {
+        if(hasPlace) {
+            return currentResidence.residenceType.capitalize();
+        } else {
+            return preferences.residenceType.capitalize();
+        }
+    };
+});
+app.directive('toolTip', function () {
+    return function (scope, element, attrs) {
+        $(element).tooltip();
+    };
+});
+app.filter('roommatesFilter', function() {
+    return function(hasPlace, preferences, currentResidence) {
+        if(hasPlace) {
+            return currentResidence.vacantRooms.toString().capitalize();
+        } else {
+            return preferences.roommates.toString().capitalize();
+        }
+    };
+});
 app.controller('roomiesCtrl', ['$scope', '$http', 
     function($scope, $http) {
-        var potentialRoomies = [
-            <% for(var i=0; i<roomies.length; i++) { %>
-                <%- roomies[i] %>
-                <%= (i == roomies.length - 1) ? '' : ',' %>
-            <% } %>
-        ];
-        var googleLocations = [
-            <% for(var i=0; i<locations.length; i++) {%>
-                <% for(var j=0; j<locations[i].cities.length; j++) {%>
-                    '<%= locations[i].cities[j] %>',
-                <% } %>
-            <% } %>
-        ];
-        $scope.locations = googleLocations;
-        $scope.roomies = potentialRoomies;
-        $scope.find = function() {
+        $scope.locations = [];
+        $http.get('data/locations.json').then(function(response) {
+            var googleLocations = [];
+            var locs = response.data.locations;
+            for(var i=0; i<locs.length; i++) {
+                for(var j=0; j<locs[i].cities.length; j++) {
+                    googleLocations.push(locs[i].cities[j]);
+                }
+            }
+            $scope.locations = googleLocations;
+        });
+        $scope.roomies = [];
+        $scope.find = function(allowEmpty) {
             var query = $scope.query;
-            if(query === "") {
-                $scope.roomies = potentialRoomies;
+            if(!allowEmpty && query === "") {
                 return;
             }
             /* http post code adapted from: http://stackoverflow.com/a/23966224/3673087 */
@@ -59,12 +136,11 @@ app.controller('roomiesCtrl', ['$scope', '$http',
                     } else {
                         $scope.roomies = response.data;
                     }
+                    stopSpinner();
                 }
             );
         };
-        angular.element(document).ready(function() {
-            // document is ready
-        });
+        $scope.find(true);
     }
 ]);
 </script>

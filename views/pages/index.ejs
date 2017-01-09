@@ -9,6 +9,7 @@
     <% include ../partials/imports/bootstrap-tagsinput.ejs %>
     <% include ../partials/imports/bootstrap-slider.ejs %>
     <% include ../partials/imports/bootstrap-theme.ejs %>
+    <% include ../partials/imports/spin.ejs %>
     <% include ../partials/imports/async.ejs %>
     <% include ../partials/imports/angular.ejs %>
     <% include ../partials/imports/roommates-angular.ejs %>
@@ -25,9 +26,10 @@
                 <% if(!isUserRegistered) { %>
                     <h1>Relocating for Google?</h1>
                     <p>
-                        I am too, and I created this simple app to help fellow 
-                        Nooglers find other Nooglers who could be potentially 
-                        good roommates.
+                        I am too, and I have no idea where I'm going to live. 
+                        I wanted an easy way to find other Nooglers who 
+                        could be potentially good roommates, so I made this app.
+                        I hope you find it useful!
                     </p>
                 <% } else { %>
                     <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>

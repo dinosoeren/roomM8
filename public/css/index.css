@@ -190,8 +190,10 @@ input[type="radio"], input[type="checkbox"] {
     display: flex;
     align-content: space-around;
     flex-wrap: wrap;
-    margin-top: 40px;
-    margin-bottom: 20px;
+    margin-top: 80px;
+    margin-bottom: 60px;
+    position: relative;
+    min-height: 350px;
 }
 #roomiesContainer .profile-card {
     padding: 0px 20px;
@@ -202,7 +204,11 @@ input[type="radio"], input[type="checkbox"] {
 }
 #roomiesContainer .profile-card .glyphicon {
     margin-right: 3px;
-    color: #000;
+}
+#roomiesContainer .profile-card a.tip {
+    text-decoration: none;
+    color: inherit;
+    cursor: default;
 }
 #roomiesContainer .profile-card .inner-container {
     border: 0px;
@@ -210,20 +216,33 @@ input[type="radio"], input[type="checkbox"] {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     display: table;
 }
-#roomiesContainer .profile-card div.row {
-    margin: 0;
+#roomiesContainer .profile-card .row.profile-container {
+    color: white;
     padding: 35px 20px;
+    margin: 0;
 }
-#roomiesContainer .profile-card div.row .col {
+#roomiesContainer .profile-card .row.profile-container .col {
     float: none;
     display: table-cell;
     vertical-align: middle;
 }
-#roomiesContainer .profile-card div.row h1 {
+#roomiesContainer .profile-card div.row h2 {
     margin: 0px;
+    margin-bottom: 2px;
 }
 #roomiesContainer .profile-card div.row p {
     margin: 2px 0px;
+}
+#roomiesContainer .profile-card .data-container {
+    padding: 30px 35px 35px 35px;
+}
+#roomiesContainer .profile-card .data-container div.row {
+    margin: 5px 0;
+    padding: 0;
+}
+#roomiesContainer .profile-card .data-container .col {
+    margin: 0;
+    padding: 0;
 }
 #roomiesContainer .profile-card .btn-photo {
     margin-right: auto;
@@ -294,5 +313,17 @@ input[type="radio"], input[type="checkbox"] {
         padding-right: 50px;
         margin: 0px auto 15px auto;
         width: 250px;
+    }
+    #roomiesContainer {
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+    #roomiesContainer .profile-card .inner-container,
+    #roomiesContainer .profile-card div.row .col {
+        display: block;
+    }
+    #roomiesContainer .profile-card div.row .col {
+        margin: 20px 0;
+        text-align: center;
     }
 }
