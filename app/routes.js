@@ -9,30 +9,19 @@ module.exports = function(app, auth, passport) {
     app.get('/', (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+        // If a deleteToken has been set through google authentication,
+        // give it a new value on every page load, just for added security.
+        if(req.session.deleteToken)
+            req.session.deleteToken = genNewToken();
         var pageData = {
-            roomies: [],
             locations: locations,
             user: req.user,
-            allowedAccess: req.session.allowedAccess,
+            allowedAccess: req.session ? req.session.allowedAccess : false,
+            deleteToken: req.session ? req.session.deleteToken : null,
             errors: req.flash('error'),
             success: req.flash('success')
         };
-        if(req.isAuthenticated() && typeof req.user.age !== "undefined") {
-            // Get roomies.
-            User.findPotentialRoommates(req.user, (err, roomies) => {
-                if(err)
-                    console.log(err);
-                for(var i=0; i<roomies.length; i++) {
-                    roomies[i]['_id'] = undefined;
-                }
-                // Render index page.
-                pageData.roomies = roomies;
-                res.render('pages/index', pageData);
-            });
-        } else {
-            // Render index page.
-            res.render('pages/index', pageData);
-        }
+        res.render('pages/index', pageData);
     });
 
     // Post roommates search query.
@@ -57,7 +46,7 @@ module.exports = function(app, auth, passport) {
         var newData = sanitize(parseUserData(req.body));
         User.findOneAndUpdate(query, newData, {upsert:false}, (err, doc) => {
             if (err) {
-                console.log(err.message);
+                console.error(err.message);
                 if (isUpdate) {
                     req.flash('error', 'Failed to update profile. Please try again.');
                 } else {
@@ -79,6 +68,8 @@ module.exports = function(app, auth, passport) {
         if (typeof req.body.key === "undefined")
             return res.json({ error: 'Invalid key.' });
         var sess = req.session;
+        if(!sess)
+            return res.json({ error: 'Unknown error.' });
         // only allow 5 incorrect attempts per session
         if(sess.accessAttempts && sess.accessAttempts >= 5)
             return res.json({ error: 'Too many attempts.' });
@@ -101,14 +92,23 @@ module.exports = function(app, auth, passport) {
     // Logout
     app.get('/logout', isLoggedIn, (req, res) => {
         req.logout();
+        req.session.regenerate(function(err) {
+            if(err)
+                console.error(err);
+        });
         req.flash('success', 'You have successfully signed out.');
         res.redirect('/');
     });
 
     // Delete this user!
     app.post('/deleteMe', isLoggedIn, isRegistered, (req, res) => {
-        if(!isset(req.body.agreeToDelete)) {
-            req.flash('error', 'Your account was not deleted. Please indicate that you agree to the consequences.');
+        // Make sure user has agreed to delete and the session delete token
+        // is the same as the posted delete token. Since a delete token can
+        // only be given to the session after google authentication, this
+        // will help ensure attackers cannot maliciously delete users.
+        if(!isset(req.body.agreeToDelete) || !isset(req.body.deleteToken) ||
+                !req.session.deleteToken || parseInt(req.body.deleteToken) !== req.session.deleteToken) {
+            req.flash('error', 'Your account was not deleted. Please indicate that you understand the consequences and try again.');
             return res.redirect('/');
         }
         User.removeByGoogleId(req.user, (err) => {
@@ -134,28 +134,36 @@ module.exports = function(app, auth, passport) {
     // Callback after Google has authenticated the user.
     app.get('/auth/google/callback', (req, res, next) => {
         passport.authenticate('google', (err, user, info) => {
-            if (err) { return next(err); }
-            if (!user) { return res.redirect('/'); }
+            if (err)
+                return next(err);
+            if (!user) 
+                return res.redirect('/');
             if (info.new_user === true) {
-                if (req.session.allowedAccess) {
+                if (req.session && req.session.allowedAccess) {
                     // User is allowed access. Save the new user!
                     user.save((err) => {
                         if (err)
                             throw err;
                         req.logIn(user, function(err) {
-                            if (err) { return next(err); }
+                            if (err)
+                                return next(err);
+                            // Create random token to use to confirm deletion.
+                            req.session.deleteToken = genNewToken();
                             return res.redirect('/#success');
                         });
                     });
                 } else {
                     // User is not allowed access!
-                    req.flash('error', 'You cannot sign up until you enter the correct keyphrase!');
+                    if(req.session)
+                        req.flash('error', 'You cannot sign up until you enter the correct keyphrase!');
                     return res.redirect('/');
                 }
             } else {
                 // Old user that already exists.
                 req.logIn(user, function(err) {
                     if (err) { return next(err); }
+                    // Create random token to use to confirm deletion.
+                    req.session.deleteToken = genNewToken();
                     // If the user has completed registration, redirect to browsing page.
                     if(user.age) {
                         req.flash('success', 'Welcome back!');
@@ -168,19 +176,11 @@ module.exports = function(app, auth, passport) {
         })(req, res, next);
     });
 
-    // Redis session check (during auto-reconnect).
-    app.use((req, res, next) => {
-        if (!req.session) {
-            req.flash('error', 'Your session is temporarily unavailable.');
-        }
-        next();
-    });
-
 };
 
 // Route middleware to make sure user has entered keyphrase.
 function hasEnteredKey(req, res, next) {
-    if (req.session.allowedAccess)
+    if (req.session && req.session.allowedAccess)
         return next();
     res.redirect('/');
 }
@@ -270,7 +270,7 @@ function parseUserData(body) {
     } else {
         newData.currentResidence = {
             location: body.resLocation,
-            type: body.resType,
+            residenceType: body.resType,
             vacantRooms: body.resBedrooms,
             bathrooms: body.resBathrooms,
             durationInMonths: body.resDuration,
@@ -278,4 +278,14 @@ function parseUserData(body) {
         };
     }
     return newData;
+}
+
+function genNewToken() {
+    return getRandomInt(1000000000, 
+                        9999999999);
+}
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
 }

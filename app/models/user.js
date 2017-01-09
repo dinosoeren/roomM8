@@ -23,7 +23,7 @@ var userSchema = mongoose.Schema({
     },
     currentResidence: {
         location: String,
-        type: String,
+        residenceType: String,
         vacantRooms: Number,
         bathrooms: Number,
         durationInMonths: Number,
@@ -48,6 +48,8 @@ var userSchema = mongoose.Schema({
 var selectRows = { 
     name: 1,
     photoUrl: 1,
+    gender: 1,
+    age: 1,
     field: 1,
     role: 1,
     position: 1,
@@ -55,8 +57,8 @@ var selectRows = {
     startDate: 1,
     startLocation: 1,
     hasPlace: 1,
-    'preferences.locations': 1,
-    'currentResidence.location': 1
+    preferences: 1,
+    currentResidence: 1
 };
 
 userSchema.statics.findPotentialRoommates = function(user, callback) {
