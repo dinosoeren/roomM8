@@ -253,7 +253,9 @@ function isFieldValid(ele) {
         return $(ele).is(":checked");
     }
     var value = $(ele).val();
-    return value !== "" && value !== null && value.length !== 0 &&
+    // Make sure it's stripped of html.
+    var stripped = $('<p>'+value+'</p>').text();
+    return value !== "" && value !== null && value.length !== 0 && value == stripped &&
             (!supportsValidate || !ele.willValidate || ele.checkValidity());
 }
 // Check if user has indicated they own a place.

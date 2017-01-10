@@ -207,8 +207,25 @@ input[type="radio"], input[type="checkbox"] {
 }
 #roomiesContainer .profile-card a.tip {
     text-decoration: none;
-    color: inherit;
     cursor: default;
+}
+#roomiesContainer .profile-card a.tip:not(.float) {
+    color: inherit;
+}
+#roomiesContainer .profile-card a.tip.float {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    padding: 3px 6px;
+    background: #fff;
+    font-weight: normal;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+#roomiesContainer .profile-card a.tip.float:hover,
+#roomiesContainer .profile-card a.tip.float:focus,
+#roomiesContainer .profile-card a.tip.float:active {
+    color: #333;
 }
 #roomiesContainer .profile-card .inner-container {
     border: 0px;
@@ -220,6 +237,7 @@ input[type="radio"], input[type="checkbox"] {
     color: white;
     padding: 35px 20px;
     margin: 0;
+    position: relative;
 }
 #roomiesContainer .profile-card .row.profile-container .col {
     float: none;
@@ -233,8 +251,12 @@ input[type="radio"], input[type="checkbox"] {
 #roomiesContainer .profile-card div.row p {
     margin: 2px 0px;
 }
+#roomiesContainer .profile-card div.row p.desc {
+    margin-top: 15px;
+}
 #roomiesContainer .profile-card .data-container {
     padding: 30px 35px 35px 35px;
+    position: relative;
 }
 #roomiesContainer .profile-card .data-container div.row {
     margin: 5px 0;
@@ -329,6 +351,10 @@ input[type="radio"], input[type="checkbox"] {
     #roomiesContainer .profile-card {
         padding: 0;
     }
+    #roomiesContainer .profile-card a.tip.float {
+        top: 5px;
+        bottom: auto;
+    }
     #roomiesContainer .profile-card .row.profile-container {
         padding: 15px 20px;
     }
@@ -339,6 +365,9 @@ input[type="radio"], input[type="checkbox"] {
     #roomiesContainer .profile-card .row.profile-container .col {
         margin: 20px 0;
         text-align: center;
+    }
+    #roomiesContainer .profile-card .data-container {
+        padding: 15px 20px 20px 20px;
     }
     #roomiesContainer .profile-card .data-container div.row {
         margin: 0;

@@ -1,7 +1,9 @@
 /* Code adapted from: https://scotch.io/tutorials/easy-node-authentication-setup-and-local */
 const fs = require('fs');
 const User = require('./models/user');
-const sanitize = require('mongo-sanitize');
+const sanitizeMongo = require('mongo-sanitize');
+const sanitizeHtml = require('sanitize-html');
+const shOptions = { allowedTags: [], allowedAttributes: [] };
 
 module.exports = function(app, auth, passport) {
 
@@ -30,7 +32,7 @@ module.exports = function(app, auth, passport) {
             return res.json({ error: 'Not authenticated.' });
         if (typeof req.body.query === "undefined")
             return res.json({ error: 'Invalid query.' });
-        var query = sanitize(req.body.query);
+        var query = sanitizeMongo(req.body.query);
         User.findPotentialRoommatesLike(query, req.user, (err, roomies) => {
             if(err)
                 return res.json({ error: err });
@@ -42,8 +44,8 @@ module.exports = function(app, auth, passport) {
     app.post('/', isLoggedIn, isValidRegistrationForm, (req, res) => {
         var user = req.user;
         var isUpdate = user.age ? true : false; // If age is already set, this is an update.
-        var query = { 'googleId' : sanitize(user.googleId) };
-        var newData = sanitize(parseUserData(req.body));
+        var query = { 'googleId' : sanitizeMongo(user.googleId) };
+        var newData = sanitizeMongo(parseUserData(req.body));
         User.findOneAndUpdate(query, newData, {upsert:false}, (err, doc) => {
             if (err) {
                 console.error(err.message);
@@ -233,54 +235,66 @@ function isset(a) {
     return typeof a !== "undefined" && a !== null && a !== "";
 }
 
-// Parse form data into user object.
+// Parse form data into user object, making sure to sanitize it first.
 function parseUserData(body) {
     var newData = {
-        age: body.age,
-        field: body.field,
-        role: body.role,
-        position: body.position,
-        startDate: body.startDate,
-        startLocation: body.startLocation,
+        age: sanitizeInput(body.age),
+        field: sanitizeInput(body.field),
+        role: sanitizeInput(body.role),
+        position: sanitizeInput(body.position),
+        startDate: sanitizeInput(body.startDate),
+        startLocation: parseInt(sanitizeInput(body.startLocation)),
         hasPlace: (body.hasPlace === "yes"),
         agree1: true,
         agree2: true,
         factors: {
-            cleanliness: body.factorCleanliness,
-            quietTime: body.factorQuietTime,
-            substanceFree: body.factorSubstanceFree,
-            sameGender: body.factorSameGender,
-            sameAge: body.factorSameAge,
-            sameField: body.factorSameField
+            cleanliness: parseInt(sanitizeInput(body.factorCleanliness)),
+            quietTime: parseInt(sanitizeInput(body.factorQuietTime)),
+            substanceFree: parseInt(sanitizeInput(body.factorSubstanceFree)),
+            sameGender: parseInt(sanitizeInput(body.factorSameGender)),
+            sameAge: parseInt(sanitizeInput(body.factorSameAge)),
+            sameField: parseInt(sanitizeInput(body.factorSameField))
         }
     };
     if(body.aboutMe) {
-        newData.aboutMe = body.aboutMe;
+        newData.aboutMe = sanitizeInput(body.aboutMe, 400);
     }
     if(!newData.hasPlace) {
         newData.preferences = {
-            locations: body.prefLocations,
-            residenceType: body.prefResidenceType,
-            roommates: body.prefRoommates,
-            durationInMonths: body.prefDuration,
-            maxCommuteTimeInMins: body.prefMaxCommuteTime
+            locations: sanitizeArray(body.prefLocations),
+            residenceType: sanitizeInput(body.prefResidenceType),
+            roommates: parseInt(sanitizeInput(body.prefRoommates)),
+            durationInMonths: parseInt(sanitizeInput(body.prefDuration)),
+            maxCommuteTimeInMins: parseInt(sanitizeInput(body.prefMaxCommuteTime))
         };
-        newData.factors.location = body.factorLocation;
-        newData.factors.residenceType = body.factorResidence;
-        newData.factors.ownBedroom = body.factorOwnBedroom;
-        newData.factors.ownBathroom = body.factorOwnBathroom;
-        newData.factors.commuteTime = body.factorCommuteTime;
+        newData.factors.location = parseInt(sanitizeInput(body.factorLocation));
+        newData.factors.residenceType = parseInt(sanitizeInput(body.factorResidence));
+        newData.factors.ownBedroom = parseInt(sanitizeInput(body.factorOwnBedroom));
+        newData.factors.ownBathroom = parseInt(sanitizeInput(body.factorOwnBathroom));
+        newData.factors.commuteTime = parseInt(sanitizeInput(body.factorCommuteTime));
     } else {
         newData.currentResidence = {
-            location: body.resLocation,
-            residenceType: body.resType,
-            vacantRooms: body.resBedrooms,
-            bathrooms: body.resBathrooms,
-            durationInMonths: body.resDuration,
-            commuteTimeInMins: body.resCommuteTime
+            location: sanitizeInput(body.resLocation),
+            residenceType: sanitizeInput(body.resType),
+            vacantRooms: parseInt(sanitizeInput(body.resBedrooms)),
+            bathrooms: parseInt(sanitizeInput(body.resBathrooms)),
+            durationInMonths: parseInt(sanitizeInput(body.resDuration)),
+            commuteTimeInMins: parseInt(sanitizeInput(body.resCommuteTime))
         };
     }
     return newData;
+}
+// Html-Sanitize data inputted by the user.
+// Also enforce maximum character limit.
+function sanitizeInput(input, maxChar=30) {
+    return sanitizeHtml(input, shOptions).substring(0, maxChar);
+}
+// Html-Sanitize the data in an array.
+function sanitizeArray(arr) {
+    for(var i=0; i<arr.length; i++) {
+        arr[i] = sanitizeInput(arr[i]);
+    }
+    return arr;
 }
 
 function genNewToken() {

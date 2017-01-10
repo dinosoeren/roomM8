@@ -9,8 +9,8 @@
   "author": "Soeren Walls",
   "license": "ISC",
   "repository": {
-      "type" : "git",
-      "url" : "https://github.com/SWalls/roomM8.git"
+    "type": "git",
+    "url": "https://github.com/SWalls/roomM8.git"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -25,7 +25,8 @@
     "mongoose": "^4.7.6",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
-    "redis": "^2.6.3"
+    "redis": "^2.6.3",
+    "sanitize-html": "^1.13.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"

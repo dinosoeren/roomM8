@@ -89,6 +89,17 @@ app.filter('residenceFilter', function() {
         }
     };
 });
+app.filter('locationsFilter', function() {
+    return function(locations) {
+        return locations.join(', ');
+    };
+});
+app.filter('aboutFilter', function() {
+    return function(aboutMe) {
+        // strip html
+        return $('<p>'+aboutMe+'</p>').text();
+    };
+});
 app.directive('toolTip', function () {
     return function (scope, element, attrs) {
         $(element).tooltip();
