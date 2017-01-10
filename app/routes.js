@@ -1,16 +1,15 @@
 /* Code adapted from: https://scotch.io/tutorials/easy-node-authentication-setup-and-local */
 const fs = require('fs');
 const User = require('./models/user');
-const auth = require('../config/auth');
 const sanitizeMongo = require('mongo-sanitize');
 const sanitizeHtml = require('sanitize-html');
 const shOptions = { allowedTags: [], allowedAttributes: [] };
 const nodemailer = require('nodemailer');
 
-// Create reusable transporter object using the default SMTP transport.
-var transporter = nodemailer.createTransport(auth.nodemailerTransport);
-
 module.exports = function(app, auth, passport) {
+
+    // Create reusable transporter object using the default SMTP transport.
+    var transporter = nodemailer.createTransport(auth.nodemailerTransport);
 
     // Load home page with results from DB.
     app.get('/', (req, res) => {
