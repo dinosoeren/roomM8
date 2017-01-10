@@ -38,11 +38,11 @@
                         </div>
                         <div class="col col-sm-6">
                             <p>
-                                <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="This user has a residence already">
+                                <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
                                     <span class="glyphicon glyphicon-ok text-info"></span> 
                                     <strong>Has Place</strong>
                                 </a>
-                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="This user is looking for a residence">
+                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
                                     <span class="glyphicon glyphicon-search text-primary"></span> 
                                     <strong>Looking</strong>
                                 </a>
@@ -56,7 +56,7 @@
                                     <span class="glyphicon glyphicon-home"></span> 
                                     <strong>{{ x.currentResidence.residenceType.capitalize() }}</strong>
                                 </a>
-                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Residence desired">
+                                <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
                                     <span class="glyphicon glyphicon-home"></span> 
                                     <strong>{{ x.preferences.residenceType.capitalize() }}</strong>
                                 </a>
@@ -66,11 +66,11 @@
                             <p>
                                 <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Vacant rooms">
                                     <span class="glyphicon glyphicon-user"></span> 
-                                    <strong>{{ x.currentResidence.vacantRooms }}</strong>
+                                    <strong>{{ x.currentResidence.vacantRooms }} people</strong>
                                 </a>
                                 <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
                                     <span class="glyphicon glyphicon-user"></span> 
-                                    <strong>{{ x.preferences.roommates }}</strong>
+                                    <strong>{{ x.preferences.roommates }} people</strong>
                                 </a>
                             </p>
                         </div>

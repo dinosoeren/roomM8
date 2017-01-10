@@ -265,7 +265,6 @@ function evalBtns() {
     if(currentStep === -1) {
         // Delete button was pressed. Take user to confirmation dialog.
         $('#registration-form .btn-next').hide();
-        $('#registration-form .btn-previous').show();
         return;
     }
     if(currentStep === 0) {

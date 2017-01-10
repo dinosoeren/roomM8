@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>roomM8 (for Nooglers)</title>
     <% include ../partials/imports/jquery.ejs %>
     <% include ../partials/imports/bootstrap.ejs %>
@@ -107,13 +108,13 @@
                                     </button>
                                     <% if(isUserRegistered) { %>
                                         <button type="button" class="btn btn-danger btn-delete">
-                                            <span class="glyphicon glyphicon-remove"></span> Delete Profile
+                                            <span class="glyphicon glyphicon-remove"></span> Delete
                                         </button>
                                     <% } %>
                                     <button type="button" class="btn btn-primary btn-next">
                                         <% if(isUserRegistered) { %>
                                             <span id="editText">
-                                                <span class="glyphicon glyphicon-pencil"></span> Edit Profile
+                                                <span class="glyphicon glyphicon-pencil"></span> Edit
                                             </span>
                                         <% } %>
                                         <span id="continueText">
@@ -122,7 +123,7 @@
                                     </button>
                                     <button type="button" class="btn btn-success btn-register">
                                         <span class="glyphicon glyphicon-ok"></span> 
-                                        <%= (isUserRegistered) ? "Submit Changes" : "Complete Registration" %>
+                                        <%= (isUserRegistered) ? "Submit" : "Sign up" %>
                                     </button>
                                 </div>
                             </div>

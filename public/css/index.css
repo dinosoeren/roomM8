@@ -292,9 +292,13 @@ input[type="radio"], input[type="checkbox"] {
     background-image: url('../img/btn_google_signin_light_pressed_web.png');
 }
 .btn-google-2x {
-    width: 382px;
+    width: 100%;
+    max-width: 382px;
     height: 92px;
     background-image: url('../img/btn_google_signin_light_normal_web@2x.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 .btn-google-2x:hover, .btn-google-2x:focus {
     background-image: url('../img/btn_google_signin_light_focus_web@2x.png');
@@ -307,23 +311,40 @@ input[type="radio"], input[type="checkbox"] {
     .btn-photo {
         margin-right: auto;
     }
+    .head .jumbotron {
+        text-align: center;
+    }
     .head .jumbotron .btn {
-        display: block;
-        padding-left: 50px;
-        padding-right: 50px;
-        margin: 0px auto 15px auto;
-        width: 250px;
+        padding: 14px 0px;
+        margin: 10px auto;
+        width: 150px;
+    }
+    .input-group-huge .input-group-addon {
+        font-size: 2.3em;
     }
     #roomiesContainer {
-        margin-top: 40px;
-        margin-bottom: 20px;
+        margin-top: 20px;
+        margin-bottom: 0px;
+    }
+    #roomiesContainer .profile-card {
+        padding: 0;
+    }
+    #roomiesContainer .profile-card .row.profile-container {
+        padding: 15px 20px;
     }
     #roomiesContainer .profile-card .inner-container,
-    #roomiesContainer .profile-card div.row .col {
+    #roomiesContainer .profile-card .row.profile-container .col {
         display: block;
     }
-    #roomiesContainer .profile-card div.row .col {
+    #roomiesContainer .profile-card .row.profile-container .col {
         margin: 20px 0;
         text-align: center;
+    }
+    #roomiesContainer .profile-card .data-container div.row {
+        margin: 0;
+    }
+    #roomiesContainer .profile-card .data-container .col {
+        margin: 0;
+        padding: 3px 0;
     }
 }
