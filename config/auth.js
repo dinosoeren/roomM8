@@ -10,7 +10,8 @@ if (!isset(process.env.SESSION_SECRET) ||
         !isset(process.env.GOOGLE_CALLBACK_URL) ||
         !isset(process.env.MONGO_DB_URL) ||
         !isset(process.env.REDISCLOUD_URL) ||
-        !isset(process.env.USE_SECURE_COOKIES)) {
+        !isset(process.env.USE_SECURE_COOKIES) ||
+        !isset(process.env.NODEMAILER_TRANSPORT)) {
     console.error("Error: Please set the proper authentication config variables in heroku.");
     process.exit(1);
 }
@@ -28,7 +29,8 @@ const auth = {
     mongoDB: {
         URL: process.env.MONGO_DB_URL
     },
-    redisURL: process.env.REDISCLOUD_URL
+    redisURL: process.env.REDISCLOUD_URL,
+    nodemailerTransport: process.env.NODEMAILER_TRANSPORT
 };
 
 module.exports = auth;

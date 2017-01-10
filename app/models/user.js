@@ -48,6 +48,7 @@ var userSchema = mongoose.Schema({
 });
 
 var selectRows = { 
+    _id: 1,
     name: 1,
     photoUrl: 1,
     gender: 1,
@@ -82,10 +83,18 @@ userSchema.statics.findPotentialRoommatesLike = function(query, user, callback) 
     select(selectRows).
     exec(callback);
 };
+userSchema.statics.findById = function(id, callback) {
+    this.findOne({
+        _id: id
+    }).
+    exec(callback);
+};
 userSchema.statics.removeByGoogleId = function(user, callback) {
-    this.find({
+    this.findOne({
         googleId: user.googleId
-    }).remove().exec(callback);
+    }).
+    remove().
+    exec(callback);
 };
 
 module.exports = mongoose.model('User', userSchema);

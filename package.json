@@ -23,6 +23,7 @@
     "mongo-sanitize": "^1.0.0",
     "mongodb": "^2.2.19",
     "mongoose": "^4.7.6",
+    "nodemailer": "^2.7.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
     "redis": "^2.6.3",

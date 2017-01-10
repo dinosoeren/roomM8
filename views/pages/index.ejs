@@ -73,7 +73,7 @@
         <% include ../partials/roommates-list.ejs %>
     <% } %>
     <!-- Registration Form Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal">
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalTitle">
         <div class="modal-dialog" role="document">
             <% if (user) { %>
                 <div class="modal-content">
@@ -82,7 +82,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="registerModal">
+                            <h4 class="modal-title" id="registerModalTitle">
                                 <%= (isUserRegistered) ? "My Profile" : "Sign up" %>
                             </h4>
                         </div>
@@ -136,7 +136,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="registerModal">Sign up</h4>
+                        <h4 class="modal-title" id="registerModalTitle">Sign up</h4>
                     </div>
                     <div class="modal-body">
                         <div class="alert alert-danger error-message" style="font-weight: bold;" 

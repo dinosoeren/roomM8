@@ -1,9 +1,14 @@
 /* Code adapted from: https://scotch.io/tutorials/easy-node-authentication-setup-and-local */
 const fs = require('fs');
 const User = require('./models/user');
+const auth = require('../config/auth');
 const sanitizeMongo = require('mongo-sanitize');
 const sanitizeHtml = require('sanitize-html');
 const shOptions = { allowedTags: [], allowedAttributes: [] };
+const nodemailer = require('nodemailer');
+
+// Create reusable transporter object using the default SMTP transport.
+var transporter = nodemailer.createTransport(auth.nodemailerTransport);
 
 module.exports = function(app, auth, passport) {
 
@@ -71,8 +76,8 @@ module.exports = function(app, auth, passport) {
             return res.json({ error: 'Invalid key.' });
         var sess = req.session;
         if(!sess)
-            return res.json({ error: 'Unknown error.' });
-        // only allow 5 incorrect attempts per session
+            return res.json({ error: 'Unknown error occurred.' });
+        // Only allow 5 incorrect attempts per session.
         if(sess.accessAttempts && sess.accessAttempts >= 5)
             return res.json({ error: 'Too many attempts.' });
         var key_given = req.body.key;
@@ -81,7 +86,7 @@ module.exports = function(app, auth, passport) {
             sess.accessAttempts = 0;
             res.json({success: true});
         } else {
-            // incorrect keyphrase
+            // Incorrect keyphrase!
             if(sess.accessAttempts) {
                 sess.accessAttempts++;
             } else {
@@ -89,6 +94,33 @@ module.exports = function(app, auth, passport) {
             }
             res.json({ error: 'Incorrect key. '+(5-sess.accessAttempts)+' more attempts.' });
         }
+    });
+
+    // Message another user.
+    app.post('/message', isLoggedIn, isRegistered, (req, res) => {
+        if (!isset(req.body.recipientID) ||
+                !isset(req.body.subject) ||
+                !isset(req.body.message))
+            return res.json({ error: 'Please complete all required fields and try again.' });
+        // Find user from recipientID.
+        User.findById(sanitizeMongo(req.body.recipientID), (err, recipient) => {
+            if(err)
+                return res.json({ error: 'That user does not exist.' });
+            // Setup message.
+            var mailOptions = {
+                from: '"'+req.user.name+'" <'+req.user.email+'>',
+                replyTo: '"'+req.user.name+'" <'+req.user.email+'>',
+                to: '"'+recipient.name+'" <'+recipient.email+'>', 
+                subject: sanitizeInput(req.body.subject),
+                text: sanitizeInput(req.body.message, 1000)
+            };
+            // send mail with defined transport object 
+            transporter.sendMail(mailOptions, (error, info) => {
+                if(error)
+                    return res.json({ error: 'Email failed to send.' });
+                return res.json({ success: true });
+            });
+        });
     });
 
     // Logout
@@ -210,6 +242,7 @@ function isRegistered(req, res, next) {
 // Route middleware to make sure registration form is valid.
 function isValidRegistrationForm(req, res, next) {
     if(isset(req.body.age) && 
+            isset(req.body.email) && 
             isset(req.body.field) && 
             isset(req.body.role) && 
             isset(req.body.position) && 
@@ -238,6 +271,7 @@ function isset(a) {
 // Parse form data into user object, making sure to sanitize it first.
 function parseUserData(body) {
     var newData = {
+        email: sanitizeInput(body.email),
         age: sanitizeInput(body.age),
         field: sanitizeInput(body.field),
         role: sanitizeInput(body.role),

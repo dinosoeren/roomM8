@@ -100,7 +100,7 @@
                                 </a>
                             </p>
                         </div>
-                        <div class="col" ng-if="!x.hasPlace">
+                        <div class="col col-xs-12" ng-if="!x.hasPlace">
                             <p>
                                 <a href="javascript:;" tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
                                     <span class="glyphicon glyphicon-map-marker text-primary"></span> 
@@ -116,7 +116,55 @@
                         </p>
                     </div>
                 </div>
+                <div class="message-container">
+                    <div class="row email">
+                        <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }}" data-toggle="modal" data-target="#messageModal" data-name="{{ x.name }}" data-id="{{ x._id }}">
+                            <span class="glyphicon glyphicon-send"></span> Message {{ x.name.split(' ')[0] }}
+                        </a>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
+<!-- Message Form Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalTitle">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/message" method="post" id="message-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="messageModalTitle">
+                        Message
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger error-message" style="font-weight: bold;" 
+                            data-message="Please complete the missing or invalid fields.">
+                        <span class="glyphicon glyphicon-exclamation-sign"></span> <span class="msg"></span>
+                    </div>
+                    <div class="alert alert-success success-message" style="font-weight: bold;" 
+                            data-message="Success!">
+                        <span class="glyphicon glyphicon-ok"></span> <span class="msg"></span>
+                    </div>
+                    <% include ../partials/message-form.ejs %>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-xs-4 text-left">
+                            <button type="button" class="btn btn-default btn-cancel" data-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-xs-8">
+                            <button type="button" class="btn btn-success btn-send">
+                                <span class="glyphicon glyphicon-send"></span> 
+                                Send Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -255,12 +255,20 @@ input[type="radio"], input[type="checkbox"] {
     margin-top: 15px;
 }
 #roomiesContainer .profile-card .data-container {
-    padding: 30px 35px 35px 35px;
+    padding: 30px 35px 25px 35px;
     position: relative;
 }
 #roomiesContainer .profile-card .data-container div.row {
     margin: 5px 0;
     padding: 0;
+}
+#roomiesContainer .profile-card .message-container .email {
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+}
+#roomiesContainer .profile-card .message-container .email button {
+    width: 100%;
 }
 #roomiesContainer .profile-card .data-container .col {
     margin: 0;
@@ -329,6 +337,11 @@ input[type="radio"], input[type="checkbox"] {
     background-image: url('../img/btn_google_signin_light_pressed_web@2x.png');
 }
 
+#messageModal .modal-body {
+    position: relative;
+    min-height: 200px;
+}
+
 @media (max-width: 768px) { 
     .btn-photo {
         margin-right: auto;
@@ -367,7 +380,7 @@ input[type="radio"], input[type="checkbox"] {
         text-align: center;
     }
     #roomiesContainer .profile-card .data-container {
-        padding: 15px 20px 20px 20px;
+        padding: 15px 20px 10px 20px;
     }
     #roomiesContainer .profile-card .data-container div.row {
         margin: 0;

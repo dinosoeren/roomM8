@@ -42,7 +42,7 @@ $(document).ready(function(){
         }
         $('#registration-form').submit();
     });
-    $('#registration-form .form-control').on('focus', function () {
+    $('.form-control').on('focus', function () {
         $(this).removeClass('input-error');
     });
     if($("#editText").length > 0)
@@ -175,6 +175,60 @@ $(document).ready(function(){
     $('#roommateSearchBox').on('blur', function() {
         $(this).parent('.input-group').removeClass('focus');
     });
+
+    // Handle message form stuff.
+    // Change title and input when message modal is opened.
+    $('#messageModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var recipientName = button.data('name');
+        var recipientID = button.data('id');
+        var modal = $(this);
+        // Hide success message.
+        hideSuccessMessage('#message-form');
+        // Show fieldset.
+        $('#fieldsetMessage').show();
+        $('#message-form .btn-send').show();
+        // Set title.
+        modal.find('.modal-title').text('New message to ' + recipientName);
+        // Reset inputs if this is a different user.
+        if($('#messageSubject').val() === "" || $('#recipientID').val() != recipientID) {
+            $('#messageSubject').val($('#messageSubject').data('default'));
+            $('#messageContent').val('');
+        }
+        $('#recipientID').val(recipientID);
+        $('#recipientName').val(recipientName);
+        $('.recipientName').text(recipientName);
+        // Uncheck checkboxes.
+        modal.find("[type='checkbox']").prop('checked', false);
+    });
+    // Handle message send button click.
+    $('#message-form .btn-send').on('click', function() {
+        if(!areAllFieldInputsValid('#fieldsetMessage')) {
+            showErrorMessage('#message-form');
+            return;
+        }
+        $('#fieldsetMessage').slideUp(200);
+        startSpinner("#messageModal .modal-body");
+        // Send message to server.
+        $.post("/message", {
+            recipientID: $("#recipientID").val(),
+            subject: $('#messageSubject').val(),
+            message: $('#messageContent').val()
+        }).done(function(data) {
+            stopSpinner();
+            if (data.error) {
+                showErrorMessage("Error: "+data.error, '#message-form');
+                $('#fieldsetMessage').slideDown(200);
+            } else {
+                showSuccessMessage("Message sent successfully!", '#message-form', true);
+                // Reset the form to default state.
+                $('#message-form')[0].reset();
+                $('#message-form .btn-send').hide();
+            }
+        }).fail(function() {
+            showErrorMessage("An unexpected error occurred. Please try again.", '#message-form');
+        });
+    });
 });
 
 function readAndInitCityTags() {
@@ -226,8 +280,11 @@ function initializeCityTagsInput(data) {
     });
 }
 
-function areAllFieldInputsValid() {
+function areAllFieldInputsValid(fieldsetSelector) {
     var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
+    if (fieldsetSelector) {
+        parent_fieldset = $(fieldsetSelector);
+    }
     var next_step = true;
     $(parent_fieldset).find('.regRequired,.form-control:not(.optional)').each(function () {
         var tagsInput = $(this).prev('.bootstrap-tagsinput');
@@ -293,32 +350,56 @@ function evalBtns() {
         $('#registration-form .btn-next').show();
     }
 }
-// Show an error message in the registration form.
-function showErrorMessage(msg) {
+// Show an error message in the form.
+function showErrorMessage(msg, formSelector, persistent=false) {
+    if(!formSelector)
+        formSelector = "#registration-form";
     if(msg) {
-        $('.error-message .msg').text(msg);
+        $(formSelector+' .error-message .msg').text(msg);
     } else {
-        $('.error-message .msg').text($('.error-message').attr("data-message"));
+        $(formSelector+' .error-message .msg').text(
+            $(formSelector+' .error-message').attr("data-message")
+        );
     }
-    $('.error-message').slideDown(200);
-    $('.error-message').delay(3000).slideUp(200);
+    $(formSelector+' .error-message').slideDown(200);
+    if(!persistent)
+        $(formSelector+' .error-message').delay(3000).slideUp(200);
 }
-// Show a success message in the registration form.
-function showSuccessMessage(msg) {
+// Hide error message immediately.
+function hideErrorMessage(formSelector) {
+    if(!formSelector)
+        formSelector = "#registration-form";
+    $(formSelector+' .error-message').hide();
+}
+// Show a success message in the form.
+function showSuccessMessage(msg, formSelector, persistent=false) {
+    if(!formSelector)
+        formSelector = "#registration-form";
     if(msg) {
-        $('.success-message .msg').text(msg);
+        $(formSelector+' .success-message .msg').text(msg);
     } else {
-        $('.success-message .msg').text($('.success-message').attr("data-message"));
+        $(formSelector+' .success-message .msg').text(
+            $(formSelector+' .success-message').attr("data-message")
+        );
     }
-    $('.success-message').slideDown(200);
-    $('.success-message').delay(3000).slideUp(200);
+    $(formSelector+' .success-message').slideDown(200);
+    if(!persistent)
+        $(formSelector+' .success-message').delay(3000).slideUp(200);
+}
+// Hide success message immediately.
+function hideSuccessMessage(formSelector) {
+    if(!formSelector)
+        formSelector = "#registration-form";
+    $(formSelector+' .success-message').hide();
 }
 
 // Check if the secret code the user entered is valid.
 function checkSecretKey() {
     if($("#secretKey").val() === "")
         return;
-    $.post("/api/access", {key: $("#secretKey").val()}).done(function(data) {
+    $.post("/api/access", {
+        key: $("#secretKey").val()
+    }).done(function(data) {
         if (data.error) {
             showErrorMessage("Error: "+data.error);
         } else {
