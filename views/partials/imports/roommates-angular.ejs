@@ -85,7 +85,7 @@ app.filter('resultsFilter', function() {
             return input;
         var output = [];
         angular.forEach(input, (roomie) => {
-            if (roomie.name.match(new RegExp(name, 'i')) !== null) {
+            if (!name || roomie.name.match(new RegExp(name, 'i')) !== null) {
                 output.push(roomie);
             }
         });
@@ -161,23 +161,14 @@ app.directive('toolTip', function () {
 });
 app.controller('roomiesCtrl', ['$scope', '$http', 
     function($scope, $http) {
-        $scope.locations = [];
-        $http.get('data/locations.json').then(function(response) {
-            var googleLocations = [];
-            var locs = response.data.locations;
-            for(var i=0; i<locs.length; i++) {
-                for(var j=0; j<locs[i].cities.length; j++) {
-                    googleLocations.push(locs[i].cities[j]);
-                }
-            }
-            $scope.locations = googleLocations;
-        });
+        $scope.locations = null;
         $scope.roomies = [];
-        $scope.find = function(allowEmpty) {
-            var query = $scope.query;
-            if(!allowEmpty && query === "") {
-                return;
-            }
+        $scope.find = function() {
+            startSpinner();
+            var query = {
+                name: $scope.searchName,
+                startLocation: $scope.searchStartLocation
+            };
             /* http post code adapted from: http://stackoverflow.com/a/23966224/3673087 */
             var xsrf = $.param({ query: query });
             $http({
@@ -196,7 +187,25 @@ app.controller('roomiesCtrl', ['$scope', '$http',
                 }
             );
         };
-        $scope.find(true);
+        $http.get('data/locations.json').then(function(response) {
+            var googleLocations = [];
+            var locs = response.data.locations;
+            var count = 0;
+            for(var i=0; i<locs.length; i++) {
+                var continent = locs[i].continent;
+                for(var j=0; j<locs[i].cities.length; j++) {
+                    googleLocations.push({ 
+                        continent: continent,
+                        city: locs[i].cities[j],
+                        value: count
+                    });
+                    count++;
+                }
+            }
+            $scope.locations = googleLocations;
+            $scope.searchStartLocation = $scope.locations[<%= user.startLocation %>].value;
+            $scope.find();
+        });
         $scope.userHasMessaged = function(recipientId) {
             return mailRecipients.includes(recipientId);
         };

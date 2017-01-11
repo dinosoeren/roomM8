@@ -67,22 +67,17 @@ var selectRows = {
     factors: 1
 };
 
-userSchema.statics.findPotentialRoommates = function(user, callback) {
-    this.find({
-        googleId: { $ne: user.googleId }, // different google id
-        startLocation: user.startLocation // same start location
-    }).
-    limit(20).
-    select(selectRows).
-    exec(callback);
-};
-userSchema.statics.findPotentialRoommatesLike = function(query, user, callback) {
-    this.find({
-        name: new RegExp(query, 'i'), // name LIKE query
-        googleId: { $ne: user.googleId }, // different google id
-        startLocation: user.startLocation // same start location
-    }).
-    limit(20).
+userSchema.statics.findPotentialRoommates = function(query, user, callback) {
+    var findData = {
+        // Different google id from current user.
+        googleId: { $ne: user.googleId }
+    };
+    if(query.name)
+        findData.name = new RegExp(query.name, 'i');
+    if(query.startLocation)
+        findData.startLocation = query.startLocation
+    this.find(findData).
+    limit(query.limit || 20).
     select(selectRows).
     exec(callback);
 };

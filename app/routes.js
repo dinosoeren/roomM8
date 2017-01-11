@@ -34,10 +34,10 @@ module.exports = function(app, auth, passport) {
     app.post('/api/search', (req, res) => {
         if (!req.isAuthenticated() || typeof req.user.age === "undefined")
             return res.json({ error: 'Not authenticated.' });
-        if (typeof req.body.query === "undefined")
+        if (!req.body.query)
             return res.json({ error: 'Invalid query.' });
         var query = sanitizeMongo(req.body.query);
-        User.findPotentialRoommatesLike(query, req.user, (err, roomies) => {
+        User.findPotentialRoommates(query, req.user, (err, roomies) => {
             if(err)
                 return res.json({ error: err });
             res.json(roomies);

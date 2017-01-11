@@ -7,7 +7,7 @@
                     <div class="input-group input-group-huge">
                         <span class="input-group-addon glyphicon glyphicon-search"></span>
                         <input type="text" class="h1" id="roommateSearchBox" 
-                            ng-model="query" placeholder="Search" />
+                            ng-model="searchName" placeholder="Search" />
                     </div>
                     <div id="advanced-search">
                         <div class="filter-group">
@@ -17,18 +17,7 @@
                                     <label for="locationCheckbox" class="sideLabel"></label>
                                     <input type="checkbox" id="locationCheckbox" aria-label="Checkbox for using start location to narrow search results." checked />
                                 </span>
-                                <select class="form-control" id="searchLocation">
-                                    <% var count = 0; %>
-                                    <% for(var i=0; i<locations.length; i++) {%>
-                                        <optgroup label="<%= locations[i].continent %>">
-                                        <% for(var j=0; j<locations[i].cities.length; j++) {%>
-                                            <option value="<%= count %>" <%= (user.startLocation == count ? 'selected' : '') %>>
-                                                <%= locations[i].cities[j] %>
-                                            </option>
-                                            <% count++; %>
-                                        <% } %>
-                                        </optgroup>
-                                    <% } %>
+                                <select class="form-control" id="searchLocation" ng-model="searchStartLocation" ng-change="find()" ng-options="location.value as location.city group by location.continent for location in locations">
                                 </select>
                             </div>
                         </div>
@@ -110,7 +99,7 @@
         </div>
     </div>
     <div class="container" id="roomiesContainer" role="main">
-        <div class="profile-card" ng-repeat="x in roomies | resultsFilter:query" ng-cloak>
+        <div class="profile-card" ng-repeat="x in roomies | resultsFilter:searchName" ng-cloak>
             <div class="inner-container">
                 <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
                     <div class="col col-sm-4">
@@ -119,7 +108,7 @@
                     <div class="col col-sm-8">
                         <h2>{{ x.name }}</h2>
                         <p><strong>{{ x.position.capitalizeAll() }} ({{ x.role.capitalizeAll() }})</strong></p>
-                        <p>{{ locations[x.startLocation] }}</p>
+                        <p>{{ locations[x.startLocation].city }}</p>
                     </div>
                     <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
                         <span class="glyphicon glyphicon-ok"></span> 
