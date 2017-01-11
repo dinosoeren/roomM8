@@ -64,6 +64,12 @@ function stopSpinner() {
 $(document).ready(function() {
     startSpinner();
 });
+// pad() from: http://stackoverflow.com/a/10073788/3673087
+function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
 // Handle profile card description 'Read more' click event.
 function toggleReadMore(event, ele) {
     var descContainer = $(ele).parent('.desc');
@@ -79,19 +85,6 @@ function toggleReadMore(event, ele) {
     event.preventDefault();
 }
 var app = angular.module('roommatesApp', []);
-app.filter('resultsFilter', function() {
-    return function(input, name, startDate) {
-        if(!name)
-            return input;
-        var output = [];
-        angular.forEach(input, (roomie) => {
-            if (!name || roomie.name.match(new RegExp(name, 'i')) !== null) {
-                output.push(roomie);
-            }
-        });
-        return output;
-    };
-});
 app.filter('dateFormat', function() {
     return function(dateString) {
         var options = {
@@ -159,15 +152,53 @@ app.directive('toolTip', function () {
         $(element).tooltip();
     };
 });
+app.filter('resultsFilter', function() {
+    return function(input, name, startDate, field, role, resType, status) {
+        var output = [];
+        angular.forEach(input, (roomie) => {
+            var name_cond = !name || roomie.name.match(new RegExp(name, 'i')) !== null;
+            var date_cond = !startDate || roomie.startDate == startDate;
+            var field_cond = !field || roomie.field == field;
+            var role_cond = !role || roomie.role == role;
+            var resType_cond = !resType || 
+                (roomie.preferences && roomie.preferences.residenceType == resType) ||
+                (roomie.currentResidence && roomie.currentResidence.residenceType == resType);
+            var status_cond = !status || roomie.hasPlace == (status == "has-place");
+            // Only add this to output if all conditions are met.
+            if(name_cond && date_cond && field_cond && role_cond && resType_cond && status_cond) {
+                output.push(roomie);
+            }
+        });
+        return output;
+    };
+});
 app.controller('roomiesCtrl', ['$scope', '$http', 
     function($scope, $http) {
+        // Init variables.
+        // Always include location on page load.
+        $scope.includeLocation = true;
+        $scope.searchStartDateString = '<%= user.startDate %>';
+        $scope.searchStartDate = new Date(($scope.searchStartDateString+'/01').replace('-','/'));
         $scope.locations = null;
         $scope.roomies = [];
+        $scope.fields = [
+            { value: "cloud", name: 'Google Cloud' },
+            { value: "tech", name: "Engineering & Technology" },
+            { value: "sales", name: "Sales, Service & Support" },
+            { value: "marketing", name: "Marketing & Communications" },
+            { value: "design", name: "Design" },
+            { value: "business", name: "Business Strategy" },
+            { value: "finance", name: "Finance" },
+            { value: "legal", name: "Legal" },
+            { value: "people", name: "People" },
+            { value: "facilities", name: "Facilities" }
+        ];
+        // Find roommates.
         $scope.find = function() {
             startSpinner();
             var query = {
                 name: $scope.searchName,
-                startLocation: $scope.searchStartLocation
+                startLocation: $scope.includeLocation ? $scope.searchStartLocation : ''
             };
             /* http post code adapted from: http://stackoverflow.com/a/23966224/3673087 */
             var xsrf = $.param({ query: query });
@@ -187,6 +218,7 @@ app.controller('roomiesCtrl', ['$scope', '$http',
                 }
             );
         };
+        // Load google office locations.
         $http.get('data/locations.json').then(function(response) {
             var googleLocations = [];
             var locs = response.data.locations;
@@ -203,11 +235,15 @@ app.controller('roomiesCtrl', ['$scope', '$http',
                 }
             }
             $scope.locations = googleLocations;
-            $scope.searchStartLocation = $scope.locations[<%= user.startLocation %>].value;
             $scope.find();
         });
         $scope.userHasMessaged = function(recipientId) {
             return mailRecipients.includes(recipientId);
+        };
+        $scope.updateDateString = function() {
+            $scope.searchStartDateString = 
+                $scope.searchStartDate.getUTCFullYear() + '-' + 
+                pad($scope.searchStartDate.getUTCMonth()+1, 2);
         };
     }
 ]);

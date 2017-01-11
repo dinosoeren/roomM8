@@ -15,9 +15,9 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="locationCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="locationCheckbox" aria-label="Checkbox for using start location to narrow search results." checked />
+                                    <input type="checkbox" id="locationCheckbox" ng-model="includeLocation" aria-label="Checkbox for using start location to narrow search results." ng-change="find()" checked />
                                 </span>
-                                <select class="form-control" id="searchLocation" ng-model="searchStartLocation" ng-change="find()" ng-options="location.value as location.city group by location.continent for location in locations">
+                                <select class="form-control" id="searchLocation" ng-init="searchStartLocation = <%= user.startLocation %>" ng-model="searchStartLocation" ng-change="find()" ng-options="location.value as location.city group by location.continent for location in locations">
                                 </select>
                             </div>
                         </div>
@@ -26,9 +26,9 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="startDateCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="startDateCheckbox" aria-label="Checkbox for using start date to narrow search results." />
+                                    <input type="checkbox" id="startDateCheckbox" ng-model="includeDate" aria-label="Checkbox for using start date to narrow search results." />
                                 </span>
-                                <input type="month" class="form-control" id="searchStartDate" min="2017-01" value="<%= user.startDate %>" disabled />
+                                <input type="month" class="form-control" id="searchStartDate" ng-model="searchStartDate" ng-change="updateDateString()" min="2017-01" disabled />
                             </div>
                         </div>
                         <div class="filter-group">
@@ -36,19 +36,9 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="fieldCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="fieldCheckbox" aria-label="Checkbox for using field of work to narrow search results." />
+                                    <input type="checkbox" id="fieldCheckbox" ng-model="includeField" aria-label="Checkbox for using field of work to narrow search results." />
                                 </span>
-                                <select class="form-control" id="searchField" disabled>
-                                    <option value="cloud" <%= (user.field == 'cloud') ? 'selected' : '' %>>Google Cloud</option>
-                                    <option value="tech" <%= (user.field == 'tech') ? 'selected' : '' %>>Engineering & Technology</option>
-                                    <option value="sales" <%= (user.field == 'sales') ? 'selected' : '' %>>Sales, Service & Support</option>
-                                    <option value="marketing" <%= (user.field == 'marketing') ? 'selected' : '' %>>Marketing & Communications</option>
-                                    <option value="design" <%= (user.field == 'design') ? 'selected' : '' %>>Design</option>
-                                    <option value="business" <%= (user.field == 'business') ? 'selected' : '' %>>Business Strategy</option>
-                                    <option value="finance" <%= (user.field == 'finance') ? 'selected' : '' %>>Finance</option>
-                                    <option value="legal" <%= (user.field == 'legal') ? 'selected' : '' %>>Legal</option>
-                                    <option value="people" <%= (user.field == 'people') ? 'selected' : '' %>>People</option>
-                                    <option value="facilities" <%= (user.field == 'facilities') ? 'selected' : '' %>>Facilities</option>
+                                <select class="form-control" id="searchField" ng-model="searchField" ng-options="field.value as field.name for field in fields" ng-init="searchField = '<%= user.field %>'" disabled>
                                 </select>
                             </div>
                         </div>
@@ -57,12 +47,12 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="roleCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="roleCheckbox" aria-label="Checkbox for using work role to narrow search results." />
+                                    <input type="checkbox" id="roleCheckbox" ng-model="includeRole" aria-label="Checkbox for using work role to narrow search results." />
                                 </span>
-                                <select class="form-control" id="searchRole" disabled>
-                                    <option value="full-time" <%= (user.role == 'full-time') ? 'selected' : '' %>>Full-time</option>
-                                    <option value="resident" <%= (user.role == 'resident') ? 'selected' : '' %>>Resident</option>
-                                    <option value="intern" <%= (user.role == 'intern') ? 'selected' : '' %>>Intern</option>
+                                <select class="form-control" id="searchRole" ng-model="searchRole" ng-init="searchRole = '<%= user.role %>'" disabled>
+                                    <option value="full-time">Full-time</option>
+                                    <option value="resident">Resident</option>
+                                    <option value="intern">Intern</option>
                                 </select>
                             </div>
                         </div>
@@ -71,9 +61,9 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="resTypeCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="resTypeCheckbox" aria-label="Checkbox for using type of residence to narrow search results." />
+                                    <input type="checkbox" id="resTypeCheckbox" ng-model="includeResType" aria-label="Checkbox for using type of residence to narrow search results." />
                                 </span>
-                                <select class="form-control" id="searchResType" disabled>
+                                <select class="form-control" id="searchResType" ng-model="searchResType" ng-init="searchResType = 'apartment'" disabled>
                                     <option value="apartment">Apartment</option>
                                     <option value="condo">Condominium</option>
                                     <option value="house">House</option>
@@ -85,9 +75,9 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="statusCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="statusCheckbox" aria-label="Checkbox for using status to narrow search results." />
+                                    <input type="checkbox" id="statusCheckbox" ng-model="includeStatus" aria-label="Checkbox for using status to narrow search results." />
                                 </span>
-                                <select class="form-control" id="searchStatus" disabled>
+                                <select class="form-control" id="searchStatus" ng-model="searchStatus" ng-init="searchStatus = 'has-place'" disabled>
                                     <option value="has-place">Has a place</option>
                                     <option value="no-place">Looking for a place</option>
                                 </select>
@@ -99,7 +89,13 @@
         </div>
     </div>
     <div class="container" id="roomiesContainer" role="main">
-        <div class="profile-card" ng-repeat="x in roomies | resultsFilter:searchName" ng-cloak>
+        <div class="profile-card" ng-repeat="x in roomies | 
+            resultsFilter:searchName:
+            (includeDate ? searchStartDateString : ''):
+            (includeField ? searchField : ''):
+            (includeRole ? searchRole : ''):
+            (includeResType ? searchResType : ''):
+            (includeStatus ? searchStatus : '')" ng-cloak>
             <div class="inner-container">
                 <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
                     <div class="col col-sm-4">
