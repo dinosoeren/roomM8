@@ -360,7 +360,7 @@
         <small id="aboutMeHelp" class="form-text">Consider listing hobbies, interests, favorite videogames, favorite foods, where you're from, etc. This info is displayed to other users.</small>
     </div>
     <div class="form-group">
-        <textarea class="form-control" id="about-me" name="aboutMe" aria-describedby="aboutMeHelp" required rows="8" maxlength="400" 
+        <textarea class="form-control" id="about-me" name="aboutMe" aria-describedby="aboutMeHelp" required rows="4" maxlength="400" 
         style="resize: none;"><%= (isUserRegistered && user.aboutMe) ? user.aboutMe : '' %></textarea>
     </div>
     <div class="form-group">

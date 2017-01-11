@@ -105,6 +105,10 @@ module.exports = function(app, auth, passport) {
         User.findById(sanitizeMongo(req.body.recipientID), (err, recipient) => {
             if(err)
                 return res.json({ error: 'That user does not exist.' });
+            // Make sure this is a new recipient (enforce single message policy).
+            if(req.user.mailRecipients.includes(req.body.recipientID))
+                return res.json({ error: 'You have already messaged this user. '+
+                                'Please wait for them to respond via email.' });
             // Parse email address from transport string.
             var email = auth.nodemailerTransport.split(':')[1]
                         .replace('//', '').replace('%40', '@');
@@ -116,11 +120,14 @@ module.exports = function(app, auth, passport) {
                 subject: "New message from " + req.user.name + ": " + sanitizeInput(req.body.subject),
                 text: sanitizeInput(req.body.message, 1000)
             };
-            // send mail with defined transport object 
+            // Send mail with defined transport object.
             transporter.sendMail(mailOptions, (error, info) => {
                 if(error)
                     return res.json({ error: 'Email failed to send.' });
-                return res.json({ success: true });
+                // Now update the current user's list of recipients.
+                User.addMailRecipient(req.user._id, req.body.recipientID, (err) => {
+                    return res.json({ success: true });
+                });
             });
         });
     });

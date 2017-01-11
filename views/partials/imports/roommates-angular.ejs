@@ -10,6 +10,11 @@ String.prototype.capitalizeAll = function() {
     }
     return words.join(' ');
 };
+var mailRecipients = [
+    <% for(var i=0; i<user.mailRecipients.length; i++) { %>
+        '<%- user.mailRecipients[i] %>',
+    <% } %>
+];
 var factorsDict = {
     location: "Location",
     residenceType: "Residence type",
@@ -140,11 +145,6 @@ app.filter('factorsFilter', function() {
         return mostImportant.join(", ");
     };
 });
-app.directive('toolTip', function () {
-    return function (scope, element, attrs) {
-        $(element).tooltip();
-    };
-});
 app.filter('roommatesFilter', function() {
     return function(hasPlace, preferences, currentResidence) {
         if(hasPlace) {
@@ -152,6 +152,11 @@ app.filter('roommatesFilter', function() {
         } else {
             return preferences.roommates.toString().capitalize();
         }
+    };
+});
+app.directive('toolTip', function () {
+    return function (scope, element, attrs) {
+        $(element).tooltip();
     };
 });
 app.controller('roomiesCtrl', ['$scope', '$http', 
@@ -192,6 +197,9 @@ app.controller('roomiesCtrl', ['$scope', '$http',
             );
         };
         $scope.find(true);
+        $scope.userHasMessaged = function(recipientId) {
+            return mailRecipients.includes(recipientId);
+        };
     }
 ]);
 </script>

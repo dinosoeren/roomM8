@@ -231,6 +231,13 @@ $(document).ready(function(){
                 // Reset the form to default state.
                 $('#message-form')[0].reset();
                 $('#message-form .btn-send').hide();
+                // Disable the button.
+                var button = $(".profile-card button[data-id='"+$("#recipientID").val()+"']").first();
+                button.prop('disabled', true);
+                var glyphicon = button.find('.glyphicon');
+                glyphicon.removeClass('glyphicon-send');
+                glyphicon.addClass('glyphicon-ok');
+                button.find('.btn-text').text("Message Sent");
             }
         }).fail(function() {
             stopSpinner();

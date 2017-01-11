@@ -127,10 +127,15 @@
                     </div>
                 </div>
                 <div class="message-container">
-                    <div class="row email">
+                    <div class="row email" ng-if="!userHasMessaged(x._id)">
                         <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }}" data-toggle="modal" data-target="#messageModal" data-name="{{ x.name }}" data-id="{{ x._id }}">
-                            <span class="glyphicon glyphicon-send"></span> Message {{ x.name.split(' ')[0] }}
-                        </a>
+                            <span class="glyphicon glyphicon-send"></span> <span class="btn-text">Message {{ x.name.split(' ')[0] }}</span>
+                        </button>
+                    </div>
+                    <div class="row email" ng-if="userHasMessaged(x._id)">
+                        <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }} disabled">
+                            <span class="glyphicon glyphicon-ok"></span> <span class="btn-text">Message Sent</span>
+                        </button>
                     </div>
                 </div>
             </div>

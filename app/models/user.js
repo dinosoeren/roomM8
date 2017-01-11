@@ -43,6 +43,7 @@ var userSchema = mongoose.Schema({
         sameField: Number
     },
     aboutMe: String,
+    mailRecipients: [String],
     agree1: Boolean,
     agree2: Boolean
 });
@@ -88,6 +89,18 @@ userSchema.statics.findById = function(id, callback) {
     this.findOne({
         _id: id
     }).
+    exec(callback);
+};
+userSchema.statics.addMailRecipient = function(userId, recipientId, callback) {
+    var query = {
+        _id: userId
+    };
+    var newData = {
+        $push: {
+            mailRecipients: recipientId
+        }
+    };
+    this.findOneAndUpdate(query, newData, {upsert:false}).
     exec(callback);
 };
 userSchema.statics.removeByGoogleId = function(user, callback) {

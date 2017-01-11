@@ -342,7 +342,7 @@ input[type='checkbox'].input-error {
 
 #messageModal .modal-body {
     position: relative;
-    min-height: 200px;
+    min-height: 100px;
 }
 
 @media (max-width: 768px) { 
