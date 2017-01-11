@@ -90,7 +90,8 @@
     </div>
     <div class="container" id="roomiesContainer" role="main" infinite-scroll="loadMoreResults()" infinite-scroll-distance="2">
         <div class="profile-card" ng-repeat="x in roomies | 
-            resultsFilter:searchName:
+            resultsFilter:this:
+            searchName:
             (includeDate ? searchStartDateString : ''):
             (includeField ? searchField : ''):
             (includeRole ? searchRole : ''):
@@ -220,6 +221,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="no-results" ng-class="{'show': noResultsToShow || noMoreResults, 'more': noMoreResults && !noResultsToShow}">
+            <h1>No<span> more</span> results ¯\_(ツ)_/¯</h1>
         </div>
     </div>
 </div>

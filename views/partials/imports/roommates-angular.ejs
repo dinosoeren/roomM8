@@ -153,7 +153,7 @@ app.directive('toolTip', function () {
     };
 });
 app.filter('resultsFilter', function() {
-    return function(input, name, startDate, field, role, resType, status) {
+    return function(input, $scope, name, startDate, field, role, resType, status) {
         var output = [];
         angular.forEach(input, (roomie) => {
             var name_cond = !name || roomie.name.match(new RegExp(name, 'i')) !== null;
@@ -169,6 +169,12 @@ app.filter('resultsFilter', function() {
                 output.push(roomie);
             }
         });
+        if($scope.foundFirstBatch && output.length === 0) {
+            $scope.noResultsToShow = true;
+            $scope.find(true);
+        } else {
+            $scope.noResultsToShow = false;
+        }
         return output;
     };
 });
@@ -181,9 +187,11 @@ app.controller('roomiesCtrl', ['$scope', '$http',
         $scope.searchStartDate = new Date(($scope.searchStartDateString+'/01').replace('-','/'));
         $scope.locations = [];
         $scope.finding = false;
+        $scope.foundFirstBatch = false;
         $scope.dbCount = 0;
         $scope.resultsLimit = 20;
         $scope.noMoreResults = false;
+        $scope.noResultsToShow = false;
         $scope.roomies = [];
         $scope.fields = [
             { value: "cloud", name: 'Google Cloud' },
@@ -235,6 +243,8 @@ app.controller('roomiesCtrl', ['$scope', '$http',
                     }
                     $scope.finding = false;
                     stopSpinner();
+                    if(!$scope.foundFirstBatch)
+                        $scope.foundFirstBatch = true;
                 }
             );
         };
