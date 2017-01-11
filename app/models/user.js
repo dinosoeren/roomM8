@@ -77,7 +77,8 @@ userSchema.statics.findPotentialRoommates = function(query, user, callback) {
     if(query.startLocation)
         findData.startLocation = query.startLocation
     this.find(findData).
-    limit(query.limit || 20).
+    skip(query.skip ? parseInt(query.skip) : 0).
+    limit(query.limit ? parseInt(query.limit) : 20).
     select(selectRows).
     exec(callback);
 };

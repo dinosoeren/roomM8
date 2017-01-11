@@ -84,7 +84,7 @@ function toggleReadMore(event, ele) {
     }
     event.preventDefault();
 }
-var app = angular.module('roommatesApp', []);
+var app = angular.module('roommatesApp', ['infinite-scroll']);
 app.filter('dateFormat', function() {
     return function(dateString) {
         var options = {
@@ -179,7 +179,11 @@ app.controller('roomiesCtrl', ['$scope', '$http',
         $scope.includeLocation = true;
         $scope.searchStartDateString = '<%= user.startDate %>';
         $scope.searchStartDate = new Date(($scope.searchStartDateString+'/01').replace('-','/'));
-        $scope.locations = null;
+        $scope.locations = [];
+        $scope.finding = false;
+        $scope.dbCount = 0;
+        $scope.resultsLimit = 20;
+        $scope.noMoreResults = false;
         $scope.roomies = [];
         $scope.fields = [
             { value: "cloud", name: 'Google Cloud' },
@@ -194,11 +198,17 @@ app.controller('roomiesCtrl', ['$scope', '$http',
             { value: "facilities", name: "Facilities" }
         ];
         // Find roommates.
-        $scope.find = function() {
+        $scope.find = function(nextPage=false) {
+            if($scope.finding || $scope.noMoreResults)
+                return;
+            if(nextPage)
+                $scope.dbCount += $scope.resultsLimit;
+            $scope.finding = true;
             startSpinner();
             var query = {
-                name: $scope.searchName,
-                startLocation: $scope.includeLocation ? $scope.searchStartLocation : ''
+                startLocation: $scope.includeLocation ? $scope.searchStartLocation : '',
+                skip: $scope.dbCount,
+                limit: $scope.resultsLimit
             };
             /* http post code adapted from: http://stackoverflow.com/a/23966224/3673087 */
             var xsrf = $.param({ query: query });
@@ -210,10 +220,20 @@ app.controller('roomiesCtrl', ['$scope', '$http',
             }).then(
                 function (response) {
                     if(response.data.error) {
-                        console.error("(Query: "+query+") Error: "+response.data.error);
+                        console.error("(Query: "+query+") Error: "+response.data.error.message);
                     } else {
-                        $scope.roomies = response.data;
+                        if($scope.dbCount == 0) {
+                            $scope.roomies = response.data;
+                        } else {
+                            if(response.data.length === 0) {
+                                // console.log("No more results ("+$scope.roomies.length+")");
+                                $scope.noMoreResults = true;
+                            } else {
+                                $scope.roomies.push.apply($scope.roomies, response.data);
+                            }
+                        }
                     }
+                    $scope.finding = false;
                     stopSpinner();
                 }
             );
@@ -240,10 +260,19 @@ app.controller('roomiesCtrl', ['$scope', '$http',
         $scope.userHasMessaged = function(recipientId) {
             return mailRecipients.includes(recipientId);
         };
+        $scope.locationChangeHandler = function() {
+            // Reset skip amount.
+            $scope.dbCount = 0;
+            $scope.noMoreResults = false;
+            $scope.find();
+        };
         $scope.updateDateString = function() {
             $scope.searchStartDateString = 
                 $scope.searchStartDate.getUTCFullYear() + '-' + 
                 pad($scope.searchStartDate.getUTCMonth()+1, 2);
+        };
+        $scope.loadMoreResults = function() {
+            $scope.find(true);
         };
     }
 ]);

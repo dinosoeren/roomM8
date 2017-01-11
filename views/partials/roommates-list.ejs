@@ -15,9 +15,9 @@
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <label for="locationCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="locationCheckbox" ng-model="includeLocation" aria-label="Checkbox for using start location to narrow search results." ng-change="find()" checked />
+                                    <input type="checkbox" id="locationCheckbox" ng-model="includeLocation" aria-label="Checkbox for using start location to narrow search results." ng-change="locationChangeHandler()" checked />
                                 </span>
-                                <select class="form-control" id="searchLocation" ng-init="searchStartLocation = <%= user.startLocation %>" ng-model="searchStartLocation" ng-change="find()" ng-options="location.value as location.city group by location.continent for location in locations">
+                                <select class="form-control" id="searchLocation" ng-init="searchStartLocation = <%= user.startLocation %>" ng-model="searchStartLocation" ng-change="locationChangeHandler()" ng-options="location.value as location.city group by location.continent for location in locations">
                                 </select>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
             </div>
         </div>
     </div>
-    <div class="container" id="roomiesContainer" role="main">
+    <div class="container" id="roomiesContainer" role="main" infinite-scroll="loadMoreResults()" infinite-scroll-distance="2">
         <div class="profile-card" ng-repeat="x in roomies | 
             resultsFilter:searchName:
             (includeDate ? searchStartDateString : ''):
