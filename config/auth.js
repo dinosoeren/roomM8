@@ -18,6 +18,7 @@ if (!isset(process.env.SESSION_SECRET) ||
 
 // Create authentication object with all necessary info.
 const auth = {
+    env: process.env.NODE_ENV || 'dev',
     sessionSecret: process.env.SESSION_SECRET,
     useSecureCookies: process.env.USE_SECURE_COOKIES == true,
     secretKey: process.env.SECRET_KEY,
