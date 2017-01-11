@@ -218,7 +218,7 @@ $(document).ready(function(){
             stopSpinner();
             if (data.error) {
                 showErrorMessage("Error: "+data.error, '#message-form');
-                $('#fieldsetMessage').slideDown(200);
+                $('#fieldsetMessage').stop().slideDown(200);
             } else {
                 showSuccessMessage("Message sent successfully!", '#message-form', true);
                 // Reset the form to default state.
@@ -226,7 +226,9 @@ $(document).ready(function(){
                 $('#message-form .btn-send').hide();
             }
         }).fail(function() {
+            stopSpinner();
             showErrorMessage("An unexpected error occurred. Please try again.", '#message-form');
+            $('#fieldsetMessage').stop().slideDown(200);
         });
     });
 });

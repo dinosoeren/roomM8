@@ -105,12 +105,15 @@ module.exports = function(app, auth, passport) {
         User.findById(sanitizeMongo(req.body.recipientID), (err, recipient) => {
             if(err)
                 return res.json({ error: 'That user does not exist.' });
+            // Parse email address from transport string.
+            var email = auth.nodemailerTransport.split(':')[1]
+                        .replace('//', '').replace('%40', '@');
             // Setup message.
             var mailOptions = {
-                from: '"'+req.user.name+'" <'+req.user.email+'>',
+                from: '"roomM8" <'+email+'>',
                 replyTo: '"'+req.user.name+'" <'+req.user.email+'>',
                 to: '"'+recipient.name+'" <'+recipient.email+'>', 
-                subject: sanitizeInput(req.body.subject),
+                subject: "New message from " + req.user.name + ": " + sanitizeInput(req.body.subject),
                 text: sanitizeInput(req.body.message, 1000)
             };
             // send mail with defined transport object 
