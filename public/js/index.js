@@ -7,9 +7,10 @@ var isModalReady = true;
 $(document).ready(function(){
     lastStep = $('#registration-form fieldset:not(#confirmDelete)').length-1;
 
-    // Focus on first input and load city data when modal is opened.
+    // Load city data when modal is opened.
     $('#registerModal').on('shown.bs.modal', function() {
-        $('#name').focus();
+        hideErrorMessage();
+        hideSuccessMessage();
         if(!tagsInputInitialized && $('#pref-locations').length > 0) {
             readAndInitCityTags();
             tagsInputInitialized = true;
@@ -42,7 +43,7 @@ $(document).ready(function(){
         }
         $('#registration-form').submit();
     });
-    $('.form-control').on('focus', function () {
+    $('.regRequired,.form-control').on('focus', function () {
         $(this).removeClass('input-error');
     });
     if($("#editText").length > 0)
@@ -74,10 +75,12 @@ $(document).ready(function(){
         if(currentStep == -1) { // already in confirm dialog
             // Make sure they check the agree box.
             if(!$("#agreeToDelete").is(":checked")) {
+                $("#agreeToDelete").addClass('input-error');
                 showErrorMessage("Please indicate that you understand the consequences.");
                 isModalReady = true;
                 return;
             }
+            $("#agreeToDelete").removeClass('input-error');
             // Delete user profile!
             console.log("Deleting user profile!");
             $('#registration-form').attr('action', "/deleteMe").submit();
@@ -118,6 +121,8 @@ $(document).ready(function(){
             }
             currentStep++;
             parent_fieldset.fadeOut(200, function () {
+                hideErrorMessage();
+                hideSuccessMessage();
                 $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
                     isModalReady = true;
                 });
@@ -144,6 +149,8 @@ $(document).ready(function(){
             parent_fieldset = $('#registration-form fieldset#f'+currentStep);
         }
         $(parent_fieldset).fadeOut(200, function () {
+            hideErrorMessage();
+            hideSuccessMessage();
             if(currentStep === 3 || (currentStep === 4 && !userHasPlace())) {
                 // Go back to step 1 from step 3 if the user already has a place.
                 // Go back to step 2 from step 4 if the user does not have a place.
@@ -204,7 +211,7 @@ $(document).ready(function(){
     // Handle message send button click.
     $('#message-form .btn-send').on('click', function() {
         if(!areAllFieldInputsValid('#fieldsetMessage')) {
-            showErrorMessage('#message-form');
+            showErrorMessage(null, '#message-form');
             return;
         }
         $('#fieldsetMessage').slideUp(200);
@@ -363,7 +370,7 @@ function showErrorMessage(msg, formSelector, persistent=false) {
             $(formSelector+' .error-message').attr("data-message")
         );
     }
-    $(formSelector+' .error-message').slideDown(200);
+    $(formSelector+' .error-message').stop().slideDown(200);
     if(!persistent)
         $(formSelector+' .error-message').delay(3000).slideUp(200);
 }
@@ -371,7 +378,7 @@ function showErrorMessage(msg, formSelector, persistent=false) {
 function hideErrorMessage(formSelector) {
     if(!formSelector)
         formSelector = "#registration-form";
-    $(formSelector+' .error-message').hide();
+    $(formSelector+' .error-message').stop().hide();
 }
 // Show a success message in the form.
 function showSuccessMessage(msg, formSelector, persistent=false) {
@@ -384,7 +391,7 @@ function showSuccessMessage(msg, formSelector, persistent=false) {
             $(formSelector+' .success-message').attr("data-message")
         );
     }
-    $(formSelector+' .success-message').slideDown(200);
+    $(formSelector+' .success-message').stop().slideDown(200);
     if(!persistent)
         $(formSelector+' .success-message').delay(3000).slideUp(200);
 }
@@ -392,7 +399,7 @@ function showSuccessMessage(msg, formSelector, persistent=false) {
 function hideSuccessMessage(formSelector) {
     if(!formSelector)
         formSelector = "#registration-form";
-    $(formSelector+' .success-message').hide();
+    $(formSelector+' .success-message').stop().hide();
 }
 
 // Check if the secret code the user entered is valid.

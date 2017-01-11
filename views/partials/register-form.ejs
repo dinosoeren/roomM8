@@ -6,7 +6,7 @@
         <p class="text-center">All your info will be erased from roomM8.<br/>This action cannot be undone.</p>
         <div class="text-center">
             <label>
-                <input type="checkbox" id="agreeToDelete" name="agreeToDelete" value="yes" /> Yes, I understand the consequences.
+                <input type="checkbox" id="agreeToDelete" name="agreeToDelete" class="regRequired" value="yes" /> Yes, I understand the consequences.
             </label>
             <input type="hidden" name="deleteToken" value="<%= deleteToken %>" />
         </div>
@@ -263,7 +263,7 @@
     </div>
     <div class="form-group row no-place">
         <div class="col-xs-4 text-right">
-            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in one of the preferred locations you listed?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in one of the preferred locations you listed?"><span class="glyphicon glyphicon-question-sign"></span></a>
             Location
         </div>
         <div class="col-xs-7">
@@ -273,7 +273,7 @@
     </div>
     <div class="form-group row no-place">
         <div class="col-xs-4 text-right">
-            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in the type of residence you selected?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in the type of residence you selected?"><span class="glyphicon glyphicon-question-sign"></span></a>
             Type of residence
         </div>
         <div class="col-xs-7">
@@ -318,7 +318,7 @@
     </div>
     <div class="form-group row">
         <div class="col-xs-4 text-right">
-            <a href="#" data-toggle="tooltip" data-placement="auto top" title="No smoking, alcohol, drugs, etc."><span class="glyphicon glyphicon-question-sign"></span></a>
+            <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="No smoking, alcohol, drugs, etc."><span class="glyphicon glyphicon-question-sign"></span></a>
             Substance-free</div>
         <div class="col-xs-7">
             <input id="important-substance-free" name="factorSubstanceFree" type="text" class="slider" required
@@ -327,7 +327,7 @@
     </div>
     <div class="form-group row">
         <div class="col-xs-4 text-right">
-            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all the same gender as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all the same gender as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
             Same gender</div>
         <div class="col-xs-7">
             <input id="important-same-gender" name="factorSameGender" type="text" class="slider" required
@@ -336,7 +336,7 @@
     </div>
     <div class="form-group row">
         <div class="col-xs-4 text-right">
-            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all around the same age as you? (+/- 5 years)"><span class="glyphicon glyphicon-question-sign"></span></a>
+            <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all around the same age as you? (+/- 5 years)"><span class="glyphicon glyphicon-question-sign"></span></a>
             Same age</div>
         <div class="col-xs-7">
             <input id="important-same-age" name="factorSameAge" type="text" class="slider" required
@@ -345,7 +345,7 @@
     </div>
     <div class="form-group row">
         <div class="col-xs-4 text-right">
-            <a href="#" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates all work in the same field as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
+            <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates all work in the same field as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
             Same field of work</div>
         <div class="col-xs-7">
             <input id="important-same-field" name="factorSameField" type="text" class="slider" required
@@ -367,20 +367,20 @@
         <div>
             <label>
                 <input type="checkbox" class="regRequired" name="agree1" value="yes" /> 
-                I confirm the information I've provided does not violate my NDA with Google. <a href="#" data-toggle="tooltip" data-placement="auto top" title="Make sure you haven't said anything you're not supposed to."><span class="glyphicon glyphicon-question-sign"></span></a>
+                I confirm the information I've provided does not violate my NDA with Google. <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="Make sure you haven't said anything you're not supposed to."><span class="glyphicon glyphicon-question-sign"></span></a>
             </label>
         </div>
         <% if(!isUserRegistered) { %>
             <div>
                 <label>
                     <input type="checkbox" class="regRequired" name="agree3" value="yes" /> 
-                    I consent to receiving other roomM8 users' messages in my email inbox. <a href="#" data-toggle="tooltip" data-placement="auto top" title="Other users will not be able to see your email address, but they will be able to send you messages. They will only know your email address if you reply."><span class="glyphicon glyphicon-question-sign"></span></a>
+                    I consent to receiving other roomM8 users' messages in my email inbox. <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="Other users will not be able to see your email address, but they will be able to send you messages. They will only know your email address if you reply."><span class="glyphicon glyphicon-question-sign"></span></a>
                 </label>
             </div>
             <div>
                 <label>
                     <input type="checkbox" class="regRequired" name="agree2" value="yes" /> 
-                    I agree that I will not hold Soeren Walls responsible, legally or otherwise, for anything bad that results from me using this service. <a href="#" data-toggle="tooltip" data-placement="auto top" title="This service uses very secure protocols and authentication, which you can verify by viewing the source code on GitHub. However, it may still not be bullet-proof. Use at your own risk."><span class="glyphicon glyphicon-question-sign"></span></a>
+                    I agree that I will not hold Soeren Walls responsible, legally or otherwise, for anything bad that results from me using this service. <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="This service uses very secure protocols and authentication, which you can verify by viewing the source code on GitHub. However, it may still not be bullet-proof. Use at your own risk."><span class="glyphicon glyphicon-question-sign"></span></a>
                 </label>
             </div>
         <% } %>

@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="container" id="roomiesContainer" role="main">
-        <div class="profile-card" ng-repeat="x in roomies | roommateFilter:query" ng-cloak>
+        <div class="profile-card" ng-repeat="x in roomies | resultsFilter:query" ng-cloak>
             <div class="inner-container">
                 <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
                     <div class="col col-sm-4">
@@ -74,11 +74,11 @@
                             <p>
                                 <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
                                     <span class="glyphicon glyphicon-user text-info"></span> 
-                                    <strong>+{{ x.currentResidence.vacantRooms }} people</strong>
+                                    <strong>{{ x.currentResidence.vacantRooms | peopleFilter}}</strong>
                                 </a>
                                 <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
                                     <span class="glyphicon glyphicon-user text-primary"></span> 
-                                    <strong>+{{ x.preferences.roommates }} people</strong>
+                                    <strong>{{ x.preferences.roommates | peopleFilter }}</strong>
                                 </a>
                             </p>
                         </div>
@@ -110,9 +110,19 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col col-xs-12">
+                            <p>
+                                <a href="javascript:;" tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
+                                    <span class="glyphicon glyphicon-heart text-{{ x.hasPlace ? 'info' : 'primary' }}"></span> 
+                                    <strong>{{ x.factors | factorsFilter }}</strong>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
                         <p class="desc" data-desc="{{ x.aboutMe | aboutFilter }}">
                             <span>{{ x.aboutMe.substring(0,100) | aboutFilter }}...</span>
-                            <a href="#" class="more" onclick="toggleReadMore(event,this);">More</a>
+                            <a href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
                         </p>
                     </div>
                 </div>

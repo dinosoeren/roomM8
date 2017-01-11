@@ -10,6 +10,19 @@ String.prototype.capitalizeAll = function() {
     }
     return words.join(' ');
 };
+var factorsDict = {
+    location: "Location",
+    residenceType: "Residence type",
+    ownBedroom: "Own bedroom",
+    ownBathroom: "Own bathroom",
+    commuteTime: "Short commute time",
+    cleanliness: "Cleanliness",
+    quietTime: "Quiet time",
+    substanceFree: "Substance-free",
+    sameGender: "Same gender",
+    sameAge: "Same age",
+    sameField: "Same field"
+};
 // Add spinner!
 var opts = {
   lines: 11 // The number of lines to draw
@@ -61,7 +74,7 @@ function toggleReadMore(event, ele) {
     event.preventDefault();
 }
 var app = angular.module('roommatesApp', []);
-app.filter('roommateFilter', function() {
+app.filter('resultsFilter', function() {
     return function(input, name, startDate) {
         if(!name)
             return input;
@@ -100,6 +113,31 @@ app.filter('aboutFilter', function() {
     return function(aboutMe) {
         // strip html
         return $('<p>'+aboutMe+'</p>').text();
+    };
+});
+app.filter('peopleFilter', function() {
+    return function(number) {
+        var desc = number > 1 ? "people" : "person";
+        return "+"+number+" "+desc;
+    };
+});
+app.filter('factorsFilter', function() {
+    return function(factors) {
+        var sorted = [];
+        for(var factor in factors) {
+            sorted.push({ 
+                factor: factor, 
+                rating: factors[factor] 
+            });
+        }
+        sorted.sort(function(a, b) {
+            return b.rating - a.rating;
+        });
+        var mostImportant = [];
+        for(var i=0; i<3; i++) {
+            mostImportant.push(factorsDict[sorted[i].factor]);
+        }
+        return mostImportant.join(", ");
     };
 });
 app.directive('toolTip', function () {

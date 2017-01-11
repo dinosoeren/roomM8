@@ -61,7 +61,8 @@ var selectRows = {
     startLocation: 1,
     hasPlace: 1,
     preferences: 1,
-    currentResidence: 1
+    currentResidence: 1,
+    factors: 1
 };
 
 userSchema.statics.findPotentialRoommates = function(user, callback) {
