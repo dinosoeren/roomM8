@@ -30,7 +30,10 @@
     "sanitize-html": "^1.13.0"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "minimist": "^1.2.0",
+    "mongoimport": "^1.0.6",
+    "nodemon": "^1.11.0",
+    "random-name": "^0.1.2"
   },
   "engines": {
     "node": "6.9.3"
