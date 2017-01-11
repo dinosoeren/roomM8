@@ -3,11 +3,107 @@
     <div class="container" id="roomieSearchContainer">
         <div class="jumbotron">
             <div class="row side-padded">
-                <div class="col-sm-9 mx-auto">
+                <div class="col-md-9 mx-auto">
                     <div class="input-group input-group-huge">
                         <span class="input-group-addon glyphicon glyphicon-search"></span>
                         <input type="text" class="h1" id="roommateSearchBox" 
                             ng-model="query" placeholder="Search" />
+                    </div>
+                    <div id="advanced-search">
+                        <div class="filter-group">
+                            <label class="text-muted" for="searchLocation">Start location</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <label for="locationCheckbox" class="sideLabel"></label>
+                                    <input type="checkbox" id="locationCheckbox" aria-label="Checkbox for using start location to narrow search results." checked />
+                                </span>
+                                <select class="form-control" id="searchLocation">
+                                    <% var count = 0; %>
+                                    <% for(var i=0; i<locations.length; i++) {%>
+                                        <optgroup label="<%= locations[i].continent %>">
+                                        <% for(var j=0; j<locations[i].cities.length; j++) {%>
+                                            <option value="<%= count %>" <%= (user.startLocation == count ? 'selected' : '') %>>
+                                                <%= locations[i].cities[j] %>
+                                            </option>
+                                            <% count++; %>
+                                        <% } %>
+                                        </optgroup>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="text-muted" for="searchStartDate">Start date</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <label for="startDateCheckbox" class="sideLabel"></label>
+                                    <input type="checkbox" id="startDateCheckbox" aria-label="Checkbox for using start date to narrow search results." />
+                                </span>
+                                <input type="month" class="form-control" id="searchStartDate" min="2017-01" value="<%= user.startDate %>" disabled />
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="text-muted" for="searchField">Field of work</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <label for="fieldCheckbox" class="sideLabel"></label>
+                                    <input type="checkbox" id="fieldCheckbox" aria-label="Checkbox for using field of work to narrow search results." />
+                                </span>
+                                <select class="form-control" id="searchField" disabled>
+                                    <option value="cloud" <%= (user.field == 'cloud') ? 'selected' : '' %>>Google Cloud</option>
+                                    <option value="tech" <%= (user.field == 'tech') ? 'selected' : '' %>>Engineering & Technology</option>
+                                    <option value="sales" <%= (user.field == 'sales') ? 'selected' : '' %>>Sales, Service & Support</option>
+                                    <option value="marketing" <%= (user.field == 'marketing') ? 'selected' : '' %>>Marketing & Communications</option>
+                                    <option value="design" <%= (user.field == 'design') ? 'selected' : '' %>>Design</option>
+                                    <option value="business" <%= (user.field == 'business') ? 'selected' : '' %>>Business Strategy</option>
+                                    <option value="finance" <%= (user.field == 'finance') ? 'selected' : '' %>>Finance</option>
+                                    <option value="legal" <%= (user.field == 'legal') ? 'selected' : '' %>>Legal</option>
+                                    <option value="people" <%= (user.field == 'people') ? 'selected' : '' %>>People</option>
+                                    <option value="facilities" <%= (user.field == 'facilities') ? 'selected' : '' %>>Facilities</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="text-muted" for="searchRole">Role</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <label for="roleCheckbox" class="sideLabel"></label>
+                                    <input type="checkbox" id="roleCheckbox" aria-label="Checkbox for using work role to narrow search results." />
+                                </span>
+                                <select class="form-control" id="searchRole" disabled>
+                                    <option value="full-time" <%= (user.role == 'full-time') ? 'selected' : '' %>>Full-time</option>
+                                    <option value="resident" <%= (user.role == 'resident') ? 'selected' : '' %>>Resident</option>
+                                    <option value="intern" <%= (user.role == 'intern') ? 'selected' : '' %>>Intern</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="text-muted" for="searchResType">Residence type</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <label for="resTypeCheckbox" class="sideLabel"></label>
+                                    <input type="checkbox" id="resTypeCheckbox" aria-label="Checkbox for using type of residence to narrow search results." />
+                                </span>
+                                <select class="form-control" id="searchResType" disabled>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="condo">Condominium</option>
+                                    <option value="house">House</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="text-muted" for="searchStatus">Status</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <label for="statusCheckbox" class="sideLabel"></label>
+                                    <input type="checkbox" id="statusCheckbox" aria-label="Checkbox for using status to narrow search results." />
+                                </span>
+                                <select class="form-control" id="searchStatus" disabled>
+                                    <option value="has-place">Has a place</option>
+                                    <option value="no-place">Looking for a place</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

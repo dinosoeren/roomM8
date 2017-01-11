@@ -245,6 +245,19 @@ $(document).ready(function(){
             $('#fieldsetMessage').stop().slideDown(200);
         });
     });
+
+    // Handle advanced search stuff.
+    $("#advanced-search .filter-group").each(function() {
+        var inputField = $(this).find('.form-control');
+        var checkbox = $(this).find("input[type='checkbox']");
+        checkbox.change(function() {
+            if($(this).is(":checked")) {
+                inputField.prop('disabled', false);
+            } else {
+                inputField.prop('disabled', true);
+            }
+        });
+    });
 });
 
 function readAndInitCityTags() {

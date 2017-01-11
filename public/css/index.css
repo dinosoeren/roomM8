@@ -70,6 +70,13 @@
     margin-right: auto;
     float: none;
 }
+.modal .close {
+    color: #eee;
+}
+.modal .modal-header {
+    background-color: #2780e3;
+    color: white;
+}
 
 /* Tags input */
 .bootstrap-tagsinput {
@@ -187,19 +194,45 @@ input[type='checkbox'].input-error {
     margin-top: 10px;
     line-height: 1.2;
 }
+#advanced-search {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+#advanced-search .filter-group {
+    flex-grow: 1;
+    min-width: 200px;
+    max-width: 280px;
+    margin: 10px auto;
+}
+#advanced-search .filter-group label {
+    transition: 0.5s;
+}
+#advanced-search .filter-group:hover label {
+    color: #333;
+}
+.sideLabel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    margin: 0;
+}
 
 /* Roommate Results */
 #roomiesContainer {
     display: flex;
     align-content: space-around;
     flex-wrap: wrap;
-    margin-top: 80px;
-    margin-bottom: 60px;
+    margin-top: 40px;
+    margin-bottom: 20px;
     position: relative;
     min-height: 350px;
 }
 #roomiesContainer .profile-card {
-    padding: 0px 20px;
+    padding: 20px;
     margin: 0px auto 20px auto;
     flex-grow: 1;
     min-width: 300px;

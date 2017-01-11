@@ -10,10 +10,14 @@
     <% include ../partials/imports/bootstrap-tagsinput.ejs %>
     <% include ../partials/imports/bootstrap-slider.ejs %>
     <% include ../partials/imports/bootstrap-theme.ejs %>
-    <% include ../partials/imports/spin.ejs %>
-    <% include ../partials/imports/async.ejs %>
-    <% include ../partials/imports/angular.ejs %>
-    <% include ../partials/imports/roommates-angular.ejs %>
+    <% if (user) { %>
+        <% include ../partials/imports/async.ejs %>
+    <% } %>
+    <% if (isUserRegistered) { %>
+        <% include ../partials/imports/spin.ejs %>
+        <% include ../partials/imports/angular.ejs %>
+        <% include ../partials/imports/roommates-angular.ejs %>
+    <% } %>
     <!-- Custom stylesheets -->
     <link rel="stylesheet" href="css/index.css">
     <!-- Custom scripts -->
