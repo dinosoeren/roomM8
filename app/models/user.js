@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const auth = require('../../config/auth');
 
 var userSchema = mongoose.Schema({
     googleId: {type: String, unique: true, required: true},
@@ -111,4 +112,4 @@ userSchema.statics.removeByGoogleId = function(user, callback) {
     exec(callback);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model(auth.env === 'dev' ? 'TestUsers' : 'Users', userSchema);
