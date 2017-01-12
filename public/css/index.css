@@ -395,6 +395,9 @@ input[type='checkbox'].input-error {
     padding-bottom: 10px;
     border-bottom: 1px solid #e6e6e6;
 }
+#code-stuff h3 {
+    margin-top: 0;
+}
 
 @media (max-width: 768px) { 
     .btn-photo {
