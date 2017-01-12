@@ -1,34 +1,14 @@
 <!-- views/partials/imports/roommates-angular.ejs -->
 <script>
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-};
-String.prototype.capitalizeAll = function() {
-    var words = this.split(' ');
-    for(var i=0; i<words.length; i++) {
-        words[i] = words[i].capitalize();
-    }
-    return words.join(' ');
-};
+$(document).ready(function() {
+    startSpinner();
+});
 var mailRecipients = [
     <% for(var i=0; i<user.mailRecipients.length; i++) { %>
         '<%- user.mailRecipients[i] %>',
     <% } %>
 ];
-var factorsDict = {
-    location: "Location",
-    residenceType: "Residence type",
-    ownBedroom: "Own bedroom",
-    ownBathroom: "Own bathroom",
-    commuteTime: "Short commute time",
-    cleanliness: "Cleanliness",
-    quietTime: "Quiet time",
-    substanceFree: "Substance-free",
-    sameGender: "Same gender",
-    sameAge: "Same age",
-    sameField: "Same field"
-};
-// Add spinner!
+// Build loading spinner!
 var opts = {
   lines: 11 // The number of lines to draw
 , length: 9 // The length of each line
@@ -61,37 +41,15 @@ function startSpinner(selector) {
 function stopSpinner() {
     spinner.stop();
 }
-$(document).ready(function() {
-    startSpinner();
-});
 // pad() from: http://stackoverflow.com/a/10073788/3673087
 function pad(n, width, z) {
     z = z || '0';
     n = n + '';
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
-// Handle profile card description 'Read more' click event.
-function toggleReadMore(event, ele) {
-    var descContainer = $(ele).parent('.desc');
-    if($(ele).is('.more')) {
-        $(ele).removeClass("more");
-        $(ele).text("Less");
-        descContainer.find('span').text(descContainer.attr('data-desc'));
-    } else {
-        $(ele).addClass("more");
-        $(ele).text("More");
-        descContainer.find('span').text(descContainer.attr('data-desc').substring(0,100)+"...");
-    }
-    event.preventDefault();
-}
 var app = angular.module('roommatesApp', ['infinite-scroll']);
 app.filter('dateFormat', function() {
-    return function(dateString) {
-        var options = {
-            year: "numeric", month: "long"
-        };
-        return new Date(dateString+"-02").toLocaleDateString("en-US", options);
-    };
+    return formatDateNumToWords;
 });
 app.filter('residenceFilter', function() {
     return function(hasPlace, preferences, currentResidence) {
@@ -120,23 +78,7 @@ app.filter('peopleFilter', function() {
     };
 });
 app.filter('factorsFilter', function() {
-    return function(factors) {
-        var sorted = [];
-        for(var factor in factors) {
-            sorted.push({ 
-                factor: factor, 
-                rating: factors[factor] 
-            });
-        }
-        sorted.sort(function(a, b) {
-            return b.rating - a.rating;
-        });
-        var mostImportant = [];
-        for(var i=0; i<3; i++) {
-            mostImportant.push(factorsDict[sorted[i].factor]);
-        }
-        return mostImportant.join(", ");
-    };
+    return selectTopFactors;
 });
 app.filter('roommatesFilter', function() {
     return function(hasPlace, preferences, currentResidence) {

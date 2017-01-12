@@ -247,24 +247,28 @@ input[type='checkbox'].input-error {
     position: relative;
     min-height: 350px;
 }
-#roomiesContainer .profile-card {
+.profile-card {
     padding: 20px;
     margin: 0px auto 20px auto;
     flex-grow: 1;
     min-width: 300px;
     max-width: 500px;
 }
-#roomiesContainer .profile-card .glyphicon {
+#registration-form .profile-card {
+    margin: auto;
+    padding: 5px;
+}
+.profile-card .glyphicon {
     margin-right: 3px;
 }
-#roomiesContainer .profile-card a.tip {
+.profile-card a.tip {
     text-decoration: none;
     cursor: default;
 }
-#roomiesContainer .profile-card a.tip:not(.float) {
+.profile-card a.tip:not(.float) {
     color: inherit;
 }
-#roomiesContainer .profile-card a.tip.float {
+.profile-card a.tip.float {
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -274,68 +278,61 @@ input[type='checkbox'].input-error {
     border-radius: 3px;
     font-size: 0.9em;
 }
-#roomiesContainer .profile-card a.tip.float:hover,
-#roomiesContainer .profile-card a.tip.float:focus,
-#roomiesContainer .profile-card a.tip.float:active {
+.profile-card a.tip.float:hover,
+.profile-card a.tip.float:focus,
+.profile-card a.tip.float:active {
     color: #333;
 }
-#roomiesContainer .profile-card .inner-container {
+.profile-card .inner-container {
     border: 0px;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     display: table;
+    width: 100%;
 }
-#roomiesContainer .profile-card .row.profile-container {
+.profile-card .row.profile-container {
     color: white;
     padding: 35px 20px;
     margin: 0;
     position: relative;
 }
-#roomiesContainer .profile-card .row.profile-container .col {
+.profile-card .row.profile-container .col {
     float: none;
     display: table-cell;
     vertical-align: middle;
 }
-#roomiesContainer .profile-card div.row h2 {
+.profile-card div.row h2 {
     margin: 0px;
     margin-bottom: 2px;
 }
-#roomiesContainer .profile-card div.row p {
+.profile-card div.row p {
     margin: 2px 0px;
 }
-#roomiesContainer .profile-card div.row p.desc {
+.profile-card div.row p.desc {
     margin-top: 15px;
 }
-#roomiesContainer .profile-card .data-container {
+.profile-card .data-container {
     padding: 30px 35px 25px 35px;
     position: relative;
 }
-#roomiesContainer .profile-card .data-container div.row {
+.profile-card .data-container div.row {
     margin: 5px 0;
     padding: 0;
 }
-#roomiesContainer .profile-card .message-container .email {
+.profile-card .message-container .email {
     margin: 0;
     padding: 5px;
     text-align: center;
 }
-#roomiesContainer .profile-card .message-container .email button {
+.profile-card .message-container .email .btn {
     width: 100%;
 }
-#roomiesContainer .profile-card .data-container .col {
+.profile-card .data-container .col {
     margin: 0;
     padding: 0;
 }
-#roomiesContainer .profile-card .btn-photo {
+.profile-card .btn-photo {
     margin-right: auto;
-}
-
-/* User/roommate profile */
-.profile-card {
-    margin: auto;
-    float: none;
-}
-.btn-photo {
     background-color: black;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Blank_woman_placeholder.svg/1024px-Blank_woman_placeholder.svg.png');
     background-size: cover;
@@ -413,31 +410,31 @@ input[type='checkbox'].input-error {
         margin-top: 20px;
         margin-bottom: 0px;
     }
-    #roomiesContainer .profile-card {
+    .profile-card {
         padding: 0;
     }
-    #roomiesContainer .profile-card a.tip.float {
+    .profile-card a.tip.float {
         top: 5px;
         bottom: auto;
     }
-    #roomiesContainer .profile-card .row.profile-container {
+    .profile-card .row.profile-container {
         padding: 15px 20px;
     }
-    #roomiesContainer .profile-card .inner-container,
-    #roomiesContainer .profile-card .row.profile-container .col {
+    .profile-card .inner-container,
+    .profile-card .row.profile-container .col {
         display: block;
     }
-    #roomiesContainer .profile-card .row.profile-container .col {
+    .profile-card .row.profile-container .col {
         margin: 20px 0;
         text-align: center;
     }
-    #roomiesContainer .profile-card .data-container {
+    .profile-card .data-container {
         padding: 15px 20px 10px 20px;
     }
-    #roomiesContainer .profile-card .data-container div.row {
+    .profile-card .data-container div.row {
         margin: 0;
     }
-    #roomiesContainer .profile-card .data-container .col {
+    .profile-card .data-container .col {
         margin: 0;
         padding: 3px 0;
     }

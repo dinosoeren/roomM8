@@ -13,6 +13,8 @@
     <% if (user) { %>
         <% include ../partials/imports/async.ejs %>
     <% } %>
+    <!-- Custom scripts -->
+    <script src="js/index.js"></script>
     <% if (isUserRegistered) { %>
         <% include ../partials/imports/spin.ejs %>
         <% include ../partials/imports/angular.ejs %>
@@ -21,8 +23,6 @@
     <% } %>
     <!-- Custom stylesheets -->
     <link rel="stylesheet" href="css/index.css">
-    <!-- Custom scripts -->
-    <script src="js/index.js"></script>
 </head>
 <body>
     <% include ../partials/top.ejs %>

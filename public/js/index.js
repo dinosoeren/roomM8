@@ -258,7 +258,80 @@ $(document).ready(function(){
             }
         });
     });
+
+    $("#dateToFormat").each(function() {
+        $(this).text(formatDateNumToWords($(this).text()));
+    });
+    $("#factorsToSort").each(function() {
+        $(this).text(selectTopFactors($(this).data('factors')));
+    });
 });
+
+// Capitalize words.
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+String.prototype.capitalizeAll = function() {
+    var words = this.split(' ');
+    for(var i=0; i<words.length; i++) {
+        words[i] = words[i].capitalize();
+    }
+    return words.join(' ');
+};
+// Handle profile card description 'Read more' click event.
+function toggleReadMore(event, ele) {
+    var descContainer = $(ele).parent('.desc');
+    if($(ele).is('.more')) {
+        $(ele).removeClass("more");
+        $(ele).text("Less");
+        descContainer.find('span').text(descContainer.attr('data-desc'));
+    } else {
+        $(ele).addClass("more");
+        $(ele).text("More");
+        descContainer.find('span').text(descContainer.attr('data-desc').substring(0,100)+"...");
+    }
+    event.preventDefault();
+}
+// Format date. Convert from '2017-09' to 'September 2017'
+function formatDateNumToWords(dateString) {
+    var options = {
+        year: "numeric", month: "long"
+    };
+    return new Date(dateString+"-02").toLocaleDateString("en-US", options);
+};
+var factorsDict = {
+    location: "Location",
+    residenceType: "Residence type",
+    ownBedroom: "Own bedroom",
+    ownBathroom: "Own bathroom",
+    commuteTime: "Short commute time",
+    cleanliness: "Cleanliness",
+    quietTime: "Quiet time",
+    substanceFree: "Substance-free",
+    sameGender: "Same gender",
+    sameAge: "Same age",
+    sameField: "Same field"
+};
+// Get the top 3 most important factors from array.
+function selectTopFactors(factors) {
+    var sorted = [];
+    for(var factor in factors) {
+        if(!factorsDict.hasOwnProperty(factor))
+            continue;
+        sorted.push({ 
+            factor: factor, 
+            rating: factors[factor] 
+        });
+    }
+    sorted.sort(function(a, b) {
+        return b.rating - a.rating;
+    });
+    var mostImportant = [];
+    for(var i=0; i<3; i++) {
+        mostImportant.push(factorsDict[sorted[i].factor]);
+    }
+    return mostImportant.join(", ");
+};
 
 function readAndInitCityTags() {
     // Read cities json file and initialize cities input.
