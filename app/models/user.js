@@ -70,7 +70,9 @@ var selectRows = {
 userSchema.statics.findPotentialRoommates = function(query, user, callback) {
     var findData = {
         // Different google id from current user.
-        googleId: { $ne: user.googleId }
+        googleId: { $ne: user.googleId },
+        // Make sure they are fully registered.
+        age: { $gte: 18 }
     };
     if(query.name)
         findData.name = new RegExp(query.name, 'i');

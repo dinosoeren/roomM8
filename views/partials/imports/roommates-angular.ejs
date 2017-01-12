@@ -113,7 +113,8 @@ app.filter('resultsFilter', function() {
         });
         if($scope.foundFirstBatch && output.length === 0) {
             $scope.noResultsToShow = true;
-            $scope.find(true);
+            if(input.length > 0)
+                $scope.find(true);
         } else {
             $scope.noResultsToShow = false;
         }
@@ -170,7 +171,8 @@ app.controller('roomiesCtrl', ['$scope', '$http',
             }).then(
                 function (response) {
                     if(response.data.error) {
-                        console.error("(Query: "+query+") Error: "+response.data.error.message);
+                        console.error("Error: "+response.data.error.message);
+                        $scope.noMoreResults = true;
                     } else {
                         if($scope.dbCount == 0) {
                             $scope.roomies = response.data;
