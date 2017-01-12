@@ -35,7 +35,7 @@ That being said, you should of course always be cautious when talking to anyone 
 ### Can I delete my account?
 Yes. Once you're done using roomM8, hopefully after you've found a fantastic roommate, it's very easy to delete your account and permenantly erase all your info from the database.
 
-## Deploying rommM8
+## Deploying roomM8
 
 Want to deploy your own copy of roomM8?
 
