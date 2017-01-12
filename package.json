@@ -7,7 +7,7 @@
     "dev": "nodemon server.js"
   },
   "author": "Soeren Walls",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/SWalls/roomM8.git"
