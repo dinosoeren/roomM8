@@ -251,7 +251,6 @@ function isRegistered(req, res, next) {
 // Route middleware to make sure registration form is valid.
 function isValidRegistrationForm(req, res, next) {
     if(isset(req.body.age) && 
-            isset(req.body.email) && 
             isset(req.body.field) && 
             isset(req.body.role) && 
             isset(req.body.position) && 
@@ -280,7 +279,6 @@ function isset(a) {
 // Parse form data into user object, making sure to sanitize it first.
 function parseUserData(body) {
     var newData = {
-        email: sanitizeInput(body.email),
         age: sanitizeInput(body.age),
         field: sanitizeInput(body.field),
         role: sanitizeInput(body.role),
