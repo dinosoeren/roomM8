@@ -352,8 +352,8 @@ input[type='checkbox'].input-error {
 
 /* Sign in form */
 .form-control-lg, .input-group-lg>.form-control, .input-group-lg>.input-group-addon, .input-group-lg>.input-group-btn>.btn {
-    padding: 3.05rem 3.5rem;
     font-size: 2.25rem;
+    height: 63px;
 }
 .btn-google {
     display: block;

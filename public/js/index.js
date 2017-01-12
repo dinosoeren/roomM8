@@ -455,7 +455,7 @@ function evalBtns() {
 // Show an error message in the form.
 function showErrorMessage(msg, formSelector, persistent=false) {
     if(!formSelector)
-        formSelector = "#registration-form";
+        formSelector = "#registerModal";
     if(msg) {
         $(formSelector+' .error-message .msg').text(msg);
     } else {
@@ -470,13 +470,13 @@ function showErrorMessage(msg, formSelector, persistent=false) {
 // Hide error message immediately.
 function hideErrorMessage(formSelector) {
     if(!formSelector)
-        formSelector = "#registration-form";
+        formSelector = "#registerModal";
     $(formSelector+' .error-message').stop().hide();
 }
 // Show a success message in the form.
 function showSuccessMessage(msg, formSelector, persistent=false) {
     if(!formSelector)
-        formSelector = "#registration-form";
+        formSelector = "#registerModal";
     if(msg) {
         $(formSelector+' .success-message .msg').text(msg);
     } else {
@@ -491,7 +491,7 @@ function showSuccessMessage(msg, formSelector, persistent=false) {
 // Hide success message immediately.
 function hideSuccessMessage(formSelector) {
     if(!formSelector)
-        formSelector = "#registration-form";
+        formSelector = "#registerModal";
     $(formSelector+' .success-message').stop().hide();
 }
 
