@@ -5,6 +5,7 @@ const sanitizeMongo = require('mongo-sanitize');
 const sanitizeHtml = require('sanitize-html');
 const shOptions = { allowedTags: [], allowedAttributes: [] };
 const nodemailer = require('nodemailer');
+const ejs = require('ejs');
 
 module.exports = function(app, auth, passport) {
 
@@ -95,6 +96,22 @@ module.exports = function(app, auth, passport) {
         }
     });
 
+    app.get('/test/email', isLoggedIn, isRegistered, (req, res) => {
+        // Get locations.
+        var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+        var pageData = {
+            locations: locations,
+            user: req.user,
+            recipientName: "Joe Smith",
+            subject: "Potential Noogler Roommate?",
+            message: "How are you?",
+            includeSVG: true,
+            startDate: formatDateNumToWords(req.user.startDate),
+            topFactors: selectTopFactors(req.user.factors)
+        };
+        res.render('pages/email', pageData);
+    });
+
     // Message another user.
     app.post('/message', isLoggedIn, isRegistered, (req, res) => {
         if (!isset(req.body.recipientID) ||
@@ -112,21 +129,41 @@ module.exports = function(app, auth, passport) {
             // Parse email address from transport string.
             var email = auth.nodemailerTransport.split(':')[1]
                         .replace('//', '').replace('%40', '@');
-            // Setup message.
-            var mailOptions = {
-                from: '"roomM8" <'+email+'>',
-                replyTo: '"'+req.user.name+'" <'+req.user.email+'>',
-                to: '"'+recipient.name+'" <'+recipient.email+'>', 
-                subject: "New message from " + req.user.name + ": " + sanitizeInput(req.body.subject),
-                text: sanitizeInput(req.body.message, 1000)
+            // Get locations.
+            var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+            // Setup html email
+            var emailPageData = {
+                locations: locations,
+                user: req.user,
+                recipientName: recipient.name,
+                subject: sanitizeInput(req.body.subject),
+                message: sanitizeInput(req.body.message, 1000),
+                includeSVG: true,
+                startDate: formatDateNumToWords(req.user.startDate),
+                topFactors: selectTopFactors(req.user.factors)
             };
-            // Send mail with defined transport object.
-            transporter.sendMail(mailOptions, (error, info) => {
-                if(error)
-                    return res.json({ error: 'Email failed to send.' });
-                // Now update the current user's list of recipients.
-                User.addMailRecipient(req.user._id, req.body.recipientID, (err) => {
-                    return res.json({ success: true });
+            // Render email using EJS.
+            ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
+                if(err)
+                    return res.json({ error: 'Unable to render email. Please try again.' });
+                var htmlEmail = result;
+                // Setup message.
+                var mailOptions = {
+                    from: '"roomM8" <'+email+'>',
+                    replyTo: '"'+req.user.name+'" <'+req.user.email+'>',
+                    to: '"'+recipient.name+'" <'+recipient.email+'>', 
+                    subject: "New message from " + req.user.name + ": " + sanitizeInput(req.body.subject),
+                    text: sanitizeInput(req.body.message, 1000),
+                    html: htmlEmail
+                };
+                // Send mail with defined transport object.
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if(error)
+                        return res.json({ error: 'Email failed to send.' });
+                    // Now update the current user's list of recipients.
+                    User.addMailRecipient(req.user._id, req.body.recipientID, (err) => {
+                        return res.json({ success: true });
+                    });
                 });
             });
         });
@@ -337,6 +374,46 @@ function sanitizeArray(arr) {
     }
     return arr;
 }
+// Format date. Convert from '2017-09' to 'September 2017'
+function formatDateNumToWords(dateString) {
+    var options = {
+        year: "numeric", month: "long"
+    };
+    return new Date(dateString+"-02").toLocaleDateString("en-US", options);
+};
+var factorsDict = {
+    location: "Location",
+    residenceType: "Residence type",
+    ownBedroom: "Own bedroom",
+    ownBathroom: "Own bathroom",
+    commuteTime: "Short commute time",
+    cleanliness: "Cleanliness",
+    quietTime: "Quiet time",
+    substanceFree: "Substance-free",
+    sameGender: "Same gender",
+    sameAge: "Same age",
+    sameField: "Same field"
+};
+// Get the top 3 most important factors from array.
+function selectTopFactors(factors) {
+    var sorted = [];
+    for(var factor in factors) {
+        if(!factorsDict.hasOwnProperty(factor))
+            continue;
+        sorted.push({ 
+            factor: factor, 
+            rating: factors[factor] 
+        });
+    }
+    sorted.sort(function(a, b) {
+        return b.rating - a.rating;
+    });
+    var mostImportant = [];
+    for(var i=0; i<sorted.length; i++) {
+        mostImportant.push(factorsDict[sorted[i].factor]+" ("+sorted[i].rating+")");
+    }
+    return mostImportant.join(", ");
+};
 
 function genNewToken() {
     return getRandomInt(1000000000, 

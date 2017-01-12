@@ -259,6 +259,9 @@ $(document).ready(function(){
         });
     });
 
+    $("#registerModal .profile-card .desc").each(function() {
+        $(this).find('span').text($(this).attr('data-desc').substring(0,100)+"...");
+    });
     $("#dateToFormat").each(function() {
         $(this).text(formatDateNumToWords($(this).text()));
     });

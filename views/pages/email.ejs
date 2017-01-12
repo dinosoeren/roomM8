@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= subject %></title>
+    <style>
+        /* Bootstrap styles */
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        *:before, *:after {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        :after, :before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
+            font-size: 15px;
+            line-height: 1.42857143;
+            color: #333333;
+            background-color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            color: #2780e3;
+            text-decoration: none;
+        }
+        .bg-primary {
+            color: #fff;
+            background-color: #2780e3;
+        }
+        .bg-info {
+            background-color: #9954bb;
+        }
+        .btn-primary {
+            color: #ffffff;
+            background-color: #2780e3;
+            border-color: #2780e3;
+        }
+        .btn-info {
+            color: #ffffff;
+            background-color: #9954bb;
+            border-color: #9954bb;
+        }
+        .text-primary, .text-primary:hover, .text-primary svg path {
+            color: #2780e3;
+            fill: #2780e3;
+        }
+        .text-info, .text-info:hover, .text-info svg path {
+            color: #9954bb;
+            fill: #9954bb;
+        }
+        .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        @media (min-width: 768px) {
+            .col-sm-4 {
+                width: 33.33333333%;
+            }
+            .col-sm-8 {
+                width: 66.66666667%;
+            }
+        }
+        .row:before, .row:after {
+            content: " ";
+            display: table;
+        }
+        .row:after {
+            clear: both;
+        }
+        .btn {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: normal;
+            text-align: center;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            padding: 10px 18px;
+            font-size: 15px;
+            line-height: 1.42857143;
+            border-radius: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Profile card styles */
+        .profile-card {
+            padding: 15px 20px;
+            margin: 0px auto 20px auto;
+            min-width: 300px;
+            max-width: 600px;
+        }
+        .profile-card label {
+            font-weight: bold;
+            color: #fff;
+            padding: 2px 5px;
+            margin-right: 3px;
+            border-radius: 3px;
+        }
+        .profile-card .glyphicon {
+            margin: 0;
+            display: none;
+        }
+        .profile-card a.tip {
+            text-decoration: none;
+            cursor: default;
+        }
+        .profile-card a.tip:not(.float) {
+            color: inherit;
+        }
+        .profile-card .float {
+            padding: 3px 6px;
+            background: #fff;
+            font-weight: normal;
+            border-radius: 3px;
+            font-size: 0.9em;
+            margin-top: 5px;
+            margin-bottom: -25px;
+            max-width: 150px;
+            margin-left: auto;
+            text-align: center;
+        }
+        .profile-card .float:hover,
+        .profile-card .float:focus,
+        .profile-card .float:active {
+            color: #333;
+        }
+        .profile-card .inner-container {
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            display: table;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+        .profile-card .row.profile-container {
+            color: white;
+            padding: 35px 20px;
+            margin: 0;
+            position: relative;
+        }
+        .profile-card .row.profile-container.message-title {
+            padding: 15px 20px;
+        }
+        .profile-card .row.profile-container .col {
+            float: none;
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .profile-card div.row h2 {
+            margin: 0px;
+            margin-bottom: 2px;
+        }
+        .profile-card div.row p {
+            margin: 2px 0px;
+        }
+        .profile-card div.row p.desc {
+            margin-top: 15px;
+        }
+        .profile-card div.row p.desc a.more {
+            display: none;
+        }
+        .profile-card .data-container {
+            padding: 30px 35px 25px 35px;
+            position: relative;
+        }
+        .profile-card .data-container div.row {
+            margin: 0;
+            padding: 0;
+        }
+        .profile-card .message-container .email {
+            margin: 0;
+            padding: 5px;
+            text-align: center;
+        }
+        .profile-card .message-container .email .btn {
+            width: 100%;
+        }
+        .profile-card .data-container .col {
+            margin: 0;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        .profile-card .btn-photo {
+            margin-right: auto;
+            background-color: black;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Blank_woman_placeholder.svg/1024px-Blank_woman_placeholder.svg.png');
+            background-size: cover;
+            cursor: default;
+            margin-left: auto;
+            border: 2px solid white;
+        }
+        .btn-circle-lg {
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            padding: 13px 0;
+            font-size: 30px;
+            line-height: 2.00;
+            border-radius: 80px;
+        }
+        @media (max-width: 768px) { 
+            .btn-photo {
+                margin-right: auto;
+            }
+            .profile-card {
+                padding: 10px 0;
+            }
+            .profile-card a.tip.float {
+                top: 5px;
+                bottom: auto;
+            }
+            .profile-card .row.profile-container {
+                padding: 15px 20px;
+            }
+            .profile-card .inner-container,
+            .profile-card .row.profile-container .col {
+                display: block;
+            }
+            .profile-card .row.profile-container .col {
+                margin: 20px 0;
+                text-align: center;
+            }
+            .profile-card .data-container {
+                padding: 20px;
+            }
+            .profile-card .data-container div.row {
+                margin: 0;
+            }
+            .profile-card .data-container .col {
+                margin: 0;
+                padding: 3px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h1>Hi <%= recipientName.split(' ')[0] %>,</h1>
+        <p>
+            You have received a new message on 
+            <strong><a href="https://my-roomm8.herokuapp.com/">roomM8</a></strong>! 
+            This person thinks you 
+            might be a good potential roommate for them. You can view their message and 
+            their roomM8 profile below. To reply to them, simply reply to this email, or send a new
+            email to their email address (listed below).
+        </p>
+        <p>
+            Happy matching!
+        </p>
+    </div>
+    <div class="profile-card">
+        <div class="inner-container">
+            <div class="row profile-container message-title bg-<%= user.hasPlace ? 'info' : 'primary' %>">
+                <h2><%= subject %></h2>
+            </div>
+            <div class="data-container">
+                <div class="row">
+                    <p style="font-size: 1.3em;">
+                        <%= message %>
+                    </p>
+                    <h3 style="text-align: right;"> ~ <%= user.name %></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% include ../partials/user-profile.ejs %>
+    <div class="profile-card">
+        <p>
+            <strong>What's this?</strong>
+        </p>
+        <p>
+            You received this email because you signed up for roomM8, a web app designed
+            to help Nooglers find roommates. To stop receiving messages in your inbox, head over to 
+            <a href="https://my-roomm8.herokuapp.com/">roomM8</a>, where you can login
+            and delete your profile.
+        </p>
+        <p>
+            If you received this email by mistake, or if this user is harassing you,
+            please do not reply to this user. Please
+            email <a href="mailto:roomm8app@gmail.com">roomm8app@gmail.com</a> immediately
+            and inform us. Thank you.
+        </p>
+    </div>
+</body>
+</html>
