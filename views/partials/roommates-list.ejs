@@ -130,11 +130,11 @@
                             <p>
                                 <a href="javascript:;" tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
                                     <span class="glyphicon glyphicon-time text-info"></span> 
-                                    <strong>{{ x.currentResidence.durationInMonths }} months</strong>
+                                    <strong>{{ x.currentResidence.durationInMonths | durationFilter }}</strong>
                                 </a>
                                 <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
                                     <span class="glyphicon glyphicon-time text-primary"></span> 
-                                    <strong>{{ x.preferences.durationInMonths }} months</strong>
+                                    <strong>{{ x.preferences.durationInMonths | durationFilter }}</strong>
                                 </a>
                             </p>
                         </div>
@@ -148,7 +148,7 @@
                                 </a>
                                 <a href="javascript:;" tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
                                     <span class="glyphicon glyphicon-home text-primary"></span> 
-                                    <strong>{{ x.preferences.residenceType.capitalize() }}</strong>
+                                    <strong>{{ x.preferences.residenceType | residenceFilter }}</strong>
                                 </a>
                             </p>
                         </div>

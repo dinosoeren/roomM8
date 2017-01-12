@@ -70,7 +70,12 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-time text-info"></span> 
                                 <label class="bg-info"><%= isEmail ? 'Lease duration:' : '' %></label>
-                                <strong><%= user.currentResidence.durationInMonths %> months</strong>
+                                <%
+                                    var duration = user.currentResidence.durationInMonths + " months";
+                                    if(user.currentResidence.durationInMonths == -1)
+                                        duration = "Any period";
+                                %>
+                                <strong><%= duration %></strong>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -80,7 +85,12 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-time text-primary"></span> 
                                 <label class="bg-primary"><%= isEmail ? 'Desired stay duration:' : '' %></label>
-                                <strong><%= user.preferences.durationInMonths %> months</strong>
+                                <%
+                                    var duration = user.preferences.durationInMonths + " months";
+                                    if(user.preferences.durationInMonths == -1)
+                                        duration = "Any period";
+                                %>
+                                <strong><%= duration %></strong>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -97,7 +107,12 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-home text-info"></span> 
                                 <label class="bg-info"><%= isEmail ? 'Type of residence:' : '' %></label>
-                                <strong><%= user.currentResidence.residenceType.capitalize() %></strong>
+                                <%
+                                    var resType = user.currentResidence.residenceType.capitalize();
+                                    if(user.currentResidence.residenceType == "idc")
+                                        resType = "Anything";
+                                %>
+                                <strong><%= resType %></strong>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -107,7 +122,12 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-home text-primary"></span> 
                                 <label class="bg-primary"><%= isEmail ? 'Desired residence:' : '' %></label>
-                                <strong><%= user.preferences.residenceType.capitalize() %></strong>
+                                <%
+                                    var resType = user.preferences.residenceType.capitalize();
+                                    if(user.preferences.residenceType == "idc")
+                                        resType = "Anything";
+                                %>
+                                <strong><%= resType %></strong>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>

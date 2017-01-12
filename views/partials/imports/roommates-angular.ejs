@@ -52,12 +52,15 @@ app.filter('dateFormat', function() {
     return formatDateNumToWords;
 });
 app.filter('residenceFilter', function() {
-    return function(hasPlace, preferences, currentResidence) {
-        if(hasPlace) {
-            return currentResidence.residenceType.capitalize();
-        } else {
-            return preferences.residenceType.capitalize();
-        }
+    return function(type) {
+        if(type === "idc")
+            return "Anything";
+        return type.capitalize();
+    };
+});
+app.filter('durationFilter', function() {
+    return function(duration) {
+        return duration == -1 ? "Any period" : duration + " months";
     };
 });
 app.filter('locationsFilter', function() {

@@ -56,6 +56,12 @@ var roles = [
     "resident",
     "intern"
 ];
+var resTypesPref = [
+    "apartment",
+    "house",
+    "condo",
+    "idc"
+];
 var resTypes = [
     "apartment",
     "house",
@@ -96,15 +102,15 @@ for(var i=0; i<argv['gen']; i++) {
             "residenceType": randomArrayVal(resTypes),
             "vacantRooms": randInt(1,5),
             "bathrooms": randInt(1,5),
-            "durationInMonths": randInt(6,24),
+            "durationInMonths": randInt(0,1) == 0 ? randInt(6,24) : -1,
             "commuteTimeInMins": randInt(20,60)
         };
     } else {
         u["preferences"] = {
             "locations": generateLocations(randInt(2,3)),
-            "residenceType": randomArrayVal(resTypes),
+            "residenceType": randomArrayVal(resTypesPref),
             "roommates": randInt(1,5),
-            "durationInMonths": randInt(6,24),
+            "durationInMonths": randInt(0,1) == 0 ? randInt(6,24) : -1,
             "maxCommuteTimeInMins": randInt(20,60)
         };
         u["factors"]["location"] = randInt(0,3);

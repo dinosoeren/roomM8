@@ -342,7 +342,7 @@ function parseUserData(body) {
             locations: sanitizeArray(body.prefLocations),
             residenceType: sanitizeInput(body.prefResidenceType),
             roommates: parseInt(sanitizeInput(body.prefRoommates)),
-            durationInMonths: parseInt(sanitizeInput(body.prefDuration)),
+            durationInMonths: body.prefDuration ? parseInt(sanitizeInput(body.prefDuration)) : -1,
             maxCommuteTimeInMins: parseInt(sanitizeInput(body.prefMaxCommuteTime))
         };
         newData.factors.location = parseInt(sanitizeInput(body.factorLocation));
@@ -356,7 +356,7 @@ function parseUserData(body) {
             residenceType: sanitizeInput(body.resType),
             vacantRooms: parseInt(sanitizeInput(body.resBedrooms)),
             bathrooms: parseInt(sanitizeInput(body.resBathrooms)),
-            durationInMonths: parseInt(sanitizeInput(body.resDuration)),
+            durationInMonths: body.resDuration ? parseInt(sanitizeInput(body.resDuration)) : -1,
             commuteTimeInMins: parseInt(sanitizeInput(body.resCommuteTime))
         };
     }
