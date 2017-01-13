@@ -36,12 +36,12 @@
                 <p><%= locationName %></p>
             </div>
             <% if(user.hasPlace) { %>
-                <<%= isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
+                <<%- isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
                     <span class="glyphicon glyphicon-ok"></span> 
                     <%= isEmail ? 'Already has a place' : 'Has Place' %>
                 </<%= isEmail ? 'div' : 'a' %>>
             <% } else { %>
-                <<%= isEmail ? 'div' : 'a href="javascript:;"' %> href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
+                <<%- isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
                     <span class="glyphicon glyphicon-search"></span> 
                     <%= isEmail ? 'Looking for a place' : 'Looking' %>
                 </<%= isEmail ? 'div' : 'a' %>>
