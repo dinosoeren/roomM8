@@ -510,6 +510,7 @@ function checkSecretKey() {
         } else {
             showSuccessMessage("Success! You entered the correct code.");
             $("#code-stuff").slideUp();
+            $(".initial-signup .step2").text("Please sign in to continue");
         }
     }).fail(function() {
         showErrorMessage("An unexpected error occurred. Please try again.");
