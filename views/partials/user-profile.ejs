@@ -1,6 +1,6 @@
 <!-- User profile -->
 <%
-    var isEmail = typeof includeSVG !== "undefined";
+    var isEmail = typeof message !== "undefined";
     // Add string capitalize functions to ejs.
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
@@ -207,16 +207,18 @@
                 <% } %>
             </div>
             <div class="row">
-                <div class="col col-xs-12">
+                <div class="col col-xs-12 factors">
                     <p>
                         <% if(!isEmail) { %>
                         <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
                         <% } %>
                             <span class="glyphicon glyphicon-heart text-<%= user.hasPlace ? 'info' : 'primary' %>"></span> 
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Importance ratings:' : '' %></label>
-                            <strong id="factorsToSort" data-factors='<%- isEmail ? '' : JSON.stringify(user.factors) %>'>
-                                <%= isEmail ? topFactors : '' %>
-                            </strong>
+                            <% if(!isEmail) { %>
+                                <strong id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></strong>
+                            <% } else { %>
+                                <% include factors-sliders.ejs %>
+                            <% } %>
                         <% if(!isEmail) { %>
                         </a>
                         <% } %>
@@ -225,6 +227,9 @@
             </div>
             <div class="row">
                 <p class="desc" data-desc="<%= user.aboutMe %>">
+                    <% if(isEmail) { %>
+                        <label class="bg-primary">About Me:</label>
+                    <% } %>
                     <span><%= user.aboutMe %></span>
                     <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="more" onclick="toggleReadMore(event,this);">More</a>
                 </p>

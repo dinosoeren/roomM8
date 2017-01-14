@@ -105,9 +105,7 @@ module.exports = function(app, auth, passport) {
             recipientName: "[Recipient]",
             subject: "[Subject]",
             message: "[Your message goes here]",
-            includeSVG: true,
-            startDate: formatDateNumToWords(req.user.startDate),
-            topFactors: selectTopFactors(req.user.factors)
+            startDate: formatDateNumToWords(req.user.startDate)
         };
         res.render('pages/email', pageData);
     });
@@ -138,9 +136,7 @@ module.exports = function(app, auth, passport) {
                 recipientName: recipient.name,
                 subject: sanitizeInput(req.body.subject),
                 message: sanitizeInput(req.body.message, 1000),
-                includeSVG: true,
-                startDate: formatDateNumToWords(req.user.startDate),
-                topFactors: selectTopFactors(req.user.factors)
+                startDate: formatDateNumToWords(req.user.startDate)
             };
             // Render email using EJS.
             ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
@@ -380,39 +376,6 @@ function formatDateNumToWords(dateString) {
         year: "numeric", month: "long"
     };
     return new Date(dateString+"-02").toLocaleDateString("en-US", options);
-};
-var factorsDict = {
-    location: "Location",
-    residenceType: "Residence type",
-    ownBedroom: "Own bedroom",
-    ownBathroom: "Own bathroom",
-    commuteTime: "Short commute time",
-    cleanliness: "Cleanliness",
-    quietTime: "Quiet time",
-    substanceFree: "Substance-free",
-    sameGender: "Same gender",
-    sameAge: "Same age",
-    sameField: "Same field"
-};
-// Get the top 3 most important factors from array.
-function selectTopFactors(factors) {
-    var sorted = [];
-    for(var factor in factors) {
-        if(!factorsDict.hasOwnProperty(factor))
-            continue;
-        sorted.push({ 
-            factor: factor, 
-            rating: factors[factor] 
-        });
-    }
-    sorted.sort(function(a, b) {
-        return b.rating - a.rating;
-    });
-    var mostImportant = [];
-    for(var i=0; i<sorted.length; i++) {
-        mostImportant.push(factorsDict[sorted[i].factor]+" ("+sorted[i].rating+")");
-    }
-    return mostImportant.join(", ");
 };
 
 function genNewToken() {

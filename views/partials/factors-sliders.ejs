@@ -1,0 +1,186 @@
+<!-- Importance factors ratings w/sliders -->
+<%
+    var isEmail = typeof message !== "undefined";
+    var showSlider = function(rating) {
+%>
+    <div class="slider slider-horizontal rating-<%= rating %>">
+        <div class="slider-track">
+            <div class="slider-track-low" style="left: 0px; width: 0%;"></div>
+            <div class="slider-selection tick-slider-selection" style="left: 0%;"></div>
+            <div class="slider-track-high" style="right: 0px;"></div>
+        </div>
+        <div class="slider-tick-container">
+            <div class="slider-tick round in-selection" style="left: 0%;"></div>
+            <div class="slider-tick round <%= rating > 1 ? 'in-selection' : '' %>" style="left: 50%;"></div>
+            <div class="slider-tick round" style="left: 100%;"></div>
+        </div>
+        <div class="slider-handle min-slider-handle round" role="slider"></div>
+    </div>
+<%
+    }
+%>
+<div class="form-group row">
+    <label class="col-xs-4 col-form-label"></label>
+    <div class="col-xs-7" style="font-size: 0.9em; padding: 0;">
+        <div class="col-xs-4" style="padding: 0;">(not very)</div>
+        <div class="col-xs-4 text-center" style="padding: 0;">(somewhat)</div>
+        <div class="col-xs-4 text-right" style="padding: 0;">(very)</div>
+    </div>
+</div>
+<div class="form-group row no-place">
+    <div class="col-xs-4 text-right">
+        <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in one of the preferred locations you listed?"><span class="glyphicon glyphicon-question-sign"></span></a>
+        Location
+    </div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.location || 1);
+        } else { 
+        %>
+        <input id="important-location" name="factorLocation" type="text" class="slider"
+        data-slider-value="<%= (isUserRegistered && user.factors.location) ? user.factors.location : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row no-place">
+    <div class="col-xs-4 text-right">
+        <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in the type of residence you selected?"><span class="glyphicon glyphicon-question-sign"></span></a>
+        Type of residence
+    </div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.residenceType || 1);
+        } else { 
+        %>
+        <input id="important-residence" name="factorResidence" type="text" class="slider"
+        data-slider-value="<%= (isUserRegistered && user.factors.residenceType) ? user.factors.residenceType : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row no-place">
+    <div class="col-xs-4" style="text-align: right;">Own bedroom</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.ownBedroom || 1);
+        } else { 
+        %>
+        <input id="important-own-room" name="factorOwnBedroom" type="text" class="slider"
+        data-slider-value="<%= (isUserRegistered && user.factors.ownBedroom) ? user.factors.ownBedroom : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row no-place">
+    <div class="col-xs-4" style="text-align: right;">Own bathroom</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.ownBathroom || 1);
+        } else { 
+        %>
+        <input id="important-own-bathroom" name="factorOwnBathroom" type="text" class="slider"
+        data-slider-value="<%= (isUserRegistered && user.factors.ownBathroom) ? user.factors.ownBathroom : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row no-place">
+    <div class="col-xs-4" style="text-align: right;">Short commute time</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.commuteTime || 1);
+        } else { 
+        %>
+        <input id="important-commute-time" name="factorCommuteTime" type="text" class="slider"
+        data-slider-value="<%= (isUserRegistered && user.factors.commuteTime) ? user.factors.commuteTime : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-xs-4" style="text-align: right;">Cleanliness</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.cleanliness || 1);
+        } else { 
+        %>
+        <input id="important-cleanliness" name="factorCleanliness" type="text" class="slider" required
+        data-slider-value="<%= (isUserRegistered) ? user.factors.cleanliness : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-xs-4" style="text-align: right;">Quiet time</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.quietTime || 1);
+        } else { 
+        %>
+        <input id="important-quiet" name="factorQuietTime" type="text" class="slider" required
+        data-slider-value="<%= (isUserRegistered) ? user.factors.quietTime : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-xs-4 text-right">
+        <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="No smoking, alcohol, drugs, etc."><span class="glyphicon glyphicon-question-sign"></span></a>
+        Substance-free</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.substanceFree || 1);
+        } else { 
+        %>
+        <input id="important-substance-free" name="factorSubstanceFree" type="text" class="slider" required
+        data-slider-value="<%= (isUserRegistered) ? user.factors.substanceFree : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-xs-4 text-right">
+        <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all the same gender as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
+        Same gender</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.sameGender || 1);
+        } else { 
+        %>
+        <input id="important-same-gender" name="factorSameGender" type="text" class="slider" required
+        data-slider-value="<%= (isUserRegistered) ? user.factors.sameGender : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-xs-4 text-right">
+        <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates are all around the same age as you? (+/- 5 years)"><span class="glyphicon glyphicon-question-sign"></span></a>
+        Same age</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.sameAge || 1);
+        } else { 
+        %>
+        <input id="important-same-age" name="factorSameAge" type="text" class="slider" required
+        data-slider-value="<%= (isUserRegistered) ? user.factors.sameAge : '1' %>" />
+        <% } %>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-xs-4 text-right">
+        <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that your roommates all work in the same field as you?"><span class="glyphicon glyphicon-question-sign"></span></a>
+        Same field of work</div>
+    <div class="col-xs-7">
+        <% 
+        if(isEmail) {
+            showSlider(user.factors.sameField || 1);
+        } else { 
+        %>
+        <input id="important-same-field" name="factorSameField" type="text" class="slider" required
+        data-slider-value="<%= (isUserRegistered) ? user.factors.sameField : '1' %>" />
+        <% } %>
+    </div>
+</div>
