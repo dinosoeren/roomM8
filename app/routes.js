@@ -102,9 +102,9 @@ module.exports = function(app, auth, passport) {
         var pageData = {
             locations: locations,
             user: req.user,
-            recipientName: "Joe Smith",
-            subject: "Potential Noogler Roommate?",
-            message: "How are you?",
+            recipientName: "[Recipient]",
+            subject: "[Subject]",
+            message: "[Your message goes here]",
             includeSVG: true,
             startDate: formatDateNumToWords(req.user.startDate),
             topFactors: selectTopFactors(req.user.factors)
