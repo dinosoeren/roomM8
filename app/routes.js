@@ -7,6 +7,29 @@ const shOptions = { allowedTags: [], allowedAttributes: [] };
 const nodemailer = require('nodemailer'); // Send emails.
 const ejs = require('ejs'); // HTML javascript template engine.
 const juice = require('juice'); // CSS inliner tool.
+const juiceClient = require('juice/client');
+var juiceOptions = {
+    preserveFontFaces: false,
+    webResources: { 
+        scripts: false,
+        relativeTo: "public/css"
+    }
+};
+juiceClient.excludedProperties = [
+    '-moz-box-sizing', 
+    '-webkit-box-sizing', 
+    'font-style',
+    'line-height',
+    '-webkit-font-smoothing',
+    '-moz-osx-font-smoothing',
+    'margin-left',
+    'margin-right',
+    'padding-left',
+    'padding-right',
+    '-webkit-box-shadow',
+    'box-shadow',
+    'position'
+];
 
 module.exports = function(app, auth, passport) {
 
@@ -113,14 +136,8 @@ module.exports = function(app, auth, passport) {
             if(err)
                 return res.json({ error: 'Unable to render email. Please try again.' });
             var initialHTML = result;
-            var options = {
-                webResources: { 
-                    scripts: false,
-                    relativeTo: "public/css"
-                }
-            };
             // Convert all CSS rules to inline.
-            juice.juiceResources(initialHTML, options, (err, htmlPage) => {
+            juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
                 if(err)
                     return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
                 res.send(htmlPage);
@@ -161,14 +178,8 @@ module.exports = function(app, auth, passport) {
                 if(err)
                     return res.json({ error: 'Unable to render email. Please try again.' });
                 var initialHTML = result;
-                var options = {
-                    webResources: { 
-                        scripts: false,
-                        relativeTo: "public/css"
-                    }
-                };
                 // Convert all CSS rules to inline.
-                juice.juiceResources(initialHTML, options, (err, htmlPage) => {
+                juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
                     if(err)
                         return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
                     // Setup message.

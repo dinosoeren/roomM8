@@ -17,6 +17,7 @@
         <div class="col-xs-4 text-right" style="padding: 0;"><%= isEmail ? '3' : '(very)' %></div>
     </div>
 </div>
+<% if(!isEmail || !user.hasPlace) { %>
 <div class="form-group row no-place">
     <div class="col-xs-4 text-right">
         <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="How important is it that you live in one of the preferred locations you listed?"><span class="glyphicon glyphicon-question-sign"></span></a>
@@ -88,6 +89,7 @@
         <% } %>
     </div>
 </div>
+<% } %>
 <div class="form-group row">
     <div class="col-xs-4" style="text-align: right;">Cleanliness</div>
     <div class="col-xs-7">

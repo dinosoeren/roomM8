@@ -17,7 +17,11 @@
     <div class="inner-container">
         <div class="row profile-container bg-<%= user.hasPlace ? 'info' : 'primary' %>">
             <div class="col col-sm-4">
-                <div class="btn-circle-lg btn-photo" style="background-image: url('<%= user.photoUrl %>');"></div>
+                <div class="btn-circle-lg btn-photo" style="background-image: url('<%= user.photoUrl %>');">
+                    <% if(isEmail) { %>
+                        <img src="<%= user.photoUrl %>" />
+                    <% } %>
+                </div>
             </div>
             <div class="col col-sm-8">
                 <h2><%= user.name %></h2>
@@ -37,12 +41,16 @@
             </div>
             <% if(user.hasPlace) { %>
                 <<%- isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
+                    <% if(!isEmail) { %>
                     <span class="glyphicon glyphicon-ok"></span> 
+                    <% } %>
                     <%= isEmail ? 'Already has a place' : 'Has Place' %>
                 </<%= isEmail ? 'div' : 'a' %>>
             <% } else { %>
                 <<%- isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
+                    <% if(!isEmail) { %>
                     <span class="glyphicon glyphicon-search"></span> 
+                    <% } %>
                     <%= isEmail ? 'Looking for a place' : 'Looking' %>
                 </<%= isEmail ? 'div' : 'a' %>>
             <% } %>
@@ -52,9 +60,9 @@
                 <div class="col col-xs-6">
                     <p>
                         <% if(!isEmail) { %>
-                        <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
-                            <% } %>
+                        <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
                             <span class="glyphicon glyphicon-calendar text-<%= user.hasPlace ? 'info' : 'primary' %>"></span>
+                        <% } %>
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Start Date:' : '' %></label>
                             <span id="dateToFormat"><%= isEmail ? startDate : user.startDate %></span>
                         <% if(!isEmail) { %>
@@ -66,9 +74,9 @@
                     <p>
                         <% if(user.hasPlace) { %>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
                                 <span class="glyphicon glyphicon-time text-info"></span> 
+                            <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Lease duration:' : '' %></label>
                                 <%
                                     var duration = user.currentResidence.durationInMonths + " months";
@@ -81,9 +89,9 @@
                             <% } %>
                         <% } else { %>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
                                 <span class="glyphicon glyphicon-time text-primary"></span> 
+                            <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Desired stay duration:' : '' %></label>
                                 <%
                                     var duration = user.preferences.durationInMonths + " months";
@@ -103,9 +111,9 @@
                     <p>
                         <% if(user.hasPlace) { %>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" data-toggle="tooltip" data-placement="auto" title="Type of residence">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Type of residence">
                                 <span class="glyphicon glyphicon-home text-info"></span> 
+                            <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Type of residence:' : '' %></label>
                                 <%
                                     var resType = user.currentResidence.residenceType.capitalize();
@@ -118,9 +126,9 @@
                             <% } %>
                         <% } else { %>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
                                 <span class="glyphicon glyphicon-home text-primary"></span> 
+                            <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Desired residence:' : '' %></label>
                                 <%
                                     var resType = user.preferences.residenceType.capitalize();
@@ -138,20 +146,20 @@
                     <p>
                         <% if(user.hasPlace) { %>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
                                 <span class="glyphicon glyphicon-user text-info"></span> 
+                            <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Available rooms:' : '' %></label>
                                 <% var numRoommates = user.currentResidence.vacantRooms %>
-                                <span>+<%= numRoommates+(numRoommates>1?"people":"person") %></span>
+                                <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
                         <% } else { %>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
                                 <span class="glyphicon glyphicon-user text-primary"></span> 
+                            <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Desired roommates:' : '' %></label>
                                 <% var numRoommates = user.preferences.roommates %>
                                 <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
@@ -167,9 +175,9 @@
                     <div class="col col-xs-6">
                         <p>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="City of residence">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="City of residence">
                                 <span class="glyphicon glyphicon-map-marker text-info"></span> 
+                            <% } %>
                                 <label class="bg-info"><%= isEmail ? 'City of residence:' : '' %></label>
                                 <span><%= user.currentResidence.location %></span>
                             <% if(!isEmail) { %>
@@ -180,9 +188,9 @@
                     <div class="col col-xs-6">
                         <p>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Bathrooms in residence">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Bathrooms in residence">
                                 <span class="glyphicon glyphicon-tint text-info"></span> 
+                            <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Bathrooms in residence:' : '' %></label>
                                 <span><%= user.currentResidence.bathrooms %> bathrooms</span>
                             <% if(!isEmail) { %>
@@ -194,9 +202,9 @@
                     <div class="col col-xs-12">
                         <p>
                             <% if(!isEmail) { %>
-                            <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
-                            <% } %>
+                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
                                 <span class="glyphicon glyphicon-map-marker text-primary"></span> 
+                            <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Preferred cities to live in:' : '' %></label>
                                 <span><%= user.preferences.locations.join(', ') %></span>
                             <% if(!isEmail) { %>
@@ -210,9 +218,9 @@
                 <div class="col col-xs-12 factors">
                     <p>
                         <% if(!isEmail) { %>
-                        <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
-                        <% } %>
+                        <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
                             <span class="glyphicon glyphicon-heart text-<%= user.hasPlace ? 'info' : 'primary' %>"></span> 
+                        <% } %>
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Importance ratings (1 - least, 3 - most):' : '' %></label>
                             <% if(!isEmail) { %>
                                 <span id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></span>
@@ -239,7 +247,7 @@
         </div>
         <div class="message-container">
             <div class="row email">
-                <a href="<%= isEmail ? 'mailto:'+user.email : 'javascript:;' %>" data-toggle="tooltip" data-placement="auto" title="Your email is not publicly visibile. When other users send you messages, you will receive them at this email." class="btn btn-<%= user.hasPlace ? 'info' : 'primary' %>">
+                <a href="<%- isEmail ? 'mailto:'+user.email : 'javascript:;' %>" data-toggle="tooltip" data-placement="auto" title="Your email is not publicly visibile. When other users send you messages, you will receive them at this email." class="btn btn-<%= user.hasPlace ? 'info' : 'primary' %>">
                     <%= isEmail ? 'Reply to '+user.name.split(' ')[0]+': ' : '' %><%= user.email %>
                 </a>
             </div>
