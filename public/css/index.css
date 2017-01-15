@@ -264,6 +264,7 @@ input[type='checkbox'].input-error {
 .profile-card a.tip {
     text-decoration: none;
     cursor: default;
+    font-weight: bold;
 }
 .profile-card a.tip:not(.float) {
     color: inherit;

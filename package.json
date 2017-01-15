@@ -20,6 +20,7 @@
     "ejs": "^2.5.5",
     "express": "^4.14.0",
     "express-session": "^1.14.2",
+    "juice": "^4.0.2",
     "mongo-sanitize": "^1.0.0",
     "mongodb": "^2.2.19",
     "mongoose": "^4.7.6",

@@ -4,8 +4,9 @@ const User = require('./models/user');
 const sanitizeMongo = require('mongo-sanitize');
 const sanitizeHtml = require('sanitize-html');
 const shOptions = { allowedTags: [], allowedAttributes: [] };
-const nodemailer = require('nodemailer');
-const ejs = require('ejs');
+const nodemailer = require('nodemailer'); // Send emails.
+const ejs = require('ejs'); // HTML javascript template engine.
+const juice = require('juice'); // CSS inliner tool.
 
 module.exports = function(app, auth, passport) {
 
@@ -99,7 +100,7 @@ module.exports = function(app, auth, passport) {
     app.get('/test/email', isLoggedIn, isRegistered, (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
-        var pageData = {
+        var emailPageData = {
             locations: locations,
             user: req.user,
             recipientName: "[Recipient]",
@@ -107,7 +108,24 @@ module.exports = function(app, auth, passport) {
             message: "[Your message goes here]",
             startDate: formatDateNumToWords(req.user.startDate)
         };
-        res.render('pages/email', pageData);
+        // Render email using EJS.
+        ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
+            if(err)
+                return res.json({ error: 'Unable to render email. Please try again.' });
+            var initialHTML = result;
+            var options = {
+                webResources: { 
+                    scripts: false,
+                    relativeTo: "public/css"
+                }
+            };
+            // Convert all CSS rules to inline.
+            juice.juiceResources(initialHTML, options, (err, htmlPage) => {
+                if(err)
+                    return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
+                res.send(htmlPage);
+            });
+        });
     });
 
     // Message another user.
@@ -142,23 +160,34 @@ module.exports = function(app, auth, passport) {
             ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
                 if(err)
                     return res.json({ error: 'Unable to render email. Please try again.' });
-                var htmlEmail = result;
-                // Setup message.
-                var mailOptions = {
-                    from: '"roomM8" <'+email+'>',
-                    replyTo: '"'+req.user.name+'" <'+req.user.email+'>',
-                    to: '"'+recipient.name+'" <'+recipient.email+'>', 
-                    subject: "New message from " + req.user.name + ": " + sanitizeInput(req.body.subject),
-                    text: sanitizeInput(req.body.message, 1000),
-                    html: htmlEmail
+                var initialHTML = result;
+                var options = {
+                    webResources: { 
+                        scripts: false,
+                        relativeTo: "public/css"
+                    }
                 };
-                // Send mail with defined transport object.
-                transporter.sendMail(mailOptions, (error, info) => {
-                    if(error)
-                        return res.json({ error: 'Email failed to send.' });
-                    // Now update the current user's list of recipients.
-                    User.addMailRecipient(req.user._id, req.body.recipientID, (err) => {
-                        return res.json({ success: true });
+                // Convert all CSS rules to inline.
+                juice.juiceResources(initialHTML, options, (err, htmlPage) => {
+                    if(err)
+                        return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
+                    // Setup message.
+                    var mailOptions = {
+                        from: '"roomM8" <'+email+'>',
+                        replyTo: '"'+req.user.name+'" <'+req.user.email+'>',
+                        to: '"'+recipient.name+'" <'+recipient.email+'>', 
+                        subject: "New message from " + req.user.name + ": " + sanitizeInput(req.body.subject),
+                        text: sanitizeInput(req.body.message, 1000),
+                        html: htmlPage
+                    };
+                    // Send mail with defined transport object.
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if(error)
+                            return res.json({ error: 'Email failed to send.' });
+                        // Now update the current user's list of recipients.
+                        User.addMailRecipient(req.user._id, req.body.recipientID, (err) => {
+                            return res.json({ success: true });
+                        });
                     });
                 });
             });

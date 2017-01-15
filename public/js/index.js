@@ -209,11 +209,15 @@ $(document).ready(function(){
         modal.find("[type='checkbox']").prop('checked', false);
     });
     // Handle message send button click.
+    var sendingMessage = false;
     $('#message-form .btn-send').on('click', function() {
+        if(sendingMessage)
+            return;
         if(!areAllFieldInputsValid('#fieldsetMessage')) {
             showErrorMessage(null, '#message-form');
             return;
         }
+        sendingMessage = true;
         $('#fieldsetMessage').slideUp(200);
         startSpinner("#messageModal .modal-body");
         // Send message to server.
@@ -223,6 +227,7 @@ $(document).ready(function(){
             message: $('#messageContent').val()
         }).done(function(data) {
             stopSpinner();
+            sendingMessage = false;
             if (data.error) {
                 showErrorMessage("Error: "+data.error, '#message-form');
                 $('#fieldsetMessage').stop().slideDown(200);
@@ -241,6 +246,7 @@ $(document).ready(function(){
             }
         }).fail(function() {
             stopSpinner();
+            sendingMessage = false;
             showErrorMessage("An unexpected error occurred. Please try again.", '#message-form');
             $('#fieldsetMessage').stop().slideDown(200);
         });

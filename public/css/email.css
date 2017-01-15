@@ -1,0 +1,105 @@
+/* Profile card styles */
+.profile-card {
+    padding: 15px 10px;
+    margin: 0px auto 20px auto;
+    min-width: 300px;
+    max-width: 600px;
+}
+.profile-card label:not(.col-form-label) {
+    color: #333;
+    padding: 8px 5px;
+    margin-bottom: 0;
+    font-weight: bold;
+    background: transparent;
+    width: 50%;
+    display: inline-block;
+    border-left: 2px solid #2780e3;
+}
+.profile-card label:not(.col-form-label) + span {
+    display: inline-block;
+    font-weight: normal;
+}
+.profile-card .glyphicon {
+    margin: 0;
+    display: none;
+}
+.profile-card .inner-container {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid #ddd;
+}
+.profile-card .float {
+    padding: 3px 8px;
+    background: #fff;
+    font-weight: normal;
+    border-radius: 3px;
+    font-size: 0.9em;
+    margin-top: 5px;
+    margin-left: auto;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+}
+.profile-card .row.profile-container {
+    padding: 35px 20px 10px 20px;
+    text-align: right;
+}
+.profile-card .row.profile-container .col {
+    margin: 20px 0;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+.profile-card .data-container {
+    padding: 15px;
+}
+.profile-card .data-container div.row {
+    margin: 0;
+    padding: 0;
+}
+.profile-card .data-container div.factors {
+    float: left;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.profile-card .data-container .factors .form-group {
+    margin: 0;
+    float: left;
+    width: 100%;
+    padding: 5px;
+}
+.profile-card .data-container .factors .form-group:nth-child(odd) {
+    background: #fff;
+}
+.profile-card .data-container .factors .form-group:not(.titles) {
+    border-left: 2px solid #2780e3;
+    border-right: 2px solid #2780e3;
+}
+.profile-card .data-container .factors .form-group > * {
+    width: 50%;
+    margin: 0;
+}
+.profile-card .data-container .factors .form-group.titles {
+    border-bottom: 2px solid #2780e3;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.profile-card .data-container .factors .form-group:not(.titles) .col-xs-7 div {
+    color: #2780e3;
+}
+.profile-card .data-container .factors .form-group:last-child {
+    border-bottom: 2px solid #2780e3;
+}
+.profile-card .data-container .col {
+    margin: 0;
+    margin-bottom: 10px;
+    float: none;
+    width: 100%;
+    background: #eee;
+}
+.profile-card .email a {
+    display: block;
+}
+.btn-photo {
+    margin-right: auto;
+}

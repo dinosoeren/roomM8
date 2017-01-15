@@ -56,7 +56,7 @@
                             <% } %>
                             <span class="glyphicon glyphicon-calendar text-<%= user.hasPlace ? 'info' : 'primary' %>"></span>
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Start Date:' : '' %></label>
-                            <strong id="dateToFormat"><%= isEmail ? startDate : user.startDate %></strong>
+                            <span id="dateToFormat"><%= isEmail ? startDate : user.startDate %></span>
                         <% if(!isEmail) { %>
                         </a>
                         <% } %>
@@ -75,7 +75,7 @@
                                     if(user.currentResidence.durationInMonths == -1)
                                         duration = "Any period";
                                 %>
-                                <strong><%= duration %></strong>
+                                <span><%= duration %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -90,7 +90,7 @@
                                     if(user.preferences.durationInMonths == -1)
                                         duration = "Any period";
                                 %>
-                                <strong><%= duration %></strong>
+                                <span><%= duration %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -112,7 +112,7 @@
                                     if(user.currentResidence.residenceType == "idc")
                                         resType = "Anything";
                                 %>
-                                <strong><%= resType %></strong>
+                                <span><%= resType %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -127,7 +127,7 @@
                                     if(user.preferences.residenceType == "idc")
                                         resType = "Anything";
                                 %>
-                                <strong><%= resType %></strong>
+                                <span><%= resType %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -143,7 +143,7 @@
                                 <span class="glyphicon glyphicon-user text-info"></span> 
                                 <label class="bg-info"><%= isEmail ? 'Available rooms:' : '' %></label>
                                 <% var numRoommates = user.currentResidence.vacantRooms %>
-                                <strong>+<%= numRoommates+(numRoommates>1?"people":"person") %></strong>
+                                <span>+<%= numRoommates+(numRoommates>1?"people":"person") %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -154,7 +154,7 @@
                                 <span class="glyphicon glyphicon-user text-primary"></span> 
                                 <label class="bg-primary"><%= isEmail ? 'Desired roommates:' : '' %></label>
                                 <% var numRoommates = user.preferences.roommates %>
-                                <strong>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></strong>
+                                <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -171,7 +171,7 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-map-marker text-info"></span> 
                                 <label class="bg-info"><%= isEmail ? 'City of residence:' : '' %></label>
-                                <strong><%= user.currentResidence.location %></strong>
+                                <span><%= user.currentResidence.location %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -184,7 +184,7 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-tint text-info"></span> 
                                 <label class="bg-info"><%= isEmail ? 'Bathrooms in residence:' : '' %></label>
-                                <strong><%= user.currentResidence.bathrooms %> bathrooms</strong>
+                                <span><%= user.currentResidence.bathrooms %> bathrooms</span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -198,7 +198,7 @@
                             <% } %>
                                 <span class="glyphicon glyphicon-map-marker text-primary"></span> 
                                 <label class="bg-primary"><%= isEmail ? 'Preferred cities to live in:' : '' %></label>
-                                <strong><%= user.preferences.locations.join(', ') %></strong>
+                                <span><%= user.preferences.locations.join(', ') %></span>
                             <% if(!isEmail) { %>
                             </a>
                             <% } %>
@@ -213,9 +213,9 @@
                         <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
                         <% } %>
                             <span class="glyphicon glyphicon-heart text-<%= user.hasPlace ? 'info' : 'primary' %>"></span> 
-                            <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Importance ratings:' : '' %></label>
+                            <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Importance ratings (1 - least, 3 - most):' : '' %></label>
                             <% if(!isEmail) { %>
-                                <strong id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></strong>
+                                <span id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></span>
                             <% } else { %>
                                 <% include factors-sliders.ejs %>
                             <% } %>
@@ -228,17 +228,19 @@
             <div class="row">
                 <p class="desc" data-desc="<%= user.aboutMe %>">
                     <% if(isEmail) { %>
-                        <label class="bg-primary">About Me:</label>
+                        <label class="bg-primary" style="display: block; width: 100%; float: left; background: #eee;">About Me:</label>
                     <% } %>
                     <span><%= user.aboutMe %></span>
-                    <a href="<%= isEmail ? '#' : 'javascript:;' %>" class="more" onclick="toggleReadMore(event,this);">More</a>
+                    <% if(!isEmail) { %>
+                    <a href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
+                    <% } %>
                 </p>
             </div>
         </div>
         <div class="message-container">
             <div class="row email">
                 <a href="<%= isEmail ? 'mailto:'+user.email : 'javascript:;' %>" data-toggle="tooltip" data-placement="auto" title="Your email is not publicly visibile. When other users send you messages, you will receive them at this email." class="btn btn-<%= user.hasPlace ? 'info' : 'primary' %>">
-                    <span class="btn-text"><%= user.email %></span>
+                    <%= isEmail ? 'Reply to '+user.name.split(' ')[0]+': ' : '' %><%= user.email %>
                 </a>
             </div>
         </div>
