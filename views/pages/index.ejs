@@ -32,18 +32,18 @@
                 <% if(!isUserRegistered) { %>
                     <h1>Relocating for Google?</h1>
                     <p>
-                        I am too, and I'm trying to figure out where I'm going to live. 
-                        I wanted an easy way to find other Nooglers who 
-                        could be potentially good roommates, so I made this web app.
-                        I hope you find it useful!
+                        Me too! I wanted an easy way to find other Nooglers who 
+                        could be potentially good roommates, so I made this web app,
+                        where you can search for Nooglers by their starting date, 
+                        Google campus location, and living preferences.
                     </p>
                 <% } else { %>
                     <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>
                     <p>
-                        As more users sign up for roomM8, you should begin to 
-                        receive emails with potential roommates. In the mean 
-                        time, you can search through the current userbase to 
-                        see if anyone catches your eye.
+                        As more users join roomM8, you should begin to 
+                        receive emails from potential roommates. In the mean 
+                        time, feel free to search for Nooglers below and
+                        message them if they seem like a good match.
                     </p>
                 <% } %>
                 <p>

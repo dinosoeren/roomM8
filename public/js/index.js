@@ -55,14 +55,18 @@ $(document).ready(function(){
         isModalReady = false;
         var parent_fieldset;
         if(currentStep === -1) {
-            $('#agreeToDelete').prop('checked', false); // uncheck agree box
+            $('#agreeToDelete').prop('checked', false); // Uncheck agree box.
             parent_fieldset = $('#registration-form fieldset#confirmDelete');
         } else {
             parent_fieldset = $('#registration-form fieldset#f'+currentStep);
         }
-        currentStep = 0; // go back to step 0 after this.
+        currentStep = 0; // Go back to step 0 after this.
         parent_fieldset.fadeOut(200, function () {
             $('#registration-form fieldset#f'+currentStep).show();
+            $('#registration-form')[0].reset(); // Reset the form to default values.
+            $('#registration-form .regRequired, #registration-form .form-control').each(function () {
+                $(this).removeClass('input-error'); // Remove input error classes.
+            });
             evalBtns();
             isModalReady = true;
         });
@@ -190,8 +194,9 @@ $(document).ready(function(){
         var recipientName = button.data('name');
         var recipientID = button.data('id');
         var modal = $(this);
-        // Hide success message.
+        // Hide messages.
         hideSuccessMessage('#message-form');
+        hideErrorMessage('#message-form');
         // Show fieldset.
         $('#fieldsetMessage').show();
         $('#message-form .btn-send').show();
@@ -201,6 +206,9 @@ $(document).ready(function(){
         if($('#messageSubject').val() === "" || $('#recipientID').val() != recipientID) {
             $('#messageSubject').val($('#messageSubject').data('default'));
             $('#messageContent').val('');
+            $('#fieldsetMessage .regRequired, #fieldsetMessage .form-control').each(function () {
+                $(this).removeClass('input-error'); // Remove input error classes.
+            });
         }
         $('#recipientID').val(recipientID);
         $('#recipientName').val(recipientName);
@@ -236,7 +244,8 @@ $(document).ready(function(){
                 // Reset the form to default state.
                 $('#message-form')[0].reset();
                 $('#message-form .btn-send').hide();
-                // Disable the button.
+                $('#message-form .btn-cancel').text("Done");
+                // Disable the message button in profile card.
                 var button = $(".profile-card button[data-id='"+$("#recipientID").val()+"']").first();
                 button.prop('disabled', true);
                 var glyphicon = button.find('.glyphicon');
@@ -508,7 +517,7 @@ function hideSuccessMessage(formSelector) {
 function checkSecretKey() {
     if($("#secretKey").val() === "")
         return;
-    $.post("/api/access", {
+    $.post("/access", {
         key: $("#secretKey").val()
     }).done(function(data) {
         if (data.error) {

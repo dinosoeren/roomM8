@@ -8,6 +8,8 @@ const nodemailer = require('nodemailer'); // Send emails.
 const ejs = require('ejs'); // HTML javascript template engine.
 const juice = require('juice'); // CSS inliner tool.
 const juiceClient = require('juice/client');
+
+// Standard settings for juice CSS inlining.
 var juiceOptions = {
     preserveFontFaces: false,
     webResources: { 
@@ -15,6 +17,7 @@ var juiceOptions = {
         relativeTo: "public/css"
     }
 };
+// Exclude these CSS properties from any juice inlining.
 juiceClient.excludedProperties = [
     '-moz-box-sizing', 
     '-webkit-box-sizing', 
@@ -33,10 +36,10 @@ juiceClient.excludedProperties = [
 
 module.exports = function(app, auth, passport) {
 
-    // Create reusable transporter object using the default SMTP transport.
+    // Create reusable transporter object using the default SMTP transport for sending emails.
     var transporter = nodemailer.createTransport(auth.nodemailerTransport);
 
-    // Load home page with results from DB.
+    // Load home page.
     app.get('/', (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
@@ -55,21 +58,7 @@ module.exports = function(app, auth, passport) {
         res.render('pages/index', pageData);
     });
 
-    // Post roommates search query.
-    app.post('/api/search', (req, res) => {
-        if (!req.isAuthenticated() || typeof req.user.age === "undefined")
-            return res.json({ error: 'Not authenticated.' });
-        if (!req.body.query)
-            return res.json({ error: 'Invalid query.' });
-        var query = sanitizeMongo(req.body.query);
-        User.findPotentialRoommates(query, req.user, (err, roomies) => {
-            if(err)
-                return res.json({ error: err });
-            res.json(roomies);
-        });
-    });
-
-    // Parse registration form.
+    // Handle registration/profile form submission.
     app.post('/', isLoggedIn, isValidRegistrationForm, (req, res) => {
         var user = req.user;
         var isUpdate = user.age ? true : false; // If age is already set, this is an update.
@@ -94,10 +83,10 @@ module.exports = function(app, auth, passport) {
         });
     });
 
-    // Post keyphrase.
-    app.post('/api/access', (req, res) => {
+    // Handle submission of secret code.
+    app.post('/access', (req, res) => {
         if (typeof req.body.key === "undefined")
-            return res.json({ error: 'Invalid key.' });
+            return res.json({ error: 'Invalid passcode.' });
         var sess = req.session;
         if(!sess)
             return res.json({ error: 'Unknown error occurred.' });
@@ -116,11 +105,12 @@ module.exports = function(app, auth, passport) {
             } else {
                 sess.accessAttempts = 1;
             }
-            res.json({ error: 'Incorrect key. '+(5-sess.accessAttempts)+' more attempts.' });
+            res.json({ error: 'Incorrect passcode. '+(5-sess.accessAttempts)+' more attempts allowed.' });
         }
     });
 
-    app.get('/test/email', isLoggedIn, isRegistered, (req, res) => {
+    // Preview an email sent from the current user.
+    app.get('/preview/email', isLoggedIn, isRegistered, (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
         var emailPageData = {
@@ -145,7 +135,7 @@ module.exports = function(app, auth, passport) {
         });
     });
 
-    // Message another user.
+    // Handle submission of a new Message to another user.
     app.post('/message', isLoggedIn, isRegistered, (req, res) => {
         if (!isset(req.body.recipientID) ||
                 !isset(req.body.subject) ||
@@ -205,7 +195,7 @@ module.exports = function(app, auth, passport) {
         });
     });
 
-    // Logout
+    // Logout the current user.
     app.get('/logout', isLoggedIn, (req, res) => {
         req.logout();
         req.session.regenerate(function(err) {
@@ -216,7 +206,7 @@ module.exports = function(app, auth, passport) {
         res.redirect('/');
     });
 
-    // Delete this user!
+    // Delete the current user permanently!
     app.post('/deleteMe', isLoggedIn, isRegistered, (req, res) => {
         // Make sure user has agreed to delete and the session delete token
         // is the same as the posted delete token. Since a delete token can
@@ -239,8 +229,22 @@ module.exports = function(app, auth, passport) {
         });
     });
 
+    // Handle submission of a new search query for roommates.
+    app.post('/api/search', (req, res) => {
+        if (!req.isAuthenticated() || typeof req.user.age === "undefined")
+            return res.json({ error: 'Not authenticated.' });
+        if (!req.body.query)
+            return res.json({ error: 'Invalid query.' });
+        var query = sanitizeMongo(req.body.query);
+        User.findPotentialRoommates(query, req.user, (err, roomies) => {
+            if(err)
+                return res.json({ error: err });
+            res.json(roomies);
+        });
+    });
+
     // Send to Google to do the authentication.
-    // Profile gets basic info including name.
+    // 'Profile' scope gets basic info including name.
     app.get('/auth/google',
         passport.authenticate('google', {
             scope: ['profile', 'email']
@@ -259,7 +263,7 @@ module.exports = function(app, auth, passport) {
                     // User is allowed access. Save the new user!
                     user.save((err) => {
                         if (err)
-                            throw err;
+                            return next(err);
                         req.logIn(user, function(err) {
                             if (err)
                                 return next(err);
@@ -277,7 +281,8 @@ module.exports = function(app, auth, passport) {
             } else {
                 // Old user that already exists.
                 req.logIn(user, function(err) {
-                    if (err) { return next(err); }
+                    if (err)
+                        return next(err);
                     // Create random token to use to confirm deletion.
                     req.session.deleteToken = genNewToken();
                     // If the user has completed registration, redirect to browsing page.
@@ -293,6 +298,11 @@ module.exports = function(app, auth, passport) {
     });
 
 };
+
+// Check if a variable is valid.
+function isset(a) {
+    return typeof a !== "undefined" && a !== null && a !== "";
+}
 
 // Route middleware to make sure user has entered keyphrase.
 function hasEnteredKey(req, res, next) {
@@ -344,9 +354,6 @@ function isValidRegistrationForm(req, res, next) {
     }
     req.flash('error', 'You did not fill in all the required fields. Please try again.');
     res.redirect('/');
-}
-function isset(a) {
-    return typeof a !== "undefined" && a !== null && a !== "";
 }
 
 // Parse form data into user object, making sure to sanitize it first.
@@ -410,6 +417,7 @@ function sanitizeArray(arr) {
     }
     return arr;
 }
+
 // Format date. Convert from '2017-09' to 'September 2017'
 function formatDateNumToWords(dateString) {
     var options = {
@@ -418,6 +426,7 @@ function formatDateNumToWords(dateString) {
     return new Date(dateString+"-02").toLocaleDateString("en-US", options);
 };
 
+// Generate new delete confirmation token.
 function genNewToken() {
     return getRandomInt(1000000000, 
                         9999999999);
