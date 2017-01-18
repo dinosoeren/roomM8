@@ -200,6 +200,7 @@ $(document).ready(function(){
         // Show fieldset.
         $('#fieldsetMessage').show();
         $('#message-form .btn-send').show();
+        $('#message-form .btn-cancel').text("Cancel");
         // Set title.
         modal.find('.modal-title').text('New message to ' + recipientName);
         // Reset inputs if this is a different user.
