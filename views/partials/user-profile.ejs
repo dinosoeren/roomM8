@@ -1,9 +1,16 @@
 <!-- User profile -->
 <%
     var isEmail = typeof message !== "undefined";
-    // Add string capitalize function to ejs.
+    // Add string capitalize functions to ejs.
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
+    };
+    String.prototype.capitalizeAll = function() {
+        var words = this.split(' ');
+        for(var i=0; i<words.length; i++) {
+            words[i] = words[i].capitalize();
+        }
+        return words.join(' ');
     };
     var showData = function(label, glyphicon, id, data) {
         %>
