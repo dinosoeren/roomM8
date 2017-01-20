@@ -2,6 +2,24 @@
 <script>
 $(document).ready(function() {
     startSpinner();
+    // Make spinner follow browser scroll position when user scrolls past bottom of roomie search div.
+    $(window).on('scroll', function() {
+        var limitEle = $('#roomieSearchContainer');
+        var spinner = $('#roomiesContainer .spinner');
+        if(spinner.length > 0) {
+            if($(window).scrollTop() >= limitEle.offset().top + limitEle.outerHeight()) {
+                if(spinner.css('position') !== 'fixed') {
+                    spinner.css('position', 'fixed');
+                    spinner.css('top', '50%');
+                }
+            } else {
+                if(spinner.css('position') !== 'absolute') {
+                    spinner.css('position', 'absolute');
+                    spinner.css('top', '50px');
+                }
+            }
+        }
+    });
 });
 var mailRecipients = [
     <% for(var i=0; i<user.mailRecipients.length; i++) { %>
