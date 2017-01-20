@@ -52,9 +52,8 @@ module.exports = function(app, auth, passport) {
         if(req.session.deleteToken)
             req.session.deleteToken = genNewToken();
         // Add formatted date of birth and age to user object.
-        var userDOB;
         if(req.user) {
-            userDOB = moment(req.user.dateOfBirth).utc();
+            var userDOB = moment(req.user.dateOfBirth).utc();
             req.user.dateOfBirthFormatted = userDOB.format('YYYY-MM-DD');
             req.user.age = moment().utc().diff(userDOB, 'years');
         }
