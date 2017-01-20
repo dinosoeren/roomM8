@@ -1,10 +1,12 @@
 /* Code adapted from: https://scotch.io/tutorials/easy-node-authentication-setup-and-local */
 const fs = require('fs');
 const User = require('./models/user');
+const UserValues = require('./models/user-values');
 const sanitizeMongo = require('mongo-sanitize');
 const sanitizeHtml = require('sanitize-html');
 const shOptions = { allowedTags: [], allowedAttributes: [] };
 const nodemailer = require('nodemailer'); // Send emails.
+const moment = require('moment'); // Format dates.
 const ejs = require('ejs'); // HTML javascript template engine.
 const juice = require('juice'); // CSS inliner tool.
 const juiceClient = require('juice/client');
@@ -43,17 +45,25 @@ module.exports = function(app, auth, passport) {
     app.get('/', (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+        // Minimum age users are allowed to be.
+        var minUserAge = 18;
         // If a deleteToken has been set through google authentication,
         // give it a new value on every page load, just for added security.
         if(req.session.deleteToken)
             req.session.deleteToken = genNewToken();
+        // Add formatted date of birth and age to user object.
+        var userDOB = moment(req.user.dateOfBirth).utc();
+        req.user.dateOfBirthFormatted = userDOB.format('YYYY-MM-DD');
+        req.user.age = moment().utc().diff(userDOB, 'years');
+        // Assemble page data.
         var pageData = {
             locations: locations,
             user: req.user,
             allowedAccess: req.session ? req.session.allowedAccess : false,
             deleteToken: req.session ? req.session.deleteToken : null,
             errors: req.flash('error'),
-            success: req.flash('success')
+            success: req.flash('success'),
+            maxDateOfBirth: moment().utc().subtract(minUserAge, 'years').format('YYYY-MM-DD')
         };
         res.render('pages/index', pageData);
     });
@@ -61,9 +71,18 @@ module.exports = function(app, auth, passport) {
     // Handle registration/profile form submission.
     app.post('/', isLoggedIn, isValidRegistrationForm, (req, res) => {
         var user = req.user;
-        var isUpdate = user.age ? true : false; // If age is already set, this is an update.
+        var isUpdate = user.completedRegistration ? true : false;
         var query = { 'googleId' : sanitizeMongo(user.googleId) };
         var newData = sanitizeMongo(parseUserData(req.body));
+        if(typeof newData === "string") {
+            console.error("Data submitted was invalid: "+newData);
+            if (isUpdate) {
+                req.flash('error', 'Failed to update profile. Please try again.');
+            } else {
+                req.flash('error', 'Registration failed. Please try again.');
+            }
+            return res.redirect("/");
+        }
         User.findOneAndUpdate(query, newData, {upsert:false}, (err, doc) => {
             if (err) {
                 console.error(err.message);
@@ -113,13 +132,17 @@ module.exports = function(app, auth, passport) {
     app.get('/preview/email', isLoggedIn, isRegistered, (req, res) => {
         // Get locations.
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+        // Add age to user object.
+        var userDOB = moment(req.user.dateOfBirth).utc();
+        req.user.age = moment().utc().diff(userDOB, 'years');
         var emailPageData = {
             locations: locations,
             user: req.user,
             recipientName: "[Recipient]",
             subject: "[Subject]",
             message: "[Your message goes here]",
-            startDate: formatDateNumToWords(req.user.startDate)
+            startDate: formatDateNumToWords(req.user.startDate),
+            urlDate: moment().format('YYYY-MM-DD')
         };
         // Render email using EJS.
         ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
@@ -154,6 +177,9 @@ module.exports = function(app, auth, passport) {
                         .replace('//', '').replace('%40', '@');
             // Get locations.
             var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+            // Add age to user object.
+            var userDOB = moment(req.user.dateOfBirth).utc();
+            req.user.age = moment().utc().diff(userDOB, 'years');
             // Setup html email
             var emailPageData = {
                 locations: locations,
@@ -161,7 +187,8 @@ module.exports = function(app, auth, passport) {
                 recipientName: recipient.name,
                 subject: sanitizeInput(req.body.subject),
                 message: sanitizeInput(req.body.message, 1000),
-                startDate: formatDateNumToWords(req.user.startDate)
+                startDate: formatDateNumToWords(req.user.startDate),
+                urlDate: moment().format('YYYY-MM-DD')
             };
             // Render email using EJS.
             ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
@@ -231,7 +258,7 @@ module.exports = function(app, auth, passport) {
 
     // Handle submission of a new search query for roommates.
     app.post('/api/search', (req, res) => {
-        if (!req.isAuthenticated() || typeof req.user.age === "undefined")
+        if (!req.isAuthenticated() || !req.user.completedRegistration)
             return res.json({ error: 'Not authenticated.' });
         if (!req.body.query)
             return res.json({ error: 'Invalid query.' });
@@ -239,6 +266,11 @@ module.exports = function(app, auth, passport) {
         User.findPotentialRoommates(query, req.user, (err, roomies) => {
             if(err)
                 return res.json({ error: err });
+            // Calculate age for every user.
+            for(var i=0; i<roomies.length; i++) {
+                var roomieDOB = moment(roomies[i].dateOfBirth).utc();
+                roomies[i].age = moment().utc().diff(roomieDOB, 'years');
+            }
             res.json(roomies);
         });
     });
@@ -286,7 +318,7 @@ module.exports = function(app, auth, passport) {
                     // Create random token to use to confirm deletion.
                     req.session.deleteToken = genNewToken();
                     // If the user has completed registration, redirect to browsing page.
-                    if(user.age) {
+                    if(user.completedRegistration) {
                         req.flash('success', 'Welcome back!');
                         return res.redirect('/');
                     }
@@ -323,21 +355,21 @@ function isLoggedIn(req, res, next) {
 
 // Route middleware to make sure a user has fully completed their registration.
 function isRegistered(req, res, next) {
-    // If user has a value for the age field, carry on.
-    if (typeof req.user.age !== 'undefined')
+    if (req.user.completedRegistration)
         return next();
-    // If it doesn't, redirect them to the home page.
+    // If user has not registered, redirect them to the home page.
     req.flash('error', 'You have not completed your registration. Please finish signing up and try again.');
     res.redirect('/');
 }
 
 // Route middleware to make sure registration form is valid.
 function isValidRegistrationForm(req, res, next) {
-    if(isset(req.body.age) && 
-            isset(req.body.field) && 
-            isset(req.body.role) && 
-            isset(req.body.position) && 
-            isset(req.body.startDate) && 
+    if(isset(req.body.dateOfBirth) &&
+            isset(req.body.gender) &&
+            isset(req.body.field) &&
+            isset(req.body.role) &&
+            isset(req.body.position) &&
+            isset(req.body.startDate) &&
             isset(req.body.startLocation) &&
             isset(req.body.hasPlace) &&
             isset(req.body.factorCleanliness) &&
@@ -358,13 +390,42 @@ function isValidRegistrationForm(req, res, next) {
 
 // Parse form data into user object, making sure to sanitize it first.
 function parseUserData(body) {
+    // Make sure date of birth is valid.
+    var dateOfBirth = moment(sanitizeInput(body.dateOfBirth));
+    if(!dateOfBirth.isValid())
+        return "date of birth"; // error
+    // Make sure start date is valid.
+    var startDate = moment(sanitizeInput(body.startDate), 'YYYY-MM');
+    if(!startDate.isValid())
+        return "start date"; // error
+    // Make sure gender is valid.
+    var gender = sanitizeInput(body.gender);
+    if(!UserValues.genders.includes(gender))
+        return "gender"; // error
+    // Make sure field is valid.
+    var field = sanitizeInput(body.field);
+    if(!UserValues.fields.includes(field))
+        return "field"; // error
+    // Make sure role is valid.
+    var role = sanitizeInput(body.role);
+    if(!UserValues.roles.includes(role))
+        return "role"; // error
+    // Make sure startLocation is valid.
+    var startLocation = parseInt(sanitizeInput(body.startLocation));
+    if(startLocation < UserValues.startLocationMin || startLocation > UserValues.startLocationMax)
+        return "start location"; // error
     var newData = {
-        age: sanitizeInput(body.age),
-        field: sanitizeInput(body.field),
-        role: sanitizeInput(body.role),
+        completedRegistration: true,
+        displayProfile: (body.displayProfile === "yes"),
+        dateOfBirth: dateOfBirth,
+        gender: gender,
+        showAge: (body.showAge === "yes"),
+        showGender: (body.showGender === "yes"),
+        field: field,
+        role: role,
         position: sanitizeInput(body.position),
-        startDate: sanitizeInput(body.startDate),
-        startLocation: parseInt(sanitizeInput(body.startLocation)),
+        startDate: startDate.format('YYYY-MM'),
+        startLocation: startLocation,
         hasPlace: (body.hasPlace === "yes"),
         agree1: true,
         agree2: true,
@@ -380,11 +441,32 @@ function parseUserData(body) {
     if(body.aboutMe) {
         newData.aboutMe = sanitizeInput(body.aboutMe, 400);
     }
+    if(body.genderCustom) {
+        newData.genderCustom = sanitizeInput(body.genderCustom);
+    }
+    if(body.fieldCustom) {
+        newData.fieldCustom = sanitizeInput(body.fieldCustom);
+    }
+    if(body.roleCustom) {
+        newData.roleCustom = sanitizeInput(body.roleCustom);
+    }
     if(!newData.hasPlace) {
+        // Make sure residenceType is valid.
+        var residenceType = sanitizeInput(body.prefResidenceType);
+        if(!UserValues.preferenceResTypes.includes(residenceType))
+            return "preference residence type"; // error
+        // Make sure number of preferred roommates (range) is valid.
+        var roommates = sanitizeInput(body.prefRoommates).split(',');
+        if(roommates.length !== 2 || roommates[0] > roommates[1] || 
+                roommates[0] < UserValues.roommatesMin || 
+                roommates[1] < UserValues.roommatesMin ||
+                roommates[0] > UserValues.roommatesMax || 
+                roommates[1] > UserValues.roommatesMax)
+            return "roommates"; // error
         newData.preferences = {
             locations: sanitizeArray(body.prefLocations),
-            residenceType: sanitizeInput(body.prefResidenceType),
-            roommates: parseInt(sanitizeInput(body.prefRoommates)),
+            residenceType: residenceType,
+            roommates: roommates,
             durationInMonths: body.prefDuration ? parseInt(sanitizeInput(body.prefDuration)) : -1,
             maxCommuteTimeInMins: parseInt(sanitizeInput(body.prefMaxCommuteTime))
         };
@@ -394,14 +476,21 @@ function parseUserData(body) {
         newData.factors.ownBathroom = parseInt(sanitizeInput(body.factorOwnBathroom));
         newData.factors.commuteTime = parseInt(sanitizeInput(body.factorCommuteTime));
     } else {
+        // Make sure residenceType is valid.
+        var residenceType = sanitizeInput(body.resType);
+        if(!UserValues.currentResTypes.includes(residenceType))
+            return "current residence type"; // error
         newData.currentResidence = {
             location: sanitizeInput(body.resLocation),
-            residenceType: sanitizeInput(body.resType),
+            residenceType: residenceType,
             vacantRooms: parseInt(sanitizeInput(body.resBedrooms)),
             bathrooms: parseInt(sanitizeInput(body.resBathrooms)),
             durationInMonths: body.resDuration ? parseInt(sanitizeInput(body.resDuration)) : -1,
             commuteTimeInMins: parseInt(sanitizeInput(body.resCommuteTime))
         };
+        if(body.resTypeCustom) {
+            newData.currentResidence.residenceTypeCustom = sanitizeInput(body.resTypeCustom);
+        }
     }
     return newData;
 }

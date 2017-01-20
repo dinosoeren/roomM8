@@ -3,6 +3,7 @@
 const fs = require('fs');
 const mi = require('mongoimport');
 const randomName = require('random-name');
+const UserValues = require('../app/models/user-values');
 const argv = require('minimist')(process.argv.slice(2));
 
 if(!argv['d'] ||
@@ -39,53 +40,32 @@ function pad(n, width, z) {
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-var fields = [
-    "cloud",
-    "tech",
-    "sales",
-    "marketing",
-    "design",
-    "business",
-    "finance",
-    "legal",
-    "people",
-    "facilities"
-];
-var roles = [
-    "full-time",
-    "resident",
-    "intern"
-];
-var resTypesPref = [
-    "apartment",
-    "house",
-    "condo",
-    "idc"
-];
-var resTypes = [
-    "apartment",
-    "house",
-    "condo"
-];
-
 var data = [];
 
 // Generate test users.
 for(var i=0; i<argv['gen']; i++) {
+    var gender_choice = randomArrayVal(UserValues.genders);
+    var field_choice = randomArrayVal(UserValues.fields);
+    var role_choice = randomArrayVal(UserValues.roles);
     var u = {
-        "photoUrl": "http://lorempixel.com/300/300/cats/?v="+randInt(0,999999999),
-        "gender": randInt(0,1) == 0 ? "male" : "female",
+        "photoUrl": "http://theoldreader.com/kittens/200/200/?v="+randInt(0,999999999),
+        "dateCreated": (new Date()).toISOString(),
+        "dateOfBirth": new Date(Date.UTC(randInt(1980,1998), randInt(0,11), randInt(1,27))),
+        "gender": gender_choice,
+        "showAge": randInt(0,1) === 0 ? true : false,
+        "showGender": randInt(0,1) === 0 ? true : false,
         "email": "fake@fake",
         "name": randomName.first() + " " + randomName.last(),
         "token": "",
+        "completedRegistration": true,
+        "displayProfile": true,
         "googleId": randInt(0,99999999999999),
         "startDate": "2017-"+pad(randInt(1,12), 2),
-        "age": randInt(18,95),
-        "field": randomArrayVal(fields),
-        "role": randomArrayVal(roles),
-        "position": "Test Monkey",
+        "field": field_choice,
+        "role": role_choice,
+        "position": "Test Cat",
         "startLocation": randInt(0,96),
-        "hasPlace": randInt(0,1) == 0,
+        "hasPlace": randInt(0,1) === 0,
         "factors": {
             "sameField": randInt(0,3),
             "sameAge": randInt(0,3),
@@ -94,22 +74,38 @@ for(var i=0; i<argv['gen']; i++) {
             "quietTime": randInt(0,3),
             "cleanliness": randInt(0,3)
         },
-        "aboutMe": "I am a test user. I have no existence, but I really love to test things. I can test all sorts of things. You name it! I can test websites, apps, and servers."
+        "aboutMe": "I am a test user. I have no existence, but I really love to test things. I can test all sorts of things. You name it! I can test websites, apps, and servers.",
+        "agree1": true
     };
+    if(gender_choice === "other") {
+        u["genderCustom"] = "non-binary";
+    }
+    if(field_choice === "other") {
+        u["fieldCustom"] = "mystery";
+    }
+    if(role_choice === "other") {
+        u["roleCustom"] = "part-time";
+    }
     if(u["hasPlace"]) {
+        var res_type_choice = randomArrayVal(UserValues.currentResTypes);
         u["currentResidence"] = {
             "location": randomName.place(),
-            "residenceType": randomArrayVal(resTypes),
+            "residenceType": res_type_choice,
             "vacantRooms": randInt(1,5),
             "bathrooms": randInt(1,5),
             "durationInMonths": randInt(0,1) == 0 ? randInt(6,24) : -1,
             "commuteTimeInMins": randInt(20,60)
         };
+        if(res_type_choice === "other") {
+            u["currentResidence"]["residenceTypeCustom"] = "mobile";
+        }
     } else {
+        var roommatesMin = randInt(1,3);
+        var roommatesMax = randInt(roommatesMin,6);
         u["preferences"] = {
             "locations": generateLocations(randInt(2,3)),
-            "residenceType": randomArrayVal(resTypesPref),
-            "roommates": randInt(1,5),
+            "residenceType": randomArrayVal(UserValues.preferenceResTypes),
+            "roommates": [roommatesMin, roommatesMax],
             "durationInMonths": randInt(0,1) == 0 ? randInt(6,24) : -1,
             "maxCommuteTimeInMins": randInt(20,60)
         };

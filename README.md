@@ -28,7 +28,7 @@ After you sign up, you'll have access to the entire database of other Nooglers w
 This service uses secure protocols (`https`, `express`), authentication (`passport`, `redis`, `google-oauth`), and data storage (`mongodb`, `mongoose`) which you can verify by viewing the complete source code right here. I'm not perfect, so if you see anything problematic, pull requests or new issues are more than welcome!
 
 ### Privacy/safety concerns?
-Other users will be able to see your name, photo (if you have one), and other relevant information. However, your email address, age, and gender are kept private. Messages you recieve on roomM8 will be forwarded to your email, but the sender won't know your email unless you reply. Also, **users can only message another user once**. This is to prevent your inbox from blowing up.
+Other users will be able to see your name, photo (if you have one), and other relevant information. However, you can choose to keep your age and gender private, and your email address is always kept private. Messages you recieve on roomM8 will be forwarded to your email, but the sender won't know your email unless you reply. Also, **users can only message another user once**. This is to prevent your inbox from blowing up.
 
 Unless a Noogler shares the secret registration code with a non-Noogler (if you do, [shame on you!](http://i.imgur.com/NAJE0d0.png)), every user of roomM8 is a Google employee. If you believe in Google's hiring practices, this means it's a relatively trustworthy group of people.
 

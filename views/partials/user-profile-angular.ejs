@@ -26,7 +26,7 @@
             </div>
             <div class="col col-sm-8">
                 <h2>{{ x.name }}</h2>
-                <p><strong>{{ x.position.capitalizeAll() }} ({{ x.role.capitalizeAll() }})</strong></p>
+                <p><strong>{{ x.position.capitalizeAll() }} ({{ x.role | roleFilter:x.roleCustom }})</strong></p>
                 <p>{{ locations[x.startLocation].city }}</p>
             </div>
             <span tool-tip ng-if="x.hasPlace" class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
@@ -50,7 +50,7 @@
             </div>
             <div class="row">
                 <div class="col col-xs-6">
-                    <% showAngData('Type of residence', 'home', '{{ x.currentResidence.residenceType.capitalize() }}', 'x.hasPlace'); %>
+                    <% showAngData('Type of residence', 'home', '{{ x.currentResidence.residenceType | residenceFilter:x.currentResidence.residenceTypeCustom }}', 'x.hasPlace'); %>
                     <% showAngData('Desired residence', 'home', '{{ x.preferences.residenceType | residenceFilter }}', '!x.hasPlace'); %>
                 </div>
                 <div class="col col-xs-6">
@@ -76,6 +76,7 @@
             </div>
             <div class="row">
                 <p class="desc" data-desc="{{ x.aboutMe | aboutFilter }}">
+                    <strong>{{ x.gender | genderAgeFilter:x.showGender:x.genderCustom:x.age:x.showAge }}</strong>
                     <span>{{ x.aboutMe | aboutShortenFilter }}</span>
                     <a ng-if="x.aboutMe.length > 100" href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
                 </p>

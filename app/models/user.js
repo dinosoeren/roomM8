@@ -6,11 +6,19 @@ var userSchema = mongoose.Schema({
     token: {type: String, required: true},
     email: {type: String, required: true},
     name: {type: String, required: true},
+    dateCreated: {type: Date, required: true, default: Date.now},
+    completedRegistration: {type: Boolean, required: true, default: false},
+    displayProfile: {type: Boolean, required: true, default: true},
     photoUrl: String,
+    dateOfBirth: Date,
     gender: String,
-    age: Number,
+    genderCustom: String,
+    showAge: {type: Boolean, required: true, default: true},
+    showGender: {type: Boolean, required: true, default: true},
     field: String,
+    fieldCustom: String,
     role: String,
+    roleCustom: String,
     position: String,
     startDate: String,
     startLocation: Number,
@@ -18,13 +26,14 @@ var userSchema = mongoose.Schema({
     preferences: {
         locations: [String],
         residenceType: String,
-        roommates: Number,
+        roommates: [Number],
         durationInMonths: Number,
         maxCommuteTimeInMins: Number
     },
     currentResidence: {
         location: String,
         residenceType: String,
+        residenceTypeCustom: String,
         vacantRooms: Number,
         bathrooms: Number,
         durationInMonths: Number,
@@ -54,9 +63,14 @@ var selectRows = {
     name: 1,
     photoUrl: 1,
     gender: 1,
-    age: 1,
+    genderCustom: 1,
+    dateOfBirth: 1,
+    showAge: 1,
+    showGender: 1,
     field: 1,
+    fieldCustom: 1,
     role: 1,
+    roleCustom: 1,
     position: 1,
     aboutMe: 1,
     startDate: 1,
@@ -72,7 +86,9 @@ userSchema.statics.findPotentialRoommates = function(query, user, callback) {
         // Different google id from current user.
         googleId: { $ne: user.googleId },
         // Make sure they are fully registered.
-        age: { $gte: 18 }
+        completedRegistration: true,
+        // Make sure they wish to be listed publicly.
+        displayProfile: true
     };
     if(query.name)
         findData.name = new RegExp(query.name, 'i');
@@ -82,6 +98,7 @@ userSchema.statics.findPotentialRoommates = function(query, user, callback) {
     skip(query.skip ? parseInt(query.skip) : 0).
     limit(query.limit ? parseInt(query.limit) : 20).
     select(selectRows).
+    lean(). // produce native json object
     exec(callback);
 };
 userSchema.statics.findById = function(id, callback) {

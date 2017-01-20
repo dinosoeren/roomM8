@@ -37,42 +37,86 @@
 <!-- Google info -->
 <fieldset id="f1">
     <div class="form-group row">
-        <label for="age" class="col-sm-3 col-form-label">Age</label>
+        <label for="dateOfBirth" class="col-sm-3 col-form-label">Date of birth</label>
         <div class="col-sm-9">
-            <div class="input-group">
-                <input type="number" class="form-control" name="age" id="age" placeholder="Enter age" min="18" max="100" aria-describedby="ageHelp" value="<%= (isUserRegistered) ? user.age : '' %>" required />
-                <span class="input-group-addon">years</span>
+            <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="Enter your date of birth" max="<%= maxDateOfBirth %>" value="<%= user.dateOfBirthFormatted %>" required />
+            <small>
+                <label class="weight-normal">
+                    <input type="checkbox" name="showAge" value="yes" <%= (user.showAge == '') ? '' : 'checked' %> /> 
+                    Display my age publicly in search results.
+                    <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="Users can filter search results by age. If you choose not to display your age, your profile will not come up when someone searches for roommates by age."><span class="glyphicon glyphicon-question-sign"></span></a>
+                </label>
+            </small>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="gender" class="col-sm-3 col-form-label">Gender</label>
+        <div class="col-sm-9">
+            <div class="row other-enabled">
+                <div class="col-sm-<%= (user.gender == 'other') ? '6' : '12' %>">
+                    <select class="form-control" id="gender" name="gender" required>
+                        <option value="null" <%= (user.gender) ? '' : 'selected' %> disabled>Please select one</option>
+                        <option value="female" <%= (user.gender == 'female') ? 'selected' : '' %>>Female</option>
+                        <option value="male" <%= (user.gender == 'male') ? 'selected' : '' %>>Male</option>
+                        <option value="other" <%= (user.gender == 'other') ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div class="col-sm-6" style="<%= (user.gender == 'other') ? '' : 'display: none;' %>">
+                    <input type="text" class="form-control <%= (user.gender == 'other') ? '' : 'optional' %>" name="genderCustom" id="genderCustom" placeholder="Enter gender" maxlength="15" value="<%= user.genderCustom %>" />
+                </div>
             </div>
-            <small id="ageHelp" class="form-text text-muted">Your age will not be visible. It is used only for matching.</small>
+            <small>
+                <label class="weight-normal">
+                    <input type="checkbox" name="showGender" value="yes" <%= (user.showGender == '') ? '' : 'checked' %> /> 
+                    Display my gender publicly in search results.
+                    <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="Users can filter search results by gender. If you choose not to display your gender, your profile will not come up when someone searches for roommates by gender."><span class="glyphicon glyphicon-question-sign"></span></a>
+                </label>
+            </small>
         </div>
     </div>
     <div class="form-group row">
         <label for="field" class="col-sm-3 col-form-label">Field of work</label>
         <div class="col-sm-9">
-            <select class="form-control" id="field" name="field" required>
-                <option value="null" <%= (isUserRegistered) ? '' : 'selected' %> disabled>Please select one</option>
-                <option value="cloud" <%= (isUserRegistered && user.field == 'cloud') ? 'selected' : '' %>>Google Cloud</option>
-                <option value="tech" <%= (isUserRegistered && user.field == 'tech') ? 'selected' : '' %>>Engineering & Technology</option>
-                <option value="sales" <%= (isUserRegistered && user.field == 'sales') ? 'selected' : '' %>>Sales, Service & Support</option>
-                <option value="marketing" <%= (isUserRegistered && user.field == 'marketing') ? 'selected' : '' %>>Marketing & Communications</option>
-                <option value="design" <%= (isUserRegistered && user.field == 'design') ? 'selected' : '' %>>Design</option>
-                <option value="business" <%= (isUserRegistered && user.field == 'business') ? 'selected' : '' %>>Business Strategy</option>
-                <option value="finance" <%= (isUserRegistered && user.field == 'finance') ? 'selected' : '' %>>Finance</option>
-                <option value="legal" <%= (isUserRegistered && user.field == 'legal') ? 'selected' : '' %>>Legal</option>
-                <option value="people" <%= (isUserRegistered && user.field == 'people') ? 'selected' : '' %>>People</option>
-                <option value="facilities" <%= (isUserRegistered && user.field == 'facilities') ? 'selected' : '' %>>Facilities</option>
-            </select>
+            <div class="row other-enabled">
+                <div class="col-sm-<%= (user.field == 'other') ? '6' : '12' %>">
+                    <select class="form-control" id="field" name="field" required>
+                        <option value="null" <%= (isUserRegistered) ? '' : 'selected' %> disabled>Please select one</option>
+                        <option value="cloud" <%= (isUserRegistered && user.field == 'cloud') ? 'selected' : '' %>>Google Cloud</option>
+                        <option value="tech" <%= (isUserRegistered && user.field == 'tech') ? 'selected' : '' %>>Engineering & Technology</option>
+                        <option value="sales" <%= (isUserRegistered && user.field == 'sales') ? 'selected' : '' %>>Sales, Service & Support</option>
+                        <option value="marketing" <%= (isUserRegistered && user.field == 'marketing') ? 'selected' : '' %>>Marketing & Communications</option>
+                        <option value="design" <%= (isUserRegistered && user.field == 'design') ? 'selected' : '' %>>Design</option>
+                        <option value="business" <%= (isUserRegistered && user.field == 'business') ? 'selected' : '' %>>Business Strategy</option>
+                        <option value="finance" <%= (isUserRegistered && user.field == 'finance') ? 'selected' : '' %>>Finance</option>
+                        <option value="legal" <%= (isUserRegistered && user.field == 'legal') ? 'selected' : '' %>>Legal</option>
+                        <option value="people" <%= (isUserRegistered && user.field == 'people') ? 'selected' : '' %>>People</option>
+                        <option value="facilities" <%= (isUserRegistered && user.field == 'facilities') ? 'selected' : '' %>>Facilities</option>
+                        <option value="other" <%= (isUserRegistered && user.field == 'other') ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div class="col-sm-6" style="<%= (user.field == 'other') ? '' : 'display: none;' %>">
+                    <input type="text" class="form-control <%= (user.field == 'other') ? '' : 'optional' %>" name="fieldCustom" id="fieldCustom" placeholder="Enter field" maxlength="20" value="<%= user.fieldCustom %>" />
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-group row">
         <label for="role" class="col-sm-3 col-form-label">Role</label>
         <div class="col-sm-9">
-            <select class="form-control" id="role" name="role" required>
-                <option value="null" <%= (isUserRegistered) ? '' : 'selected' %> disabled>Please select one</option>
-                <option value="full-time" <%= (isUserRegistered && user.role == 'full-time') ? 'selected' : '' %>>Full-time</option>
-                <option value="resident" <%= (isUserRegistered && user.role == 'resident') ? 'selected' : '' %>>Resident</option>
-                <option value="intern" <%= (isUserRegistered && user.role == 'intern') ? 'selected' : '' %>>Intern</option>
-            </select>
+            <div class="row other-enabled">
+                <div class="col-sm-<%= (user.role == 'other') ? '6' : '12' %>">
+                    <select class="form-control" id="role" name="role" required>
+                        <option value="null" <%= (isUserRegistered) ? '' : 'selected' %> disabled>Please select one</option>
+                        <option value="full-time" <%= (isUserRegistered && user.role == 'full-time') ? 'selected' : '' %>>Full-time</option>
+                        <option value="resident" <%= (isUserRegistered && user.role == 'resident') ? 'selected' : '' %>>Resident</option>
+                        <option value="intern" <%= (isUserRegistered && user.role == 'intern') ? 'selected' : '' %>>Intern</option>
+                        <option value="other" <%= (isUserRegistered && user.role == 'other') ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div class="col-sm-6" style="<%= (user.role == 'other') ? '' : 'display: none;' %>">
+                    <input type="text" class="form-control <%= (user.role == 'other') ? '' : 'optional' %>" name="roleCustom" id="roleCustom" placeholder="Enter role" maxlength="15" value="<%= user.roleCustom %>" />
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-group row">
@@ -107,28 +151,39 @@
             </select>
         </div>
     </div>
-    <div class="form-group row">
-      <label class="col-form-label col-sm-3">Goal</label>
-      <div class="col-sm-9">
-        <div class="form-check">
-          <label class="form-check-label" style="font-weight: normal;">
-            <input class="form-check-input" type="radio" name="hasPlace" id="has-no-place" value="no" 
-                <%= (isUserRegistered && user.hasPlace == true) ? '' : 'checked' %> />
-            I'm looking for a place to live, and roommates.
-          </label>
-        </div>
-        <div class="form-check">
-          <label class="form-check-label" style="font-weight: normal;">
-            <input class="form-check-input" type="radio" name="hasPlace" id="has-place" value="yes"
-                <%= (isUserRegistered && user.hasPlace == true) ? 'checked' : '' %> />
-            I already have a place. I'm just looking for roommates.
-          </label>
-        </div>
-      </div>
+</fieldset>
+<!-- Goal -->
+<fieldset id="f2" class="hasPlaceRadioField">
+    <h3 class="text-center" style="margin-bottom: 30px;"><span class="glyphicon glyphicon-<%= (isUserRegistered && user.hasPlace == true) ? 'home' : 'search' %>"></span></h3>
+    <div class="form-group big-check">
+        <label class="form-check-label no <%= (isUserRegistered && user.hasPlace == true) ? '' : 'checked' %>" style="font-weight: normal;">
+            <div class="row">
+                <div class="col-xs-1">
+                    <input class="form-check-input" type="radio" name="hasPlace" id="has-no-place" value="no" 
+                        <%= (isUserRegistered && user.hasPlace == true) ? '' : 'checked' %> />
+                </div>
+                <div class="col-xs-11">
+                    I'm looking for a place to live, and roommates.
+                </div>
+            </div>
+        </label>
+    </div>
+    <div class="form-group big-check">
+        <label class="form-check-label yes <%= (isUserRegistered && user.hasPlace == true) ? 'checked' : '' %>" style="font-weight: normal;">
+            <div class="row">
+                <div class="col-xs-1">
+                    <input class="form-check-input" type="radio" name="hasPlace" id="has-place" value="yes"
+                        <%= (isUserRegistered && user.hasPlace == true) ? 'checked' : '' %> />
+                </div>
+                <div class="col-xs-11">
+                    I already have a place. I'm just looking for roommates.
+                </div>
+            </div>
+        </label>
     </div>
 </fieldset>
 <!-- Preferences -->
-<fieldset id="f2">
+<fieldset id="f3">
     <div class="form-group row">
         <label for="pref-locations" class="col-sm-3 col-form-label">Preferred living location(s)</label>
         <div class="col-sm-9">
@@ -157,15 +212,19 @@
     <div class="form-group row">
         <label for="pref-number-roommates" class="col-sm-3 col-form-label">Preferred number of roommates</label>
         <div class="col-sm-9">
-            <div class="input-group">
-                <input type="number" class="form-control" id="pref-number-roommates" name="prefRoommates" value="<%= (isUserRegistered && !user.hasPlace) ? user.preferences.roommates : '' %>" aria-describedby="roommatesHelp" min="1" max="10"/>
-                <span class="input-group-addon">roommates</span>
+            <div class="col-sm-12">
+                <input id="numRoommatesRange" name="prefRoommates" 
+                    type="text" class="slider regRequired"
+                    aria-describedby="roommatesHelp"
+                    data-slider-value="[
+                        <%- (isUserRegistered && !user.hasPlace) ? user.preferences.roommates : '2,3' %>]"
+                    required />
             </div>
             <small id="roommatesHelp" class="form-text text-muted">How many other people do you want to live with?</small>
         </div>
     </div>
     <div class="form-group row">
-        <label for="pref-duration" class="col-sm-3 col-form-label">Duration of stay (<em>Optional</em>)</label>
+        <label for="pref-duration" class="col-sm-3 col-form-label">Duration of stay <em class="weight-normal">(Optional)</em></label>
         <div class="col-sm-9">
             <div class="input-group">
                 <input type="number" class="form-control optional" id="pref-duration" name="prefDuration" value="<%= (isUserRegistered && !user.hasPlace) ? (user.preferences.durationInMonths == -1 ? '' : user.preferences.durationInMonths) : '' %>" aria-describedby="leaseDurationHelp" min="3" max="144" />
@@ -186,7 +245,7 @@
     </div>
 </fieldset>
 <!-- About living space -->
-<fieldset id="f3">
+<fieldset id="f4">
     <div class="form-group row">
         <label for="res-location" class="col-sm-3 col-form-label">Location of residence</label>
         <div class="col-sm-9">
@@ -197,12 +256,20 @@
     <div class="form-group row">
         <label for="res-type" class="col-sm-3 col-form-label">Type of residence</label>
         <div class="col-sm-9">
-            <select class="form-control" id="res-type" name="resType">
-                <option value="null" <%= (isUserRegistered && user.hasPlace) ? '' : 'selected' %> disabled>Please select one</option>
-                <option value="apartment" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'apartment') ? 'selected' : '' %>>Apartment</option>
-                <option value="condo" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'condo') ? 'selected' : '' %>>Condominium</option>
-                <option value="house" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'house') ? 'selected' : '' %>>House</option>
-            </select>
+            <div class="row other-enabled">
+                <div class="col-sm-<%= (user.hasPlace && user.currentResidence.type == 'other') ? '6' : '12' %>">
+                    <select class="form-control" id="res-type" name="resType">
+                        <option value="null" <%= (isUserRegistered && user.hasPlace) ? '' : 'selected' %> disabled>Please select one</option>
+                        <option value="apartment" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'apartment') ? 'selected' : '' %>>Apartment</option>
+                        <option value="condo" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'condo') ? 'selected' : '' %>>Condominium</option>
+                        <option value="house" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'house') ? 'selected' : '' %>>House</option>
+                        <option value="other" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'other') ? 'selected' : '' %>>Other</option>
+                    </select>
+                </div>
+                <div class="col-sm-6" style="<%= (user.hasPlace && user.currentResidence.type == 'other') ? '' : 'display: none;' %>">
+                    <input type="text" class="form-control <%= (user.hasPlace && user.currentResidence.type == 'other') ? '' : 'optional' %>" name="resTypeCustom" id="resTypeCustom" placeholder="Enter residence type" maxlength="15" value="<%= user.hasPlace ? user.currentResidence.residenceTypeCustom : '' %>" />
+                </div>
+            </div>
         </div>
     </div>
     <div class="form-group row">
@@ -226,7 +293,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <label for="res-lease-duration" class="col-sm-3 col-form-label">Lease duration (<em>Optional</em>)</label>
+        <label for="res-lease-duration" class="col-sm-3 col-form-label">Lease duration <em class="weight-normal">(Optional)</em></label>
         <div class="col-sm-9">
             <div class="input-group">
                 <input type="number" class="form-control optional" id="res-lease-duration" name="resDuration" aria-describedby="resLeaseDurationHelp" min="3" max="144" value="<%= (isUserRegistered && user.hasPlace) ? (user.currentResidence.durationInMonths == -1 ? '' : user.currentResidence.durationInMonths) : '' %>" />
@@ -247,12 +314,12 @@
     </div>
 </fieldset>
 <!-- Factors -->
-<fieldset id="f4">
+<fieldset id="f5" class="factors">
     <h3 class="text-center" style="margin-bottom: 30px;">How important are these factors to you?</h3>
     <% include factors-sliders.ejs %>
 </fieldset>
 <!-- About You -->
-<fieldset id="f5">
+<fieldset id="f6">
     <div class="form-group">
         <h3 style="margin-top: 0px;">About yourself</h3>
         <small id="aboutMeHelp" class="form-text">Consider listing hobbies, interests, favorite videogames, favorite foods, where you're from, etc. This info is displayed to other users.</small>
@@ -264,20 +331,20 @@
     <div class="form-group">
         <div>
             <label>
-                <input type="checkbox" class="regRequired" name="agree1" value="yes" /> 
+                <input type="checkbox" class="regRequired" name="agree1" value="yes" required /> 
                 I confirm the information I've provided does not violate my NDA with Google. <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="Make sure you haven't said anything you're not supposed to."><span class="glyphicon glyphicon-question-sign"></span></a>
             </label>
         </div>
         <% if(!isUserRegistered) { %>
             <div>
                 <label>
-                    <input type="checkbox" class="regRequired" name="agree3" value="yes" /> 
+                    <input type="checkbox" class="regRequired" name="agree3" value="yes" required /> 
                     I consent to receiving other roomM8 users' messages in my email inbox. <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="Other users will not be able to see your email address, but they will be able to send you messages. They will only know your email address if you reply."><span class="glyphicon glyphicon-question-sign"></span></a>
                 </label>
             </div>
             <div>
                 <label>
-                    <input type="checkbox" class="regRequired" name="agree2" value="yes" /> 
+                    <input type="checkbox" class="regRequired" name="agree2" value="yes" required /> 
                     I agree that I will not hold Soeren Walls responsible, legally or otherwise, for anything bad that results from me using this service. <a href="javascript:;" data-toggle="tooltip" data-placement="auto top" title="This service uses very secure protocols and authentication, which you can verify by viewing the source code on GitHub. However, it may still not be bullet-proof. Use at your own risk."><span class="glyphicon glyphicon-question-sign"></span></a>
                 </label>
             </div>

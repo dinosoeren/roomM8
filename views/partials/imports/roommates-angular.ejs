@@ -70,9 +70,11 @@ app.filter('dateFormat', function() {
     return formatDateNumToWords;
 });
 app.filter('residenceFilter', function() {
-    return function(type) {
+    return function(type, typeCustom="") {
         if(type === "idc")
             return "Anything";
+        if(type === "other")
+            return typeCustom.capitalize();
         return type.capitalize();
     };
 });
@@ -83,7 +85,29 @@ app.filter('durationFilter', function() {
 });
 app.filter('locationsFilter', function() {
     return function(locations) {
+        if(typeof locations === "string")
+            return locations;
         return locations.join(', ');
+    };
+});
+app.filter('genderAgeFilter', function() {
+    return function(gender, showGender, genderCustom, age, showAge) {
+        var genderAndAge = "";
+        if(showGender || showAge) {
+            genderAndAge = "(";
+            if(showGender) {
+                if(gender === "other")
+                    genderAndAge += genderCustom.capitalize();
+                else
+                    genderAndAge += gender.capitalize();
+                if(showAge)
+                    genderAndAge += ", ";
+            }
+            if(showAge)
+                genderAndAge += age + " y/o";
+            genderAndAge += ")";
+        }
+        return genderAndAge;
     };
 });
 app.filter('aboutFilter', function() {
@@ -101,20 +125,29 @@ app.filter('aboutShortenFilter', function() {
 });
 app.filter('peopleFilter', function() {
     return function(number) {
-        var desc = number > 1 ? "people" : "person";
-        return "+"+number+" "+desc;
+        var word = "person";
+        if(typeof number === "string" || typeof number === "number") {
+            if(number > 1)
+                word = "people";
+        } else {
+            if(number[0] == number[1]) {
+                number = number[0];
+                if(number > 1)
+                    word = "people";
+            } else {
+                word = "people";
+                number = "("+number.join('-')+")";
+            }
+        }
+        return "+"+number+" "+word;
     };
 });
 app.filter('factorsFilter', function() {
     return selectTopFactors;
 });
-app.filter('roommatesFilter', function() {
-    return function(hasPlace, preferences, currentResidence) {
-        if(hasPlace) {
-            return currentResidence.vacantRooms.toString().capitalize();
-        } else {
-            return preferences.roommates.toString().capitalize();
-        }
+app.filter('roleFilter', function() {
+    return function(role, roleCustom) {
+        return (role === "other" ? roleCustom : role).capitalizeAll();
     };
 });
 app.directive('toolTip', function () {
@@ -174,13 +207,14 @@ app.controller('roomiesCtrl', ['$scope', '$http',
             { value: "finance", name: "Finance" },
             { value: "legal", name: "Legal" },
             { value: "people", name: "People" },
-            { value: "facilities", name: "Facilities" }
+            { value: "facilities", name: "Facilities" },
+            { value: "other", name: "Other" }
         ];
         // Find roommates.
         $scope.find = function(nextPage=false) {
             if($scope.finding || $scope.noMoreResults)
                 return;
-            if(nextPage)
+            if($scope.foundFirstBatch && nextPage)
                 $scope.dbCount += $scope.resultsLimit;
             $scope.finding = true;
             startSpinner();

@@ -41,7 +41,7 @@
             </div>
             <div class="col col-sm-8">
                 <h2><%= user.name %></h2>
-                <p><strong><%= user.position.capitalizeAll() %> (<%= user.role.capitalizeAll() %>)</strong></p>
+                <p><strong><%= user.position.capitalizeAll() %> (<%= user.role == "other" ? user.roleCustom.capitalizeAll() : user.role.capitalizeAll() %>)</strong></p>
                 <%
                     // Find location in array of objects.
                     var locationName = "";
@@ -116,13 +116,25 @@
                     <% 
                         var numRoommates;
                         var roommatesLabel = "Available/vacant rooms";
+                        var word = "person";
                         if(user.hasPlace) {
                             numRoommates = user.currentResidence.vacantRooms
+                            if(numRoommates > 1) {
+                                word = "people";
+                            }
                         } else {
                             numRoommates = user.preferences.roommates;
+                            if(numRoommates[0] == numRoommates[1]) {
+                                numRoommates = numRoommates[0];
+                                if(numRoommates > 1)
+                                    word = "people";
+                            } else {
+                                word = "people";
+                                numRoommates = "("+numRoommates.join('-')+")";
+                            }
                             roommatesLabel = "Desired roommates";
                         }
-                        var roommatesDataText = "+"+numRoommates+" "+(numRoommates>1?"people":"person");
+                        var roommatesDataText = "+"+numRoommates+" "+word;
                         showData(roommatesLabel, 'user', '', roommatesDataText);
                     %>
                 </div>
@@ -166,6 +178,24 @@
                     <% if(isEmail) { %>
                         <label class="bg-primary" style="display: block; width: 100%; float: left; background: #eee;">About Me:</label>
                     <% } %>
+                    <%
+                        var genderAndAge = "";
+                        if(user.showGender || user.showAge) {
+                            genderAndAge = "(";
+                            if(user.showGender) {
+                                if(user.gender === "other")
+                                    genderAndAge += user.genderCustom.capitalize();
+                                else
+                                    genderAndAge += user.gender.capitalize();
+                                if(user.showAge)
+                                    genderAndAge += ", ";
+                            }
+                            if(user.showAge)
+                                genderAndAge += user.age + " y/o";
+                            genderAndAge += ")";
+                        }
+                    %>
+                    <strong><%= genderAndAge %></strong>
                     <span><%= user.aboutMe %></span>
                     <% if(!isEmail) { %>
                     <a href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>

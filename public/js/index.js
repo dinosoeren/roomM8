@@ -4,8 +4,8 @@ var isHash = window.location.hash === "#success";
 var tagsInputInitialized = false;
 var isModalReady = true;
 const REG_STEP_DELETE = -1; // currentStep value for delete confirmation fieldset
-const REG_STEP_NO_PLACE = 2; // fieldset ID in registration form for users with no place
-const REG_STEP_HAS_PLACE = 3; // fieldset ID in registration form for users with a place
+const REG_STEP_NO_PLACE = 3; // fieldset ID in registration form for users with no place
+const REG_STEP_HAS_PLACE = 4; // fieldset ID in registration form for users with a place
 
 $(document).ready(function(){
     lastStep = $('#registration-form fieldset:not(#confirmDelete)').length-1;
@@ -24,12 +24,27 @@ $(document).ready(function(){
         $('#registerModal').modal("show");
     }
     // Initialize 'important factors' sliders.
-    $(".slider").slider({
+    $(".factors .slider").slider({
         ticks: [1,2,3],
-        min: 1,
-        max: 3,
-        step: 1,
         tooltip: 'hide'
+    });
+    $("#numRoommatesRange").slider({
+        ticks: [1,2,3,4,5,6],
+        ticks_labels: ["1","2","3","4","5","6"],
+        range: "true",
+        formatter: function(slider_val) {
+            var v = (slider_val + "").split(',');
+            var min = v[0];
+            var max = v[1];
+            var range = min+"-"+max;
+            var word = "people";
+            if(min === max) {
+                range = min;
+                if(min == 1)
+                    word = "person";
+            }
+            return range+" "+word;
+        }
     });
 
     // Init registration form stuff.
@@ -51,6 +66,45 @@ $(document).ready(function(){
     });
     if($("#editText").length > 0)
         $("#continueText").hide();
+    // Handle "other" selection.
+    $(".other-enabled").each(function() {
+        var selectorDiv = $(this).children('div:first-child');
+        var otherInputDiv = $(this).children('div:nth-child(2)');
+        var selector = selectorDiv.find('select');
+        var otherInput = otherInputDiv.find('input');
+        selector.on('change', function() {
+            if(selector.val() === "other") {
+                selectorDiv.removeClass('col-sm-12');
+                selectorDiv.addClass('col-sm-6');
+                otherInputDiv.show();
+                otherInput.removeClass('optional');
+            } else {
+                selectorDiv.addClass('col-sm-12');
+                selectorDiv.removeClass('col-sm-6');
+                otherInputDiv.hide();
+                otherInput.addClass('optional');
+                otherInput.val('');
+            }
+        });
+    });
+    // Handle big radio input for hasPlace.
+    $(".hasPlaceRadioField").each(function() {
+        var fieldsetContainer = $(this);
+        var glyph = fieldsetContainer.find('span.glyphicon');
+        $(this).find('input').on('change', function() {
+            if($(this).val() === "no") {
+                fieldsetContainer.find('label.no').addClass('checked');
+                fieldsetContainer.find('label.yes').removeClass('checked');
+                glyph.removeClass('glyphicon-home');
+                glyph.addClass('glyphicon-search');
+            } else {
+                fieldsetContainer.find('label.no').removeClass('checked');
+                fieldsetContainer.find('label.yes').addClass('checked');
+                glyph.addClass('glyphicon-home');
+                glyph.removeClass('glyphicon-search');
+            }
+        });
+    });
     // Handle 'Cancel' button click.
     $("#registration-form .btn-cancel").on('click', function() {
         if(!isModalReady)
@@ -134,6 +188,14 @@ $(document).ready(function(){
                 hideSuccessMessage();
                 $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
                     isModalReady = true;
+                    // Refresh bootstrap sliders in modal so labels/ticks appear correctly formatted.
+                    // Only refresh them once, though, so that the user's input does not get overridden.
+                    $(this).find("input.slider").each(function() {
+                        if($(this).attr('refreshed') !== "true") {
+                            $(this).slider('refresh');
+                            $(this).attr('refreshed', 'true');
+                        }
+                    });
                 });
                 evalBtns();
             });

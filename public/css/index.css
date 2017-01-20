@@ -3,6 +3,9 @@
     display: none !important;
 }
 
+.weight-normal {
+    font-weight: normal;
+}
 .text-white {
     color: white;
 }
@@ -151,6 +154,18 @@ input[type="radio"], input[type="checkbox"] {
 }
 input[type='checkbox'].input-error {
     outline: 2px solid #d03e3e;
+}
+.big-check label {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.5em;
+}
+.big-check label:hover {
+    background-color: #ccc;
+}
+.big-check label.checked {
+    background-color: #2780e3;
+    color: #fff;
 }
 
 /* Roommate Search Input */
