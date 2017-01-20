@@ -1,0 +1,100 @@
+<!-- User profile (angular) -->
+<%
+    var showAngData = function(label, glyphicon, data, show_if) {
+        %>
+            <p <%- show_if ? 'ng-if="' + show_if + '"' : '' %>>
+                <span tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="<%= label %>">
+                    <span class="glyphicon glyphicon-<%= glyphicon %> text-{{ x.hasPlace ? 'info' : 'primary' }}"></span> 
+                    <strong><%- data %></strong>
+                </span>
+            </p>
+        <%
+    };
+%>
+<div class="profile-card" ng-repeat="x in roomies | 
+    resultsFilter:this:
+    searchName:
+    (includeDate ? searchStartDateString : ''):
+    (includeField ? searchField : ''):
+    (includeRole ? searchRole : ''):
+    (includeResType ? searchResType : ''):
+    (includeStatus ? searchStatus : '')" ng-cloak>
+    <div class="inner-container">
+        <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
+            <div class="col col-sm-4">
+                <div class="btn-circle-lg btn-photo" style="background-image: url('{{ x.photoUrl }}');"></div>
+            </div>
+            <div class="col col-sm-8">
+                <h2>{{ x.name }}</h2>
+                <p><strong>{{ x.position.capitalizeAll() }} ({{ x.role.capitalizeAll() }})</strong></p>
+                <p>{{ locations[x.startLocation].city }}</p>
+            </div>
+            <span tool-tip ng-if="x.hasPlace" class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
+                <span class="glyphicon glyphicon-ok"></span> 
+                Has Place
+            </span>
+            <span tool-tip ng-if="!x.hasPlace" class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
+                <span class="glyphicon glyphicon-search"></span> 
+                Looking
+            </span>
+        </div>
+        <div class="data-container">
+            <div class="row">
+                <div class="col col-xs-6">
+                    <% showAngData('Start date', 'calendar', '{{ x.startDate | dateFormat }}'); %>
+                </div>
+                <div class="col col-xs-6">
+                    <% showAngData('Lease duration', 'time', '{{ x.currentResidence.durationInMonths | durationFilter }}', 'x.hasPlace'); %>
+                    <% showAngData('Desired stay duration', 'time', '{{ x.preferences.durationInMonths | durationFilter }}', '!x.hasPlace'); %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-xs-6">
+                    <% showAngData('Type of residence', 'home', '{{ x.currentResidence.residenceType.capitalize() }}', 'x.hasPlace'); %>
+                    <% showAngData('Desired residence', 'home', '{{ x.preferences.residenceType | residenceFilter }}', '!x.hasPlace'); %>
+                </div>
+                <div class="col col-xs-6">
+                    <% showAngData('Available/vacant rooms', 'user', '{{ x.currentResidence.vacantRooms | peopleFilter }}', 'x.hasPlace'); %>
+                    <% showAngData('Desired roommates', 'user', '{{ x.preferences.roommates | peopleFilter }}', '!x.hasPlace'); %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-xs-6" ng-if="x.hasPlace">
+                    <% showAngData('City of residence', 'map-marker', '{{ x.currentResidence.location }}'); %>
+                </div>
+                <div class="col col-xs-6" ng-if="x.hasPlace">
+                    <% showAngData('Bathrooms in residence', 'tint', '{{ x.currentResidence.bathrooms }} bathrooms'); %>
+                </div>
+                <div class="col col-xs-12" ng-if="!x.hasPlace">
+                    <% showAngData('Preferred cities to live in', 'map-marker', '{{ x.preferences.locations | locationsFilter }}'); %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-xs-12">
+                    <% showAngData('Most important factors', 'heart', '{{ x.factors | factorsFilter }}'); %>
+                </div>
+            </div>
+            <div class="row">
+                <p class="desc" data-desc="{{ x.aboutMe | aboutFilter }}">
+                    <span>{{ x.aboutMe.substring(0,100) | aboutFilter }}...</span>
+                    <a href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
+                </p>
+            </div>
+        </div>
+        <div class="message-container">
+            <div class="row email" ng-if="!userHasMessaged(x._id)">
+                <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }}" data-toggle="modal" data-target="#messageModal" data-name="{{ x.name }}" data-id="{{ x._id }}">
+                    <span class="glyphicon glyphicon-send"></span> <span class="btn-text">Message {{ x.name.split(' ')[0] }}</span>
+                </button>
+            </div>
+            <div class="row email" ng-if="userHasMessaged(x._id)">
+                <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }} disabled">
+                    <span class="glyphicon glyphicon-ok"></span> <span class="btn-text">Message Sent</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="no-results" ng-class="{'show': noResultsToShow || noMoreResults, 'more': noMoreResults && !noResultsToShow}">
+    <h1>No<span> more</span> results ¯\_(ツ)_/¯</h1>
+</div>

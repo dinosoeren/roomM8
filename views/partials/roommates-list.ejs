@@ -89,142 +89,7 @@
         </div>
     </div>
     <div class="container" id="roomiesContainer" role="main" infinite-scroll="loadMoreResults()" infinite-scroll-distance="2">
-        <div class="profile-card" ng-repeat="x in roomies | 
-            resultsFilter:this:
-            searchName:
-            (includeDate ? searchStartDateString : ''):
-            (includeField ? searchField : ''):
-            (includeRole ? searchRole : ''):
-            (includeResType ? searchResType : ''):
-            (includeStatus ? searchStatus : '')" ng-cloak>
-            <div class="inner-container">
-                <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
-                    <div class="col col-sm-4">
-                        <div class="btn-circle-lg btn-photo" style="background-image: url('{{ x.photoUrl }}');"></div>
-                    </div>
-                    <div class="col col-sm-8">
-                        <h2>{{ x.name }}</h2>
-                        <p><strong>{{ x.position.capitalizeAll() }} ({{ x.role.capitalizeAll() }})</strong></p>
-                        <p>{{ locations[x.startLocation].city }}</p>
-                    </div>
-                    <span tool-tip ng-if="x.hasPlace" class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
-                        <span class="glyphicon glyphicon-ok"></span> 
-                        Has Place
-                    </span>
-                    <span tool-tip ng-if="!x.hasPlace" class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
-                        <span class="glyphicon glyphicon-search"></span> 
-                        Looking
-                    </span>
-                </div>
-                <div class="data-container">
-                    <div class="row">
-                        <div class="col col-xs-6">
-                            <p>
-                                <span tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
-                                    <span class="glyphicon glyphicon-calendar text-{{ x.hasPlace ? 'info' : 'primary' }}"></span> 
-                                    <strong>{{ x.startDate | dateFormat }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col col-xs-6">
-                            <p>
-                                <span tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
-                                    <span class="glyphicon glyphicon-time text-info"></span> 
-                                    <strong>{{ x.currentResidence.durationInMonths | durationFilter }}</strong>
-                                </span>
-                                <span tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
-                                    <span class="glyphicon glyphicon-time text-primary"></span> 
-                                    <strong>{{ x.preferences.durationInMonths | durationFilter }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-xs-6">
-                            <p>
-                                <span tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Type of residence">
-                                    <span class="glyphicon glyphicon-home text-info"></span> 
-                                    <strong>{{ x.currentResidence.residenceType.capitalize() }}</strong>
-                                </span>
-                                <span tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
-                                    <span class="glyphicon glyphicon-home text-primary"></span> 
-                                    <strong>{{ x.preferences.residenceType | residenceFilter }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col col-xs-6">
-                            <p>
-                                <span tool-tip ng-if="x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
-                                    <span class="glyphicon glyphicon-user text-info"></span> 
-                                    <strong>{{ x.currentResidence.vacantRooms | peopleFilter}}</strong>
-                                </span>
-                                <span tool-tip ng-if="!x.hasPlace" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
-                                    <span class="glyphicon glyphicon-user text-primary"></span> 
-                                    <strong>{{ x.preferences.roommates | peopleFilter }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-xs-6" ng-if="x.hasPlace">
-                            <p>
-                                <span tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="City of residence">
-                                    <span class="glyphicon glyphicon-map-marker text-info"></span> 
-                                    <strong>{{ x.currentResidence.location }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col col-xs-6" ng-if="x.hasPlace">
-                            <p>
-                                <span tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Bathrooms in residence">
-                                    <span class="glyphicon glyphicon-tint text-info"></span> 
-                                    <strong>{{ x.currentResidence.bathrooms }} bathrooms</strong>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col col-xs-12" ng-if="!x.hasPlace">
-                            <p>
-                                <span href="javascript:;" tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
-                                    <span class="glyphicon glyphicon-map-marker text-primary"></span> 
-                                    <strong>{{ x.preferences.locations | locationsFilter }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col col-xs-12">
-                            <p>
-                                <span tool-tip class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
-                                    <span class="glyphicon glyphicon-heart text-{{ x.hasPlace ? 'info' : 'primary' }}"></span> 
-                                    <strong>{{ x.factors | factorsFilter }}</strong>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <p class="desc" data-desc="{{ x.aboutMe | aboutFilter }}">
-                            <span>{{ x.aboutMe.substring(0,100) | aboutFilter }}...</span>
-                            <a href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="message-container">
-                    <div class="row email" ng-if="!userHasMessaged(x._id)">
-                        <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }}" data-toggle="modal" data-target="#messageModal" data-name="{{ x.name }}" data-id="{{ x._id }}">
-                            <span class="glyphicon glyphicon-send"></span> <span class="btn-text">Message {{ x.name.split(' ')[0] }}</span>
-                        </button>
-                    </div>
-                    <div class="row email" ng-if="userHasMessaged(x._id)">
-                        <button class="btn btn-{{ x.hasPlace ? 'info' : 'primary' }} disabled">
-                            <span class="glyphicon glyphicon-ok"></span> <span class="btn-text">Message Sent</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="no-results" ng-class="{'show': noResultsToShow || noMoreResults, 'more': noMoreResults && !noResultsToShow}">
-            <h1>No<span> more</span> results ¯\_(ツ)_/¯</h1>
-        </div>
+        <% include user-profile-angular.ejs %>
     </div>
 </div>
 <!-- Message Form Modal -->
@@ -249,7 +114,7 @@
                             data-message="Success!">
                         <span class="glyphicon glyphicon-ok"></span> <span class="msg"></span>
                     </div>
-                    <% include ../partials/message-form.ejs %>
+                    <% include message-form.ejs %>
                 </div>
                 <div class="modal-footer">
                     <div class="row">

@@ -103,6 +103,7 @@
 }
 .profile-card .email a {
     display: block;
+    padding: 10px 0;
 }
 .btn-photo {
     margin: auto;

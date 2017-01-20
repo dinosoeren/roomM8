@@ -1,16 +1,25 @@
 <!-- User profile -->
 <%
     var isEmail = typeof message !== "undefined";
-    // Add string capitalize functions to ejs.
+    // Add string capitalize function to ejs.
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
     };
-    String.prototype.capitalizeAll = function() {
-        var words = this.split(' ');
-        for(var i=0; i<words.length; i++) {
-            words[i] = words[i].capitalize();
-        }
-        return words.join(' ');
+    var showData = function(label, glyphicon, id, data) {
+        %>
+        <p>
+            <% if(!isEmail) { %>
+                <span class="tip" data-toggle="tooltip" data-placement="auto" title="<%= label %>">
+                    <span class="glyphicon glyphicon-<%= glyphicon %> text-<%= user.hasPlace ? 'info' : 'primary' %>"></span>
+            <% } else { %>
+                    <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= label %>:</label>
+            <% } %>
+                    <span id="<%= id %>"><%= data %></span>
+            <% if(!isEmail) { %>
+                </span>
+            <% } %>
+        </p>
+        <%
     };
 %>
 <div class="profile-card">
@@ -45,7 +54,7 @@
                     <span class="glyphicon glyphicon-ok"></span> 
                     <% } %>
                     <%= isEmail ? 'Already has a place' : 'Has Place' %>
-                </<%= isEmail ? 'div' : 'span' %>>
+                </span>
             <% } else { %>
                 <span class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
                     <% if(!isEmail) { %>
@@ -58,159 +67,70 @@
         <div class="data-container">
             <div class="row">
                 <div class="col col-xs-6">
-                    <p>
-                        <% if(!isEmail) { %>
-                        <span class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
-                            <span class="glyphicon glyphicon-calendar text-<%= user.hasPlace ? 'info' : 'primary' %>"></span>
-                        <% } %>
-                            <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Start Date:' : '' %></label>
-                            <span id="dateToFormat"><%= isEmail ? startDate : user.startDate %></span>
-                        <% if(!isEmail) { %>
-                        </span>
-                        <% } %>
-                    </p>
+                    <% showData('Start date', 'calendar', 'dateToFormat', isEmail ? startDate : user.startDate); %>
                 </div>
                 <div class="col col-xs-6">
-                    <p>
-                        <% if(user.hasPlace) { %>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
-                                <span class="glyphicon glyphicon-time text-info"></span> 
-                            <% } %>
-                                <label class="bg-info"><%= isEmail ? 'Lease duration:' : '' %></label>
-                                <%
-                                    var duration = user.currentResidence.durationInMonths + " months";
-                                    if(user.currentResidence.durationInMonths == -1)
-                                        duration = "Any period";
-                                %>
-                                <span><%= duration %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        <% } else { %>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
-                                <span class="glyphicon glyphicon-time text-primary"></span> 
-                            <% } %>
-                                <label class="bg-primary"><%= isEmail ? 'Desired stay duration:' : '' %></label>
-                                <%
-                                    var duration = user.preferences.durationInMonths + " months";
-                                    if(user.preferences.durationInMonths == -1)
-                                        duration = "Any period";
-                                %>
-                                <span><%= duration %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        <% } %>
-                    </p>
+                    <% 
+                        var duration;
+                        var durationLabel = "Lease duration";
+                        if(user.hasPlace) {
+                            duration = user.currentResidence.durationInMonths
+                        } else {
+                            duration = user.preferences.durationInMonths;
+                            durationLabel = "Desired stay duration";
+                        }
+                        if(duration == -1)
+                            duration = "Any period";
+                        else
+                            duration = duration + " months";
+                        showData(durationLabel, 'time', '', duration);
+                    %>
                 </div>
             </div>
             <div class="row">
                 <div class="col col-xs-6">
-                    <p>
-                        <% if(user.hasPlace) { %>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Type of residence">
-                                <span class="glyphicon glyphicon-home text-info"></span> 
-                            <% } %>
-                                <label class="bg-info"><%= isEmail ? 'Type of residence:' : '' %></label>
-                                <%
-                                    var resType = user.currentResidence.residenceType.capitalize();
-                                    if(user.currentResidence.residenceType == "idc")
-                                        resType = "Anything";
-                                %>
-                                <span><%= resType %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        <% } else { %>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
-                                <span class="glyphicon glyphicon-home text-primary"></span> 
-                            <% } %>
-                                <label class="bg-primary"><%= isEmail ? 'Desired residence:' : '' %></label>
-                                <%
-                                    var resType = user.preferences.residenceType.capitalize();
-                                    if(user.preferences.residenceType == "idc")
-                                        resType = "Anything";
-                                %>
-                                <span><%= resType %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        <% } %>
-                    </p>
+                    <% 
+                        var resType;
+                        var resTypeLabel = "Type of residence";
+                        if(user.hasPlace) {
+                            resType = user.currentResidence.residenceType
+                        } else {
+                            resType = user.preferences.residenceType;
+                            resTypeLabel = "Desired residence";
+                        }
+                        if(resType == "idc")
+                            resType = "Anything";
+                        else
+                            resType = resType.capitalize();
+                        showData(resTypeLabel, 'home', '', resType);
+                    %>
                 </div>
                 <div class="col col-xs-6">
-                    <p>
-                        <% if(user.hasPlace) { %>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
-                                <span class="glyphicon glyphicon-user text-info"></span> 
-                            <% } %>
-                                <label class="bg-info"><%= isEmail ? 'Available rooms:' : '' %></label>
-                                <% var numRoommates = user.currentResidence.vacantRooms %>
-                                <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        <% } else { %>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
-                                <span class="glyphicon glyphicon-user text-primary"></span> 
-                            <% } %>
-                                <label class="bg-primary"><%= isEmail ? 'Desired roommates:' : '' %></label>
-                                <% var numRoommates = user.preferences.roommates %>
-                                <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        <% } %>
-                    </p>
+                    <% 
+                        var numRoommates;
+                        var roommatesLabel = "Available/vacant rooms";
+                        if(user.hasPlace) {
+                            numRoommates = user.currentResidence.vacantRooms
+                        } else {
+                            numRoommates = user.preferences.roommates;
+                            roommatesLabel = "Desired roommates";
+                        }
+                        var roommatesDataText = "+"+numRoommates+" "+(numRoommates>1?"people":"person");
+                        showData(roommatesLabel, 'user', '', roommatesDataText);
+                    %>
                 </div>
             </div>
             <div class="row">
                 <% if(user.hasPlace) { %>
                     <div class="col col-xs-6">
-                        <p>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="City of residence">
-                                <span class="glyphicon glyphicon-map-marker text-info"></span> 
-                            <% } %>
-                                <label class="bg-info"><%= isEmail ? 'City of residence:' : '' %></label>
-                                <span><%= user.currentResidence.location %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        </p>
+                        <% showData('City of residence', 'map-marker', '', user.currentResidence.location); %>
                     </div>
                     <div class="col col-xs-6">
-                        <p>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Bathrooms in residence">
-                                <span class="glyphicon glyphicon-tint text-info"></span> 
-                            <% } %>
-                                <label class="bg-info"><%= isEmail ? 'Bathrooms in residence:' : '' %></label>
-                                <span><%= user.currentResidence.bathrooms %> bathrooms</span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        </p>
+                        <% showData('Bathrooms in residence', 'tint', '', user.currentResidence.bathrooms + " bathrooms"); %>
                     </div>
                 <% } else { %>
                     <div class="col col-xs-12">
-                        <p>
-                            <% if(!isEmail) { %>
-                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
-                                <span class="glyphicon glyphicon-map-marker text-primary"></span> 
-                            <% } %>
-                                <label class="bg-primary"><%= isEmail ? 'Preferred cities to live in:' : '' %></label>
-                                <span><%= user.preferences.locations.join(', ') %></span>
-                            <% if(!isEmail) { %>
-                            </span>
-                            <% } %>
-                        </p>
+                        <% showData('Preferred cities to live in', 'map-marker', '', user.preferences.locations.join(', ')); %>
                     </div>
                 <% } %>
             </div>
