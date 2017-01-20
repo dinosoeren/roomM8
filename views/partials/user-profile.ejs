@@ -40,19 +40,19 @@
                 <p><%= locationName %></p>
             </div>
             <% if(user.hasPlace) { %>
-                <<%- isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
+                <span class="tip float text-info" data-toggle="tooltip" data-placement="auto" title="This Noogler has a residence already">
                     <% if(!isEmail) { %>
                     <span class="glyphicon glyphicon-ok"></span> 
                     <% } %>
                     <%= isEmail ? 'Already has a place' : 'Has Place' %>
-                </<%= isEmail ? 'div' : 'a' %>>
+                </<%= isEmail ? 'div' : 'span' %>>
             <% } else { %>
-                <<%- isEmail ? 'div' : 'a href="javascript:;"' %> class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
+                <span class="tip float text-primary" data-toggle="tooltip" data-placement="auto" title="This Noogler is looking for a residence">
                     <% if(!isEmail) { %>
                     <span class="glyphicon glyphicon-search"></span> 
                     <% } %>
                     <%= isEmail ? 'Looking for a place' : 'Looking' %>
-                </<%= isEmail ? 'div' : 'a' %>>
+                </span>
             <% } %>
         </div>
         <div class="data-container">
@@ -60,13 +60,13 @@
                 <div class="col col-xs-6">
                     <p>
                         <% if(!isEmail) { %>
-                        <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
+                        <span class="tip" data-toggle="tooltip" data-placement="auto" title="Start date">
                             <span class="glyphicon glyphicon-calendar text-<%= user.hasPlace ? 'info' : 'primary' %>"></span>
                         <% } %>
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Start Date:' : '' %></label>
                             <span id="dateToFormat"><%= isEmail ? startDate : user.startDate %></span>
                         <% if(!isEmail) { %>
-                        </a>
+                        </span>
                         <% } %>
                     </p>
                 </div>
@@ -74,7 +74,7 @@
                     <p>
                         <% if(user.hasPlace) { %>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Lease duration">
                                 <span class="glyphicon glyphicon-time text-info"></span> 
                             <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Lease duration:' : '' %></label>
@@ -85,11 +85,11 @@
                                 %>
                                 <span><%= duration %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         <% } else { %>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Desired duration of stay">
                                 <span class="glyphicon glyphicon-time text-primary"></span> 
                             <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Desired stay duration:' : '' %></label>
@@ -100,7 +100,7 @@
                                 %>
                                 <span><%= duration %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         <% } %>
                     </p>
@@ -111,7 +111,7 @@
                     <p>
                         <% if(user.hasPlace) { %>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Type of residence">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Type of residence">
                                 <span class="glyphicon glyphicon-home text-info"></span> 
                             <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Type of residence:' : '' %></label>
@@ -122,11 +122,11 @@
                                 %>
                                 <span><%= resType %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         <% } else { %>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Desired residence">
                                 <span class="glyphicon glyphicon-home text-primary"></span> 
                             <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Desired residence:' : '' %></label>
@@ -137,7 +137,7 @@
                                 %>
                                 <span><%= resType %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         <% } %>
                     </p>
@@ -146,25 +146,25 @@
                     <p>
                         <% if(user.hasPlace) { %>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Available/vacant rooms">
                                 <span class="glyphicon glyphicon-user text-info"></span> 
                             <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Available rooms:' : '' %></label>
                                 <% var numRoommates = user.currentResidence.vacantRooms %>
                                 <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         <% } else { %>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Desired roommates">
                                 <span class="glyphicon glyphicon-user text-primary"></span> 
                             <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Desired roommates:' : '' %></label>
                                 <% var numRoommates = user.preferences.roommates %>
                                 <span>+<%= numRoommates+" "+(numRoommates>1?"people":"person") %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         <% } %>
                     </p>
@@ -175,26 +175,26 @@
                     <div class="col col-xs-6">
                         <p>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="City of residence">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="City of residence">
                                 <span class="glyphicon glyphicon-map-marker text-info"></span> 
                             <% } %>
                                 <label class="bg-info"><%= isEmail ? 'City of residence:' : '' %></label>
                                 <span><%= user.currentResidence.location %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         </p>
                     </div>
                     <div class="col col-xs-6">
                         <p>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Bathrooms in residence">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Bathrooms in residence">
                                 <span class="glyphicon glyphicon-tint text-info"></span> 
                             <% } %>
                                 <label class="bg-info"><%= isEmail ? 'Bathrooms in residence:' : '' %></label>
                                 <span><%= user.currentResidence.bathrooms %> bathrooms</span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         </p>
                     </div>
@@ -202,13 +202,13 @@
                     <div class="col col-xs-12">
                         <p>
                             <% if(!isEmail) { %>
-                            <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
+                            <span class="tip" data-toggle="tooltip" data-placement="auto" title="Preferred cities to live in">
                                 <span class="glyphicon glyphicon-map-marker text-primary"></span> 
                             <% } %>
                                 <label class="bg-primary"><%= isEmail ? 'Preferred cities to live in:' : '' %></label>
                                 <span><%= user.preferences.locations.join(', ') %></span>
                             <% if(!isEmail) { %>
-                            </a>
+                            </span>
                             <% } %>
                         </p>
                     </div>
@@ -218,7 +218,7 @@
                 <div class="col col-xs-12 factors">
                     <p>
                         <% if(!isEmail) { %>
-                        <a href="<%- isEmail ? '#' : 'javascript:;' %>" class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
+                        <span class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
                             <span class="glyphicon glyphicon-heart text-<%= user.hasPlace ? 'info' : 'primary' %>"></span> 
                         <% } %>
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Importance ratings (1 - least, 3 - most):' : '' %></label>
@@ -228,7 +228,7 @@
                                 <% include factors-sliders.ejs %>
                             <% } %>
                         <% if(!isEmail) { %>
-                        </a>
+                        </span>
                         <% } %>
                     </p>
                 </div>

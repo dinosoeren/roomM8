@@ -3,6 +3,9 @@ var lastStep = 0;
 var isHash = window.location.hash === "#success";
 var tagsInputInitialized = false;
 var isModalReady = true;
+const REG_STEP_DELETE = -1; // currentStep value for delete confirmation fieldset
+const REG_STEP_NO_PLACE = 2; // fieldset ID in registration form for users with no place
+const REG_STEP_HAS_PLACE = 3; // fieldset ID in registration form for users with a place
 
 $(document).ready(function(){
     lastStep = $('#registration-form fieldset:not(#confirmDelete)').length-1;
@@ -54,7 +57,7 @@ $(document).ready(function(){
             return;
         isModalReady = false;
         var parent_fieldset;
-        if(currentStep === -1) {
+        if(currentStep === REG_STEP_DELETE) {
             $('#agreeToDelete').prop('checked', false); // Uncheck agree box.
             parent_fieldset = $('#registration-form fieldset#confirmDelete');
         } else {
@@ -76,7 +79,7 @@ $(document).ready(function(){
         if(!isModalReady)
             return;
         isModalReady = false;
-        if(currentStep == -1) { // already in confirm dialog
+        if(currentStep == REG_STEP_DELETE) { // already in confirm dialog
             // Make sure they check the agree box.
             if(!$("#agreeToDelete").is(":checked")) {
                 $("#agreeToDelete").addClass('input-error');
@@ -92,7 +95,7 @@ $(document).ready(function(){
             return;
         }
         var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
-        currentStep = -1;
+        currentStep = REG_STEP_DELETE;
         parent_fieldset.fadeOut(200, function () {
             $('#registration-form fieldset#confirmDelete').fadeIn(200, function() {
                 isModalReady = true;
@@ -109,18 +112,20 @@ $(document).ready(function(){
         isModalReady = false;
         var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
         if (areAllFieldInputsValid()) {
-            if(currentStep === 1) {
+            // If at step before step for NO_PLACE.
+            if(currentStep === REG_STEP_NO_PLACE - 1) {
                 if(userHasPlace()) {
-                    // Skip step 2 if the user has a place already.
+                    // Skip step for NO_PLACE if the user has a place already.
                     currentStep++;
-                    // Also hide irrelevant factors in step 4.
+                    // Also hide irrelevant factors in 'importance' fieldset.
                     $(".no-place").hide();
                 } else {
-                    // Otherwise, show all factors in step 4.
+                    // Otherwise, show all factors in 'importance' fieldset.
                     $(".no-place").show();
                 }
-            } else if(currentStep == 2) {
-                // Skip step 3 if the user does not have a place.
+            // Else if at step for NO_PLACE.
+            } else if(currentStep == REG_STEP_NO_PLACE) {
+                // Skip step for HAS_PLACE if the user does not have a place.
                 currentStep++;
             }
             currentStep++;
@@ -145,7 +150,7 @@ $(document).ready(function(){
             return;
         isModalReady = false;
         var parent_fieldset;
-        if(currentStep === -1) {
+        if(currentStep === REG_STEP_DELETE) {
             $('#agreeToDelete').prop('checked', false); // uncheck agree box
             parent_fieldset = $('#registration-form fieldset#confirmDelete');
             currentStep = 1; // go back to step 0 after this.
@@ -155,9 +160,9 @@ $(document).ready(function(){
         $(parent_fieldset).fadeOut(200, function () {
             hideErrorMessage();
             hideSuccessMessage();
-            if(currentStep === 3 || (currentStep === 4 && !userHasPlace())) {
-                // Go back to step 1 from step 3 if the user already has a place.
-                // Go back to step 2 from step 4 if the user does not have a place.
+            if(currentStep === REG_STEP_HAS_PLACE || (currentStep === REG_STEP_HAS_PLACE+1 && !userHasPlace())) {
+                // Go back to step before NO_PLACE from step HAS_PLACE if the user already has a place.
+                // Go back to step NO_PLACE from step after HAS_PLACE if the user does not have a place.
                 currentStep--;
             }
             currentStep--;
@@ -442,7 +447,7 @@ function userHasPlace() {
 }
 // Hide/show previous and next buttons based on step.
 function evalBtns() {
-    if(currentStep === -1) {
+    if(currentStep === REG_STEP_DELETE) {
         // Delete button was pressed. Take user to confirmation dialog.
         $('#registration-form .btn-next').hide();
         $('#registration-form .btn-previous').show();

@@ -261,15 +261,15 @@ input[type='checkbox'].input-error {
 .profile-card .glyphicon {
     margin-right: 3px;
 }
-.profile-card a.tip {
+.profile-card .tip {
     text-decoration: none;
     cursor: default;
     font-weight: bold;
 }
-.profile-card a.tip:not(.float) {
+.profile-card .tip:not(.float) {
     color: inherit;
 }
-.profile-card a.tip.float {
+.profile-card .tip.float {
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -279,9 +279,9 @@ input[type='checkbox'].input-error {
     border-radius: 3px;
     font-size: 0.9em;
 }
-.profile-card a.tip.float:hover,
-.profile-card a.tip.float:focus,
-.profile-card a.tip.float:active {
+.profile-card .tip.float:hover,
+.profile-card .tip.float:focus,
+.profile-card .tip.float:active {
     color: #333;
 }
 .profile-card .inner-container {
