@@ -71,7 +71,14 @@ app.filter('locationsFilter', function() {
 app.filter('aboutFilter', function() {
     return function(aboutMe) {
         // strip html
-        return $('<p>'+aboutMe+'</p>').text();
+        return aboutMe;
+    };
+});
+app.filter('aboutShortenFilter', function() {
+    return function(aboutMe) {
+        if(aboutMe.length > 100)
+            aboutMe = aboutMe.substring(0,100) + "...";
+        return aboutMe;
     };
 });
 app.filter('peopleFilter', function() {

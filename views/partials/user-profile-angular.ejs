@@ -76,8 +76,8 @@
             </div>
             <div class="row">
                 <p class="desc" data-desc="{{ x.aboutMe | aboutFilter }}">
-                    <span>{{ x.aboutMe.substring(0,100) | aboutFilter }}...</span>
-                    <a href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
+                    <span>{{ x.aboutMe | aboutShortenFilter }}</span>
+                    <a ng-if="x.aboutMe.length > 100" href="javascript:;" class="more" onclick="toggleReadMore(event,this);">More</a>
                 </p>
             </div>
         </div>

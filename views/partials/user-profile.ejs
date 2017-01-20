@@ -147,8 +147,9 @@
                         <% if(!isEmail) { %>
                         <span class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
                             <span class="glyphicon glyphicon-heart text-<%= user.hasPlace ? 'info' : 'primary' %>"></span> 
+                        <% } else { %>
+                            <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>">Importance ratings (1 - least, 3 - most):</label>
                         <% } %>
-                            <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>"><%= isEmail ? 'Importance ratings (1 - least, 3 - most):' : '' %></label>
                             <% if(!isEmail) { %>
                                 <span id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></span>
                             <% } else { %>

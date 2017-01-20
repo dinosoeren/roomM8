@@ -281,7 +281,7 @@ $(document).ready(function(){
     });
 
     $("#registerModal .profile-card .desc").each(function() {
-        $(this).find('span').text($(this).attr('data-desc').substring(0,100)+"...");
+        shortenAboutMe(this);
     });
     $("#dateToFormat").each(function() {
         $(this).text(formatDateNumToWords($(this).text()));
@@ -302,6 +302,16 @@ String.prototype.capitalizeAll = function() {
     }
     return words.join(' ');
 };
+// Shorten 'about me' text and potentially hide 'More' link.
+function shortenAboutMe(desc_container) {
+    var aboutText = $(desc_container).attr('data-desc');
+    if(aboutText.length > 100) {
+        aboutText = aboutText.substring(0,100)+"...";
+    } else {
+        $(desc_container).find('.more').hide();
+    }
+    $(desc_container).find('span').text(aboutText);
+}
 // Handle profile card description 'Read more' click event.
 function toggleReadMore(event, ele) {
     var descContainer = $(ele).parent('.desc');
@@ -312,7 +322,7 @@ function toggleReadMore(event, ele) {
     } else {
         $(ele).addClass("more");
         $(ele).text("More");
-        descContainer.find('span').text(descContainer.attr('data-desc').substring(0,100)+"...");
+        shortenAboutMe(descContainer);
     }
     event.preventDefault();
 }
