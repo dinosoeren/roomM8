@@ -142,8 +142,18 @@ form#registration-form fieldset {
 fieldset#f0 > p {
     margin-top: 10px;
 }
+fieldset .form-group:last-child {
+    margin-bottom: 0;
+}
 .slider.slider-horizontal {
     width: 100%;
+}
+fieldset h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+#registerProgress {
+    margin-bottom: 5px;
 }
 .input-error {
     border-color: #d03e3e;

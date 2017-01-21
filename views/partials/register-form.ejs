@@ -1,7 +1,7 @@
 <!-- views/partials/register-form.ejs -->
 <% if(isUserRegistered) { %>
     <!-- Delete profile confirmation -->
-    <fieldset id="confirmDelete">
+    <fieldset id="confirmDelete" data-title="Delete your account">
         <h3 class="text-danger text-center" style="margin-top: 0px;">Are you sure you want to delete your account?</h3>
         <p class="text-center">All your info will be permanently erased from roomM8.<br/>This action cannot be undone.</p>
         <div class="text-center">
@@ -13,7 +13,7 @@
     </fieldset>
 <% } %>
 <!-- Profile card -->
-<fieldset id="f0">
+<fieldset id="f0" data-title="My Profile">
     <% if(!isUserRegistered) { %>
         <h3 class="text-success text-center">Successfully connected with Google!</h3>
         <div class="profile-card">
@@ -35,7 +35,7 @@
     <% } %>
 </fieldset>
 <!-- Google info -->
-<fieldset id="f1">
+<fieldset id="f1" data-title="Basic info">
     <div class="form-group row">
         <label for="dateOfBirth" class="col-sm-3 col-form-label">Date of birth</label>
         <div class="col-sm-9">
@@ -153,8 +153,8 @@
     </div>
 </fieldset>
 <!-- Goal -->
-<fieldset id="f2" class="hasPlaceRadioField">
-    <h3 class="text-center" style="margin-bottom: 30px;"><span class="glyphicon glyphicon-<%= (isUserRegistered && user.hasPlace == true) ? 'home' : 'search' %>"></span></h3>
+<fieldset id="f2" class="hasPlaceRadioField" data-title="Your goal">
+    <h3 class="text-center"><span class="glyphicon glyphicon-<%= (isUserRegistered && user.hasPlace == true) ? 'home' : 'search' %>"></span></h3>
     <div class="form-group big-check">
         <label class="form-check-label no <%= (isUserRegistered && user.hasPlace == true) ? '' : 'checked' %>" style="font-weight: normal;">
             <div class="row">
@@ -183,7 +183,7 @@
     </div>
 </fieldset>
 <!-- Preferences -->
-<fieldset id="f3">
+<fieldset id="f3" data-title="Living preferences">
     <div class="form-group row">
         <label for="pref-locations" class="col-sm-3 col-form-label">Preferred living location(s)</label>
         <div class="col-sm-9">
@@ -245,7 +245,7 @@
     </div>
 </fieldset>
 <!-- About living space -->
-<fieldset id="f4">
+<fieldset id="f4" data-title="About your residence">
     <div class="form-group row">
         <label for="res-location" class="col-sm-3 col-form-label">Location of residence</label>
         <div class="col-sm-9">
@@ -314,14 +314,14 @@
     </div>
 </fieldset>
 <!-- Factors -->
-<fieldset id="f5" class="factors">
-    <h3 class="text-center" style="margin-bottom: 30px;">How important are these factors to you?</h3>
+<fieldset id="f5" class="factors" data-title="Importance ratings">
+    <h3 class="text-center">How important are these factors to you?</h3>
     <% include factors-sliders.ejs %>
 </fieldset>
 <!-- About You -->
-<fieldset id="f6">
+<fieldset id="f6" data-title="Additional info">
     <div class="form-group">
-        <h3 style="margin-top: 0px;">About yourself</h3>
+        <h3 style="margin-bottom: 0px;">About yourself</h3>
         <small id="aboutMeHelp" class="form-text">Consider listing hobbies, interests, favorite videogames, favorite foods, where you're from, etc. This info is displayed to other users.</small>
     </div>
     <div class="form-group">

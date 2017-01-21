@@ -523,6 +523,24 @@ function userHasPlace() {
 }
 // Hide/show previous and next buttons based on step.
 function evalBtns() {
+    // First, update modal title text.
+    var fieldset = $('#registration-form fieldset#f'+currentStep);
+    if(currentStep === REG_STEP_DELETE)
+        fieldset = $('#registration-form fieldset#confirmDelete');
+    $('#registration-form .modal-title').text(fieldset.data('title'));
+    // Now, update progress bar.
+    if(currentStep === 0 || currentStep === REG_STEP_DELETE) {
+        $("#registerProgress").hide();
+    } else {
+        $("#registerProgress").show();
+        var curr = currentStep;
+        var curr = curr <= REG_STEP_NO_PLACE ? curr : curr-1;
+        var max = (lastStep-1);
+        var percent = ((curr/max)*100);
+        $("#registerProgress .progress-bar").css("width", percent+"%");
+        $("#registerProgress .percent").text(Math.round(percent)+"% Complete");
+        $("#registerProgress .progress-bar").attr('aria-valuenow', percent);
+    }
     if(currentStep === REG_STEP_DELETE) {
         // Delete button was pressed. Take user to confirmation dialog.
         $('#registration-form .btn-next').hide();
