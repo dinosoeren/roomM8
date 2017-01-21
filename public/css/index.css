@@ -148,7 +148,7 @@ fieldset .form-group:last-child {
 .slider.slider-horizontal {
     width: 100%;
 }
-fieldset h3 {
+fieldset h3.small-margin {
     margin-top: 0;
     margin-bottom: 20px;
 }
