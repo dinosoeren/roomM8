@@ -3,22 +3,38 @@
 $(document).ready(function() {
     startSpinner();
     // Make spinner follow browser scroll position when user scrolls past bottom of roomie search div.
+    var limitEle = $('#roomieSearchContainer');
+    var spinner = $('#roomiesContainer .spinner');
+    var backToTopBtn = $('#backToTop');
+    var showingBackToTopBtn = false;
     $(window).on('scroll', function() {
-        var limitEle = $('#roomieSearchContainer');
-        var spinner = $('#roomiesContainer .spinner');
         if(spinner.length > 0) {
+            // If user scrolled past bottom of search div.
             if($(window).scrollTop() >= limitEle.offset().top + limitEle.outerHeight()) {
                 if(spinner.css('position') !== 'fixed') {
                     spinner.css('position', 'fixed');
                     spinner.css('top', '50%');
+                }
+                if(!showingBackToTopBtn) {
+                    backToTopBtn.hide().fadeIn(200);
+                    showingBackToTopBtn = true;
                 }
             } else {
                 if(spinner.css('position') !== 'absolute') {
                     spinner.css('position', 'absolute');
                     spinner.css('top', '50px');
                 }
+                if(showingBackToTopBtn) {
+                    showingBackToTopBtn = false;
+                    backToTopBtn.fadeOut(200);
+                }
             }
         }
+    });
+    backToTopBtn.on('click', function() {
+        $('html, body').animate({
+            scrollTop: limitEle.offset().top
+        }, 1000);
     });
 });
 var mailRecipients = [
