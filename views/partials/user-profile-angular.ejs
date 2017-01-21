@@ -112,6 +112,7 @@
         </div>
     </div>
 </div>
-<div class="no-results" ng-class="{'show': noResultsToShow || noMoreResults, 'more': noMoreResults && !noResultsToShow}">
-    <h1>No<span> more</span> results ¯\_(ツ)_/¯</h1>
+<div class="no-results" ng-class="{'show': noResultsToShow || noMoreResults || resultsError, 'more': noMoreResults && !noResultsToShow, 'error' : resultsError}">
+    <h1 class="no-results-msg">No<span> more</span> results ¯\_(ツ)_/¯</h1>
+    <h1 class="text-danger error-msg">Search failed. Please <a href="/">refresh</a>.</h1>
 </div>

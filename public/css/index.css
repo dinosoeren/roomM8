@@ -268,14 +268,21 @@ input[type='checkbox'].input-error {
     text-align: center;
     display: none;
 }
-.no-results h1 span {
+.no-results h1.no-results-msg span,
+.no-results h1.error-msg {
     display: none;
 }
 .no-results.show {
     display: block;
 }
-.no-results.more h1 span {
+.no-results.more h1.no-results-msg span {
     display: inline;
+}
+.no-results.error h1.no-results-msg {
+    display: none;
+}
+.no-results.error h1.error-msg {
+    display: inline-block;
 }
 #backToTop {
     position: fixed;

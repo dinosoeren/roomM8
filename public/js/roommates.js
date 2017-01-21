@@ -255,6 +255,7 @@ app.controller('roomiesCtrl', ['$scope', '$http',
         $scope.resultsLimit = 20;
         $scope.noMoreResults = false;
         $scope.noResultsToShow = false;
+        $scope.resultsError = false;
         $scope.roomies = [];
         $scope.fields = [
             { value: "cloud", name: 'Google Cloud' },
@@ -295,6 +296,7 @@ app.controller('roomiesCtrl', ['$scope', '$http',
                     if(response.data.error) {
                         console.error("Error: "+response.data.error);
                         $scope.noMoreResults = true;
+                        $scope.resultsError = true;
                     } else {
                         if($scope.dbCount == 0) {
                             $scope.roomies = response.data;
