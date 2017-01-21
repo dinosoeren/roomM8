@@ -125,7 +125,7 @@ $(document).ready(function(){
             $('#registration-form .regRequired, #registration-form .form-control').each(function () {
                 $(this).removeClass('input-error'); // Remove input error classes.
             });
-            evalBtns();
+            evalFormStatus();
             isModalReady = true;
         });
     });
@@ -155,7 +155,7 @@ $(document).ready(function(){
             $('#registration-form fieldset#confirmDelete').fadeIn(200, function() {
                 isModalReady = true;
             });
-            evalBtns();
+            evalFormStatus();
         });
     });
     // Handle 'Continue' button click.
@@ -198,7 +198,7 @@ $(document).ready(function(){
                         }
                     });
                 });
-                evalBtns();
+                evalFormStatus();
             });
         } else {
             showErrorMessage();
@@ -232,7 +232,7 @@ $(document).ready(function(){
             $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
                 isModalReady = true;
             });
-            evalBtns();
+            evalFormStatus();
         });
     });
 
@@ -521,8 +521,9 @@ function isFieldValid(ele) {
 function userHasPlace() {
     return $("#has-place").length > 0 && $("#has-place").is(':checked');
 }
-// Hide/show previous and next buttons based on step.
-function evalBtns() {
+// Change form layout/style (like hiding/showing previous and 
+// next buttons) based on current step.
+function evalFormStatus() {
     // First, update modal title text.
     var fieldset = $('#registration-form fieldset#f'+currentStep);
     if(currentStep === REG_STEP_DELETE)
@@ -541,6 +542,7 @@ function evalBtns() {
         $("#registerProgress .percent").text(Math.round(percent)+"% Complete");
         $("#registerProgress .progress-bar").attr('aria-valuenow', percent);
     }
+    // Finally, update buttons in modal footer.
     if(currentStep === REG_STEP_DELETE) {
         // Delete button was pressed. Take user to confirmation dialog.
         $('#registration-form .btn-next').hide();
