@@ -79,6 +79,7 @@ $(document).ready(function(){
                 selectorDiv.addClass('col-sm-6');
                 otherInputDiv.show();
                 otherInput.removeClass('optional');
+                otherInput.focus();
             } else {
                 selectorDiv.addClass('col-sm-12');
                 selectorDiv.removeClass('col-sm-6');
