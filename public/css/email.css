@@ -62,37 +62,19 @@
     width: 100%;
     margin-bottom: 20px;
 }
-.profile-card .data-container .factors .form-group {
-    margin: 0;
+.profile-card .data-container .factorsTable .form-group {
     float: left;
-    width: 100%;
+    border: 0px solid #2780e3;
     padding: 5px 0;
 }
-.profile-card .data-container .factors .form-group:nth-child(even) {
-    background: #fff;
+.profile-card .data-container .factorsTable .form-group:not(.titles) {
+    border-width: 0 2px;
 }
-.profile-card .data-container .factors .form-group:not(.titles) {
-    border-left: 2px solid #2780e3;
-    border-right: 2px solid #2780e3;
+.profile-card .data-container .factorsTable .form-group.titles {
+    border-width: 0 0 2px 0;
 }
-.profile-card .data-container .factors .form-group > * {
-    width: 50%;
-    margin: 0;
-    padding: 0;
-}
-.profile-card .data-container .factors .form-group.titles {
-    border-bottom: 2px solid #2780e3;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-.profile-card .data-container .factors .form-group .col-xs-7 .col-xs-4 {
-    text-align: center;
-}
-.profile-card .data-container .factors .form-group:not(.titles) .col-xs-7 .col-xs-4 {
-    color: #2780e3;
-}
-.profile-card .data-container .factors .form-group:last-child {
-    border-bottom: 2px solid #2780e3;
+.profile-card .data-container .factorsTable .form-group:not(.titles):last-child {
+    border-width: 0 2px 2px 2px;
 }
 .profile-card .data-container .col {
     margin: 0;

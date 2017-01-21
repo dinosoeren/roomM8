@@ -18,7 +18,9 @@
     (includeField ? searchField : ''):
     (includeRole ? searchRole : ''):
     (includeResType ? searchResType : ''):
-    (includeStatus ? searchStatus : '')" ng-cloak>
+    (includeStatus ? searchStatus : ''):
+    (includeGender ? searchGender : ''):
+    (includeAge ? searchAge : '')" ng-cloak>
     <div class="inner-container">
         <div class="row profile-container {{ x.hasPlace ? 'bg-info' : 'bg-primary' }}">
             <div class="col col-sm-4">
@@ -41,37 +43,51 @@
         <div class="data-container">
             <div class="row">
                 <div class="col col-xs-6">
-                    <% showAngData('Start date', 'calendar', '{{ x.startDate | dateFormat }}'); %>
+                    <% showAngData('Start date', 'calendar', 
+                        '{{ x.startDate | dateFormat }}'); %>
                 </div>
                 <div class="col col-xs-6">
-                    <% showAngData('Lease duration', 'time', '{{ x.currentResidence.durationInMonths | durationFilter }}', 'x.hasPlace'); %>
-                    <% showAngData('Desired stay duration', 'time', '{{ x.preferences.durationInMonths | durationFilter }}', '!x.hasPlace'); %>
+                    <% showAngData('Lease duration', 'time', 
+                        '{{ x.currentResidence.durationInMonths | durationFilter }}', 'x.hasPlace'); %>
+                    <% showAngData('Desired stay duration', 'time', 
+                        '{{ x.preferences.durationInMonths | durationFilter }}', '!x.hasPlace'); %>
                 </div>
             </div>
             <div class="row">
                 <div class="col col-xs-6">
-                    <% showAngData('Type of residence', 'home', '{{ x.currentResidence.residenceType | residenceFilter:x.currentResidence.residenceTypeCustom }}', 'x.hasPlace'); %>
-                    <% showAngData('Desired residence', 'home', '{{ x.preferences.residenceType | residenceFilter }}', '!x.hasPlace'); %>
+                    <% showAngData('Type of residence', 'home', 
+                        '{{ x.currentResidence.residenceType | residenceFilter:x.currentResidence.residenceTypeCustom }}', 'x.hasPlace'); %>
+                    <% showAngData('Desired residence', 'home', 
+                        '{{ x.preferences.residenceType | residenceFilter }}', '!x.hasPlace'); %>
                 </div>
                 <div class="col col-xs-6">
-                    <% showAngData('Available/vacant rooms', 'user', '{{ x.currentResidence.vacantRooms | peopleFilter }}', 'x.hasPlace'); %>
-                    <% showAngData('Desired roommates', 'user', '{{ x.preferences.roommates | peopleFilter }}', '!x.hasPlace'); %>
+                    <% showAngData('Available/vacant rooms', 'user', 
+                        '{{ x.currentResidence.vacantRooms | peopleFilter }}', 'x.hasPlace'); %>
+                    <% showAngData('Desired roommates', 'user', 
+                        '{{ x.preferences.roommates | peopleFilter }}', '!x.hasPlace'); %>
                 </div>
             </div>
             <div class="row">
                 <div class="col col-xs-6" ng-if="x.hasPlace">
-                    <% showAngData('City of residence', 'map-marker', '{{ x.currentResidence.location }}'); %>
+                    <% showAngData('City of residence (click for directions from your campus)', 'map-marker', 
+                        '<a href="{{ x.currentResidence.location | mapLinkFilter:locations[x.startLocation].city }}" target="_balnk">{{ x.currentResidence.location }}</a>'); %>
                 </div>
                 <div class="col col-xs-6" ng-if="x.hasPlace">
-                    <% showAngData('Bathrooms in residence', 'tint', '{{ x.currentResidence.bathrooms }} bathrooms'); %>
+                    <% showAngData('Bathrooms in residence', 'tint', 
+                        '{{ x.currentResidence.bathrooms }} bathrooms'); %>
                 </div>
                 <div class="col col-xs-12" ng-if="!x.hasPlace">
-                    <% showAngData('Preferred cities to live in', 'map-marker', '{{ x.preferences.locations | locationsFilter }}'); %>
+                    <% showAngData('Preferred cities to live in (click for directions from your campus)', 'map-marker',
+                        '<span ng-repeat="loc in x.preferences.locations | locationsFilter">'+
+                            '<a href="{{ loc | mapLinkFilter:locations[x.startLocation].city }}"'+
+                            ' target="_blank">{{ loc }}</a>'+
+                            '{{ $last ? \'\' : \', \' }}</span>'); %>
                 </div>
             </div>
             <div class="row">
                 <div class="col col-xs-12">
-                    <% showAngData('Most important factors', 'heart', '{{ x.factors | factorsFilter }}'); %>
+                    <% showAngData('Most important factors', 'heart', 
+                        '{{ x.factors | factorsFilter }} <a href="javascript:;" role="button" data-toggle="modal" data-target="#factorsModal" data-name="{{ x.name }}" data-has-place="{{ x.hasPlace }}" data-factors="{{ x.factors }}">(+)</a>'); %>
                 </div>
             </div>
             <div class="row">

@@ -15,6 +15,7 @@ $(document).ready(function(){
     $('#registerModal').on('shown.bs.modal', function() {
         hideErrorMessage();
         hideSuccessMessage();
+        $('#registration-form .modal-header').removeClass('bg-danger');
         if(!tagsInputInitialized && $('#pref-locations').length > 0) {
             readAndInitCityTags();
             tagsInputInitialized = true;
@@ -126,6 +127,7 @@ $(document).ready(function(){
             $('#registration-form .regRequired, #registration-form .form-control').each(function () {
                 $(this).removeClass('input-error'); // Remove input error classes.
             });
+            $('#registration-form .modal-header').removeClass('bg-danger');
             evalFormStatus();
             isModalReady = true;
         });
@@ -135,8 +137,9 @@ $(document).ready(function(){
         if(!isModalReady)
             return;
         isModalReady = false;
-        if(currentStep == REG_STEP_DELETE) { // already in confirm dialog
-            // Make sure they check the agree box.
+        if(currentStep == REG_STEP_DELETE) { 
+            // Already in confirmation dialog.
+            // Make sure the user checks the agree box.
             if(!$("#agreeToDelete").is(":checked")) {
                 $("#agreeToDelete").addClass('input-error');
                 showErrorMessage("Please indicate that you understand the consequences.");
@@ -150,9 +153,11 @@ $(document).ready(function(){
             isModalReady = true;
             return;
         }
+        // Go to confirmation dialog.
         var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
         currentStep = REG_STEP_DELETE;
         parent_fieldset.fadeOut(200, function () {
+            $('#registration-form .modal-header').addClass('bg-danger');
             $('#registration-form fieldset#confirmDelete').fadeIn(200, function() {
                 isModalReady = true;
             });
@@ -224,6 +229,7 @@ $(document).ready(function(){
         $(parent_fieldset).fadeOut(200, function () {
             hideErrorMessage();
             hideSuccessMessage();
+            $('#registration-form .modal-header').removeClass('bg-danger');
             if(currentStep === REG_STEP_HAS_PLACE || (currentStep === REG_STEP_HAS_PLACE+1 && !userHasPlace())) {
                 // Go back to step before NO_PLACE from step HAS_PLACE if the user already has a place.
                 // Go back to step NO_PLACE from step after HAS_PLACE if the user does not have a place.
@@ -333,6 +339,40 @@ $(document).ready(function(){
         });
     });
 
+    // Handle Importance factors modal opening.
+    $('#factorsModal').on('show.bs.modal', function(event) {
+        var buttonPressed = $(event.relatedTarget);
+        var roomieName = buttonPressed.data('name');
+        var roomieFactors = buttonPressed.data('factors');
+        var roomieHasPlace = buttonPressed.data('has-place');
+        var modal = $(this);
+        var check = '&#10004;';
+        modal.find('.modal-title').text(roomieName+"'s importance ratings");
+        // Show/hide factors depending on whether or not roomie has a place.
+        if(roomieHasPlace) {
+            $('#factorsModal .no-place').hide();
+            $('#factorsModal .factorsTable').addClass('oddColor');
+        } else {
+            $('#factorsModal .no-place').show();
+            $('#factorsModal .factorsTable').removeClass('oddColor');
+        }
+        // Set factors table according to roomie factors.
+        for(var factor in roomieFactors) {
+            if(!factorsDict.hasOwnProperty(factor))
+                continue;
+            var factorRow = $('#factorsModal #fac-'+factor+' > div:nth-child(2)');
+            var rating = roomieFactors[factor];
+            console.log(factor+': '+rating);
+            for(var i=1; i<=3; i++) {
+                var ratingCell = factorRow.children('div:nth-child('+i+')');
+                if(i === rating)
+                    ratingCell.html(check);
+                else
+                    ratingCell.html('');
+            }
+        }
+    });
+
     // Handle advanced search stuff.
     $("#advanced-search .filter-group").each(function() {
         var inputField = $(this).find('.form-control');
@@ -344,6 +384,10 @@ $(document).ready(function(){
                 inputField.prop('disabled', true);
             }
         });
+    });
+
+    $("#toggleVisibilityBtn").on('click', function() {
+        $("#toggleVisibilityForm").submit();
     });
 
     $("#registerModal .profile-card .desc").each(function() {

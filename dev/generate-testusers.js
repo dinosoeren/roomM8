@@ -52,27 +52,27 @@ for(var i=0; i<argv['gen']; i++) {
         "dateCreated": (new Date()).toISOString(),
         "dateOfBirth": new Date(Date.UTC(randInt(1980,1998), randInt(0,11), randInt(1,27))),
         "gender": gender_choice,
-        "showAge": randInt(0,1) === 0 ? true : false,
-        "showGender": randInt(0,1) === 0 ? true : false,
+        "showAge": randInt(0,1) === 0,
+        "showGender": randInt(0,1) === 0,
         "email": "fake@fake",
         "name": randomName.first() + " " + randomName.last(),
         "token": "",
         "completedRegistration": true,
         "displayProfile": true,
         "googleId": randInt(0,99999999999999),
-        "startDate": "2017-"+pad(randInt(1,12), 2),
+        "startDate": randInt(2017,2018)+"-"+pad(randInt(1,12), 2),
         "field": field_choice,
         "role": role_choice,
         "position": "Test Cat",
         "startLocation": randInt(0,96),
         "hasPlace": randInt(0,1) === 0,
         "factors": {
-            "sameField": randInt(0,3),
-            "sameAge": randInt(0,3),
-            "sameGender": randInt(0,3),
-            "substanceFree": randInt(0,3),
-            "quietTime": randInt(0,3),
-            "cleanliness": randInt(0,3)
+            "sameField": randInt(1,3),
+            "sameAge": randInt(1,3),
+            "sameGender": randInt(1,3),
+            "substanceFree": randInt(1,3),
+            "quietTime": randInt(1,3),
+            "cleanliness": randInt(1,3)
         },
         "aboutMe": "I am a test user. I have no existence, but I really love to test things. I can test all sorts of things. You name it! I can test websites, apps, and servers.",
         "agree1": true
@@ -109,11 +109,11 @@ for(var i=0; i<argv['gen']; i++) {
             "durationInMonths": randInt(0,1) == 0 ? randInt(6,24) : -1,
             "maxCommuteTimeInMins": randInt(20,60)
         };
-        u["factors"]["location"] = randInt(0,3);
-        u["factors"]["residenceType"] = randInt(0,3);
-        u["factors"]["ownBedroom"] = randInt(0,3);
-        u["factors"]["ownBathroom"] = randInt(0,3);
-        u["factors"]["commuteTime"] = randInt(0,3);
+        u["factors"]["location"] = randInt(1,3);
+        u["factors"]["residenceType"] = randInt(1,3);
+        u["factors"]["ownBedroom"] = randInt(1,3);
+        u["factors"]["ownBathroom"] = randInt(1,3);
+        u["factors"]["commuteTime"] = randInt(1,3);
     }
     data.push(u);
 }

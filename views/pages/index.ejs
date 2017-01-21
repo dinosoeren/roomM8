@@ -48,6 +48,11 @@
                         message them if they seem like a good match.
                     </p>
                 <% } %>
+                <% if(isUserRegistered) { %>
+                    <form action="profile/toggle/visibility" method="post" style="display: none;" id="toggleVisibilityForm">
+                        <input type="hidden" name="toggleToken" value="<%= toggleToken %>" />
+                    </form>
+                <% } %>
                 <p>
                     <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#registerModal">
                         <% if(isUserRegistered) { %>
@@ -56,6 +61,11 @@
                             <span class="glyphicon glyphicon-ok text-success"></span> Get matched!
                         <% } %>
                     </button>
+                    <% if(isUserRegistered) { %>
+                        <button type="button" id="toggleVisibilityBtn" class="btn btn-primary btn-lg" tool-tip data-toggle="tooltip" data-placement="auto" title="Your profile is currently <%= user.displayProfile ? 'public. Click to remove your profile from' : 'private. Click to add your profile to' %> public listing">
+                            <span class="glyphicon glyphicon-eye-<%= user.displayProfile ? 'open' : 'close' %>"></span> <%= user.displayProfile ? 'Hide' : 'Show' %> profile
+                        </button>
+                    <% } %>
                     <% if(user) { %>
                         <a href="/logout" class="btn btn-warning btn-lg" role="button">
                             <span class="glyphicon glyphicon-log-out text-warning"></span> Sign out
@@ -109,6 +119,7 @@
                                     data-message="Success!">
                                 <span class="glyphicon glyphicon-ok"></span> <span class="msg"></span>
                             </div>
+                            <input type="hidden" name="registerToken" value="<%= registerToken %>" />
                             <% include ../partials/register-form.ejs %>
                         </div>
                         <div class="modal-footer">
@@ -167,5 +178,8 @@
             <% } %>
         </div>
     </div>
+    <% if(isUserRegistered) { %>
+        <% include ../partials/factors-modal.ejs %>
+    <% } %>
 </body>
 </html>

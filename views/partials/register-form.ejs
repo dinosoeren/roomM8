@@ -3,7 +3,15 @@
     <!-- Delete profile confirmation -->
     <fieldset id="confirmDelete" data-title="Delete your account">
         <h3 class="text-danger text-center small-margin">Are you sure you want to delete your account?</h3>
-        <p class="text-center">All your info will be permanently erased from roomM8.<br/>This action cannot be undone.</p>
+        <p class="text-center">
+            <strong>To make your profile private</strong>, simply click 'Hide Profile'. This way, you will
+            still be able to search for and message other Nooglers. If you delete your
+            account, <strong class="text-danger">all your info will be permanently erased from roomM8</strong>, and you will
+            no longer have access to the database of Nooglers.
+        </p>
+        <p class="text-center">
+            This action cannot be undone.
+        </p>
         <div class="text-center">
             <label>
                 <input type="checkbox" id="agreeToDelete" name="agreeToDelete" class="regRequired" value="yes" /> Yes, I understand the consequences.
@@ -316,6 +324,7 @@
 <!-- Factors -->
 <fieldset id="f5" class="factors" data-title="Importance ratings">
     <h3 class="text-center small-margin">How important are these factors to you?</h3>
+    <% var showTable = false; %>
     <% include factors-sliders.ejs %>
 </fieldset>
 <!-- About You -->

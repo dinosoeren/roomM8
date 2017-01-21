@@ -30,6 +30,12 @@
     };
 %>
 <div class="profile-card">
+    <% if(!isEmail) { %>
+        <div class="text-center profile-visibility alert-<%= user.displayProfile ? 'success' : 'warning' %>">
+            <span class="glyphicon glyphicon-eye-<%= user.displayProfile ? 'open' : 'close' %>"></span>
+            Your profile is currently <%= user.displayProfile ? 'public' : 'private' %>.
+        </div>
+    <% } %>
     <div class="inner-container">
         <div class="row profile-container bg-<%= user.hasPlace ? 'info' : 'primary' %>">
             <div class="col col-sm-4">
@@ -154,7 +160,7 @@
                 <% } %>
             </div>
             <div class="row">
-                <div class="col col-xs-12 factors">
+                <div class="col col-xs-12 factors <%= isEmail ? 'factorsTable' : '' %>">
                     <p>
                         <% if(!isEmail) { %>
                         <span class="tip" data-toggle="tooltip" data-placement="auto" title="Most important factors">
@@ -165,6 +171,7 @@
                             <% if(!isEmail) { %>
                                 <span id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></span>
                             <% } else { %>
+                                <% var showTable = true; %>
                                 <% include factors-sliders.ejs %>
                             <% } %>
                         <% if(!isEmail) { %>

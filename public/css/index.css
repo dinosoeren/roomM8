@@ -58,6 +58,9 @@
 .head .jumbotron .btn:not(:hover) {
     background: transparent;
 }
+.head .jumbotron .btn-primary:not(:hover) {
+    border-color: #1862b5;
+}
 .head .jumbotron .btn:hover {
     border-color: white;
 }
@@ -76,9 +79,15 @@
 .modal .close {
     color: #eee;
 }
-.modal .modal-header {
+.modal .modal-header:not(.bg-danger) {
     background-color: #2780e3;
+}
+.modal .modal-header {
     color: white;
+    transition: 0.5s;
+}
+.modal .modal-header.bg-danger .modal-title {
+    font-weight: bold;
 }
 
 /* Tags input */
@@ -154,6 +163,10 @@ fieldset h3.small-margin {
 }
 #registerProgress {
     margin-bottom: 5px;
+}
+.profile-visibility {
+    font-size: 0.9em;
+    padding: 1px 0;
 }
 .input-error {
     border-color: #d03e3e;
@@ -236,6 +249,9 @@ input[type='checkbox'].input-error {
 }
 #advanced-search .filter-group:hover label {
     color: #333;
+}
+#advanced-search .input-group-addon {
+    position: relative;
 }
 .sideLabel {
     position: absolute;
@@ -359,7 +375,7 @@ input[type='checkbox'].input-error {
     padding: 5px;
     text-align: center;
 }
-.profile-card .message-container .email .btn {
+.btn-full, .profile-card .message-container .email .btn {
     width: 100%;
 }
 .profile-card .data-container .col {
@@ -462,6 +478,43 @@ input[type='checkbox'].input-error {
     font-size: 1.3em;
     border-left: 2px solid #2780e3;
     font-weight: bold;
+}
+
+/* Importance factors table */
+.factorsTable {
+    background: #eee;
+}
+.factorsTable .form-group {
+    margin: 0;
+    width: 100%;
+    padding: 5px 0;
+}
+.factorsTable .form-group:nth-child(even) {
+    background: #fff;
+}
+.factorsTable.oddColor .form-group:nth-child(even) {
+    background: transparent;
+}
+.factorsTable.oddColor .form-group:nth-child(odd) {
+    background: #fff;
+}
+.factorsTable.oddColor .form-group.titles {
+    background: transparent;
+}
+.factorsTable .form-group > * {
+    width: 50%;
+    margin: 0;
+    padding: 0;
+}
+.factorsTable .form-group.titles {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.factorsTable .form-group .col-xs-7 .col-xs-4 {
+    text-align: center;
+}
+.factorsTable .form-group:not(.titles) .col-xs-7 .col-xs-4 {
+    color: #2780e3;
 }
 
 @media (max-width: 768px) { 

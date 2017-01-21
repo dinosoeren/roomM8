@@ -1,4 +1,48 @@
 <!-- views/partials/roommates-list.ejs -->
+<% var showFilterOption = function(label, label_tip, cBox_id, cBox_ng_model, cBox_ng_change, cBox_checked, 
+                                    i, i_type, options, i_id, i_ng_init, i_ng_model, i_ng_change, 
+                                    i_ng_options, i_disabled, i_extra, i_helper) { %>
+    <div class="filter-group">
+        <label class="text-muted" for="<%= i_id %>">
+            <%= label %>
+            <% if(label_tip) { %>
+                <span style="font-weight: normal;">(<%= label_tip %>)</span>
+            <% } %>
+        </label>
+        <div class="input-group">
+            <span class="input-group-addon">
+                <label for="<%= cBox_id %>" class="sideLabel"></label>
+                <input type="checkbox" id="<%= cBox_id %>" 
+                    <%- cBox_ng_model ? 'ng-model="'+cBox_ng_model+'"' : '' %>
+                    <%- cBox_ng_change ? 'ng-change="'+cBox_ng_change+'"' : '' %>
+                    aria-label="Checkbox for using <%= label %> to narrow search results." 
+                    <%= cBox_checked ? 'checked' : '' %> />
+            </span>
+            <<%- i ? 'input type="'+i_type+'"' : 'select' %> 
+                    class="form-control" 
+                    id="<%= i_id %>" 
+                    <%- i_ng_init ? 'ng-init="'+i_ng_init+'"' : '' %>
+                    <%- i_ng_model ? 'ng-model="'+i_ng_model+'"' : '' %>
+                    <%- i_ng_change ? 'ng-change="'+i_ng_change+'"' : '' %>
+                    <%- i_ng_options ? 'ng-options="'+i_ng_options+'"' : '' %>
+                    <%= i_disabled ? 'disabled' : '' %> 
+                    <%- i_extra %> >
+                <%
+                    if(options) {
+                        for(var x=0; x<options.length; x++) {
+                            %>
+                                <option value="<%- options[x].val %>"><%- options[x].label %></option>
+                            <%
+                        }
+                    }
+                %>
+            </<%= i ? 'input' : 'select' %>>
+            <% if(i_helper) { %>
+            <span class="input-group-addon"><%= i_helper %></span>
+            <% } %>
+        </div>
+    </div>
+<% } %>
 <div ng-app="roommatesApp" ng-controller="roomiesCtrl">
     <div class="container" id="roomieSearchContainer">
         <div class="jumbotron">
@@ -10,79 +54,188 @@
                             ng-model="searchName" placeholder="Search" />
                     </div>
                     <div id="advanced-search">
-                        <div class="filter-group">
-                            <label class="text-muted" for="searchLocation">Start location</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <label for="locationCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="locationCheckbox" ng-model="includeLocation" aria-label="Checkbox for using start location to narrow search results." ng-change="locationChangeHandler()" checked />
-                                </span>
-                                <select class="form-control" id="searchLocation" ng-init="searchStartLocation = <%= user.startLocation %>" ng-model="searchStartLocation" ng-change="locationChangeHandler()" ng-options="location.value as location.city group by location.continent for location in locations">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label class="text-muted" for="searchStartDate">Start date</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <label for="startDateCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="startDateCheckbox" ng-model="includeDate" aria-label="Checkbox for using start date to narrow search results." />
-                                </span>
-                                <input type="month" class="form-control" id="searchStartDate" ng-model="searchStartDate" ng-change="updateDateString()" min="2017-01" disabled />
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label class="text-muted" for="searchField">Field of work</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <label for="fieldCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="fieldCheckbox" ng-model="includeField" aria-label="Checkbox for using field of work to narrow search results." />
-                                </span>
-                                <select class="form-control" id="searchField" ng-model="searchField" ng-options="field.value as field.name for field in fields" ng-init="searchField = '<%= user.field %>'" disabled>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label class="text-muted" for="searchRole">Role</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <label for="roleCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="roleCheckbox" ng-model="includeRole" aria-label="Checkbox for using work role to narrow search results." />
-                                </span>
-                                <select class="form-control" id="searchRole" ng-model="searchRole" ng-init="searchRole = '<%= user.role %>'" disabled>
-                                    <option value="full-time">Full-time</option>
-                                    <option value="resident">Resident</option>
-                                    <option value="intern">Intern</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label class="text-muted" for="searchResType">Residence type</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <label for="resTypeCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="resTypeCheckbox" ng-model="includeResType" aria-label="Checkbox for using type of residence to narrow search results." />
-                                </span>
-                                <select class="form-control" id="searchResType" ng-model="searchResType" ng-init="searchResType = 'apartment'" disabled>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="condo">Condominium</option>
-                                    <option value="house">House</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label class="text-muted" for="searchStatus">Status</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <label for="statusCheckbox" class="sideLabel"></label>
-                                    <input type="checkbox" id="statusCheckbox" ng-model="includeStatus" aria-label="Checkbox for using status to narrow search results." />
-                                </span>
-                                <select class="form-control" id="searchStatus" ng-model="searchStatus" ng-init="searchStatus = 'has-place'" disabled>
-                                    <option value="has-place">Has a place</option>
-                                    <option value="no-place">Looking for a place</option>
-                                </select>
-                            </div>
-                        </div>
+                        <%
+                            showFilterOption(
+                                'Start location',                               // label
+                                '',                                             // label tip
+                                'locationCheckbox',                             // checkbox-id
+                                'includeLocation',                              // checkbox ng-model
+                                'locationChangeHandler()',                      // checkbox ng-change
+                                true,                                           // checkbox checked?
+                                false,                                          // is input?
+                                '',                                             // input type
+                                null,                                           // select options
+                                'searchLocation',                               // input id
+                                'searchStartLocation = '+user.startLocation,    // select ng-init
+                                'searchStartLocation',                          // select ng-model
+                                'locationChangeHandler()',                      // select ng-change
+                                'location.value as location.city group by location.continent for location in locations', // input ng-options
+                                false                                           // input disabled?
+                            );
+                        %>
+                        <%
+                            var today = new Date();
+                            showFilterOption(
+                                'Start date',                                   // label
+                                '+/- 1 mo',                                     // label tip
+                                'startDateCheckbox',                            // checkbox-id
+                                'includeDate',                                  // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                true,                                           // is input?
+                                'month',                                        // input type
+                                null,                                           // select options
+                                'searchStartDate',                              // input id
+                                '',                                             // input ng-init
+                                'searchStartDate',                              // input ng-model
+                                'updateDateString()',                           // input ng-change
+                                '',                                             // input ng-options
+                                true,                                           // input disabled?
+                                'min="'+today.getFullYear()+'-'+(today.getMonth()+1)+'"' // extra
+                            );
+                        %>
+                        <%
+                            showFilterOption(
+                                'Status',                                       // label
+                                '',                                             // label tip
+                                'statusCheckbox',                               // checkbox-id
+                                'includeStatus',                                // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                false,                                          // is input?
+                                '',                                             // input type
+                                [
+                                    {val: 'has-place', label: 'Has a place'},
+                                    {val: 'no-place', label: 'Looking for a place'}
+                                ],                                              // select options
+                                'searchStatus',                                 // input id
+                                'searchStatus = \'has-place\'',                 // input ng-init
+                                'searchStatus',                                 // input ng-model
+                                '',                                             // input ng-change
+                                '',                                             // input ng-options
+                                true,                                           // input disabled?
+                                ''                                              // extra
+                            );
+                        %>
+                        <%
+                            var initResType = user.hasPlace ? user.currentResidence.residenceType :
+                                                user.preferences.residenceType;
+                            if(initResType == "idc")
+                                initResType = "apartment";
+                            showFilterOption(
+                                'Residence type',                               // label
+                                '',                                             // label tip
+                                'resTypeCheckbox',                              // checkbox-id
+                                'includeResType',                               // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                false,                                          // is input?
+                                '',                                             // input type
+                                [
+                                    {val: 'apartment', label: 'Apartment'},
+                                    {val: 'condo', label: 'Condominium'},
+                                    {val: 'house', label: 'House'},
+                                    {val: 'other', label: 'Other'}
+                                ],                                              // select options
+                                'searchResType',                                // input id
+                                'searchResType = \''+initResType+'\'',          // input ng-init
+                                'searchResType',                                // input ng-model
+                                '',                                             // input ng-change
+                                '',                                             // input ng-options
+                                true,                                           // input disabled?
+                                ''                                              // extra
+                            );
+                        %>
+                        <%
+                            showFilterOption(
+                                'Gender',                                       // label
+                                '',                                             // label tip
+                                'genderCheckbox',                               // checkbox-id
+                                'includeGender',                                // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                false,                                          // is input?
+                                '',                                             // input type
+                                [
+                                    {val: 'female', label: 'Female'},
+                                    {val: 'male', label: 'Male'},
+                                    {val: 'other', label: 'Other'}
+                                ],                                              // select options
+                                'searchGender',                                 // input id
+                                'searchGender = \''+user.gender+'\'',           // input ng-init
+                                'searchGender',                                 // input ng-model
+                                '',                                             // input ng-change
+                                '',                                             // input ng-options
+                                true,                                           // input disabled?
+                                ''                                              // extra
+                            );
+                        %>
+                        <%
+                            showFilterOption(
+                                'Age',                                          // label
+                                '+/- 3 yrs',                                    // label tip
+                                'ageCheckbox',                                  // checkbox-id
+                                'includeAge',                                   // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                true,                                           // is input?
+                                'number',                                       // input type
+                                null,                                           // select options
+                                'searchAge',                                    // input id
+                                'searchAge = '+user.age,                        // input ng-init
+                                'searchAge',                                    // input ng-model
+                                '',                                             // input ng-change
+                                '',                                             // input ng-options
+                                true,                                           // input disabled?
+                                'min="18" max="100"',                           // extra
+                                'years'                                         // helper label
+                            );
+                        %>
+                        <%
+                            showFilterOption(
+                                'Field of work',                                // label
+                                '',                                             // label tip
+                                'fieldCheckbox',                                // checkbox-id
+                                'includeField',                                 // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                false,                                          // is input?
+                                '',                                             // input type
+                                null,                                           // select options
+                                'searchField',                                  // input id
+                                'searchField = \''+user.field+'\'',             // input ng-init
+                                'searchField',                                  // input ng-model
+                                '',                                             // input ng-change
+                                'field.value as field.name for field in fields',// input ng-options
+                                true,                                           // input disabled?
+                                ''                                              // extra
+                            );
+                        %>
+                        <%
+                            showFilterOption(
+                                'Role',                                         // label
+                                '',                                             // label tip
+                                'roleCheckbox',                                 // checkbox-id
+                                'includeRole',                                  // checkbox ng-model
+                                '',                                             // checkbox ng-change
+                                false,                                          // checkbox checked?
+                                false,                                          // is input?
+                                '',                                             // input type
+                                [
+                                    {val: 'full-time', label: 'Full-time'},
+                                    {val: 'resident', label: 'Resident'},
+                                    {val: 'intern', label: 'Intern'},
+                                    {val: 'other', label: 'Other'}
+                                ],                                              // select options
+                                'searchRole',                                   // input id
+                                'searchRole = \''+user.role+'\'',               // input ng-init
+                                'searchRole',                                   // input ng-model
+                                '',                                             // input ng-change
+                                '',                                             // input ng-options
+                                true,                                           // input disabled?
+                                ''                                              // extra
+                            );
+                        %>
                     </div>
                 </div>
             </div>

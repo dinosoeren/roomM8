@@ -47,10 +47,14 @@ module.exports = function(app, auth, passport) {
         var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
         // Minimum age users are allowed to be.
         var minUserAge = 18;
-        // If a deleteToken has been set through google authentication,
-        // give it a new value on every page load, just for added security.
+        // Generate new tokens on every page load.
+        req.session.registerToken = genNewToken(); // used for registration and profile edits
         if(req.session.deleteToken)
             req.session.deleteToken = genNewToken();
+        if (req.user) {
+            req.session.searchToken = genNewToken(); // used for searching for roommates
+            req.session.toggleToken = genNewToken(); // used for toggling profile visibility
+        }
         // Add formatted date of birth and age to user object.
         if(req.user) {
             var userDOB = moment(req.user.dateOfBirth).utc();
@@ -63,6 +67,9 @@ module.exports = function(app, auth, passport) {
             user: req.user,
             allowedAccess: req.session ? req.session.allowedAccess : false,
             deleteToken: req.session ? req.session.deleteToken : null,
+            registerToken: req.session ? req.session.registerToken : null,
+            searchToken: req.session ? req.session.searchToken : null,
+            toggleToken: req.session ? req.session.toggleToken : null,
             errors: req.flash('error'),
             success: req.flash('success'),
             maxDateOfBirth: moment().utc().subtract(minUserAge, 'years').format('YYYY-MM-DD')
@@ -74,32 +81,32 @@ module.exports = function(app, auth, passport) {
     app.post('/', isLoggedIn, isValidRegistrationForm, (req, res) => {
         var user = req.user;
         var isUpdate = user.completedRegistration ? true : false;
+        var errorMessage = 'Registration failed. Please try again.';
+        var successMessage = 'Welcome to roomM8!';
+        if (isUpdate) {
+            errorMessage = 'Failed to update profile. Please try again.';
+            successMessage = 'Profile was successfully updated!';
+        }
+        // Make sure session token is valid before proceeding.
+        if(!req.session.registerToken || parseInt(req.body.registerToken) !== req.session.registerToken) {
+            req.flash('error', errorMessage);
+            return res.redirect('/');
+        }
         var query = { 'googleId' : sanitizeMongo(user.googleId) };
         var newData = sanitizeMongo(parseUserData(req.body));
+        // Make sure newData is valid before proceeding.
         if(typeof newData === "string") {
             console.error("Data submitted was invalid: "+newData);
-            if (isUpdate) {
-                req.flash('error', 'Failed to update profile. Please try again.');
-            } else {
-                req.flash('error', 'Registration failed. Please try again.');
-            }
+            req.flash('error', errorMessage);
             return res.redirect("/");
         }
         User.findOneAndUpdate(query, newData, {upsert:false}, (err, doc) => {
             if (err) {
                 console.error(err.message);
-                if (isUpdate) {
-                    req.flash('error', 'Failed to update profile. Please try again.');
-                } else {
-                    req.flash('error', 'Registration failed. Please try again.');
-                }
+                req.flash('error', errorMessage);
                 return res.redirect("/");
             }
-            if (isUpdate) {
-                req.flash('success', 'Profile was successfully updated!');
-            } else {
-                req.flash('success', 'Welcome to roomM8!');
-            }
+            req.flash('success', successMessage);
             return res.redirect("/");
         });
     });
@@ -258,12 +265,36 @@ module.exports = function(app, auth, passport) {
         });
     });
 
+    // Toggle profile visibility in public listing.
+    app.post('/profile/toggle/visibility', isLoggedIn, isRegistered, (req, res) => {
+        if(!req.session.toggleToken || parseInt(req.body.toggleToken) !== req.session.toggleToken) {
+            req.flash('error', 'Failed to update profile visibility. Please try again.');
+            return res.redirect('/');
+        }
+        var user = req.user;
+        var message = user.displayProfile ? "hidden from" : "displayed in";
+        var query = { 'googleId' : sanitizeMongo(user.googleId) };
+        var newData = { displayProfile: !user.displayProfile };
+        User.findOneAndUpdate(query, newData, {upsert:false}, (err, doc) => {
+            if (err) {
+                console.error(err.message);
+                req.flash('error', 'Failed to update profile visibility. Please try again.');
+                return res.redirect("/");
+            }
+            req.flash('success', 'Your profile will now be '
+                        +message+' public search results.');
+            return res.redirect("/");
+        });
+    });
+
     // Handle submission of a new search query for roommates.
     app.post('/api/search', (req, res) => {
         if (!req.isAuthenticated() || !req.user.completedRegistration)
             return res.json({ error: 'Not authenticated.' });
         if (!req.body.query)
             return res.json({ error: 'Invalid query.' });
+        if (!req.session.searchToken || parseInt(req.body.query.searchToken) !== req.session.searchToken)
+            return res.json({ error: 'Invalid session token.' });
         var query = sanitizeMongo(req.body.query);
         User.findPotentialRoommates(query, req.user, (err, roomies) => {
             if(err)
@@ -418,7 +449,6 @@ function parseUserData(body) {
         return "start location"; // error
     var newData = {
         completedRegistration: true,
-        displayProfile: (body.displayProfile === "yes"),
         dateOfBirth: dateOfBirth,
         gender: gender,
         showAge: (body.showAge === "yes"),
@@ -502,11 +532,15 @@ function sanitizeInput(input, maxChar=30) {
     return sanitizeHtml(input, shOptions).substring(0, maxChar);
 }
 // Html-Sanitize the data in an array.
-function sanitizeArray(arr) {
-    for(var i=0; i<arr.length; i++) {
-        arr[i] = sanitizeInput(arr[i]);
+// Also enforce max length.
+function sanitizeArray(arr, maxLength=10) {
+    if(typeof arr !== "object")
+        arr = [arr];
+    var newArr = [];
+    for(var i=0; i<Math.min(arr.length, maxLength); i++) {
+        newArr.push(sanitizeInput(arr[i]));
     }
-    return arr;
+    return newArr;
 }
 
 // Format date. Convert from '2017-09' to 'September 2017'
@@ -517,7 +551,7 @@ function formatDateNumToWords(dateString) {
     return new Date(dateString+"-02").toLocaleDateString("en-US", options);
 };
 
-// Generate new delete confirmation token.
+// Generate new token for session.
 function genNewToken() {
     return getRandomInt(1000000000, 
                         9999999999);
