@@ -1,33 +1,35 @@
 <!-- views/partials/imports/roommates-angular.ejs -->
 <script>
+var showingBackToTopBtn = false;
 $(document).ready(function() {
     startSpinner();
     // Make spinner follow browser scroll position when user scrolls past bottom of roomie search div.
-    var limitEle = $('#roomieSearchContainer');
-    var spinner = $('#roomiesContainer .spinner');
     var backToTopBtn = $('#backToTop');
-    var showingBackToTopBtn = false;
+    var limitEle = $('#roomieSearchContainer');
     $(window).on('scroll', function() {
-        if(spinner.length > 0) {
-            // If user scrolled past bottom of search div.
-            if($(window).scrollTop() >= limitEle.offset().top + limitEle.outerHeight()) {
+        var spinner = $('#roomiesContainer .spinner');
+        // If user scrolled past bottom of search div.
+        if($(window).scrollTop() >= limitEle.offset().top + limitEle.outerHeight()) {
+            if(spinner.length > 0) {
                 if(spinner.css('position') !== 'fixed') {
                     spinner.css('position', 'fixed');
                     spinner.css('top', '50%');
                 }
-                if(!showingBackToTopBtn) {
-                    backToTopBtn.hide().fadeIn(200);
-                    showingBackToTopBtn = true;
-                }
-            } else {
+            }
+            if(!showingBackToTopBtn) {
+                backToTopBtn.hide().fadeIn(200);
+                showingBackToTopBtn = true;
+            }
+        } else {
+            if(spinner.length > 0) {
                 if(spinner.css('position') !== 'absolute') {
                     spinner.css('position', 'absolute');
                     spinner.css('top', '50px');
                 }
-                if(showingBackToTopBtn) {
-                    showingBackToTopBtn = false;
-                    backToTopBtn.fadeOut(200);
-                }
+            }
+            if(showingBackToTopBtn) {
+                showingBackToTopBtn = false;
+                backToTopBtn.fadeOut(200);
             }
         }
     });
