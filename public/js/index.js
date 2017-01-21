@@ -240,13 +240,12 @@ $(document).ready(function(){
     $('#btn-check-code').on('click', function() {
         checkSecretKey();
     });
-    $('#secretKey').on('change', function() {
-        hasSecretKeyInputChanged = true;
-    });
-    $('#secretKey').keypress(function (e) {
+    $('#secretKey').on('change keypress', function(e) {
         if (e.which == 13) { // 'Enter' key.
             checkSecretKey();
             return false;
+        } else {
+            hasSecretKeyInputChanged = true;
         }
     });
 
