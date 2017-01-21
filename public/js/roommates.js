@@ -245,6 +245,7 @@ app.controller('roomiesCtrl', ['$scope', '$http',
         // Init variables.
         // Always include location on page load.
         $scope.includeLocation = true;
+        $scope.userStartLocation = userStartLocation;
         $scope.searchStartDateString = startDateString;
         $scope.searchStartDate = new Date(($scope.searchStartDateString+'/01').replace('-','/'));
         $scope.locations = [];

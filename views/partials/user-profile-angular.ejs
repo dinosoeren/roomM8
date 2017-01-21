@@ -70,7 +70,7 @@
             <div class="row">
                 <div class="col col-xs-6" ng-if="x.hasPlace">
                     <% showAngData('City of residence (click for directions from your campus)', 'map-marker', 
-                        '<a href="{{ x.currentResidence.location | mapLinkFilter:locations[x.startLocation].city }}" target="_balnk">{{ x.currentResidence.location }}</a>'); %>
+                        '<a href="{{ x.currentResidence.location | mapLinkFilter:locations[userStartLocation].city }}" target="_balnk">{{ x.currentResidence.location }}</a>'); %>
                 </div>
                 <div class="col col-xs-6" ng-if="x.hasPlace">
                     <% showAngData('Bathrooms in residence', 'tint', 
@@ -79,7 +79,7 @@
                 <div class="col col-xs-12" ng-if="!x.hasPlace">
                     <% showAngData('Preferred cities to live in (click for directions from your campus)', 'map-marker',
                         '<span ng-repeat="loc in x.preferences.locations | locationsFilter">'+
-                            '<a href="{{ loc | mapLinkFilter:locations[x.startLocation].city }}"'+
+                            '<a href="{{ loc | mapLinkFilter:locations[userStartLocation].city }}"'+
                             ' target="_blank">{{ loc }}</a>'+
                             '{{ $last ? \'\' : \', \' }}</span>'); %>
                 </div>

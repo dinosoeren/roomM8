@@ -2,6 +2,7 @@
 <script>
 var startDateString = '<%= user.startDate %>';
 var searchToken = <%= searchToken %>;
+var userStartLocation = <%= user.startLocation %>;
 var mailRecipients = [
     <% for(var i=0; i<user.mailRecipients.length; i++) { %>
         '<%- user.mailRecipients[i] %>',
