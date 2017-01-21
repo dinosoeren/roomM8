@@ -140,7 +140,7 @@ app.filter('locationsFilter', function() {
 });
 app.filter('mapLinkFilter', function() {
     return function(end, start) {
-        return genMapsLink('google '+start, end);
+        return genMapsLink('Google '+start, end);
     };
 });
 app.filter('genderAgeFilter', function() {
