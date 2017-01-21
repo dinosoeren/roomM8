@@ -265,17 +265,17 @@
         <label for="res-type" class="col-sm-3 col-form-label">Type of residence</label>
         <div class="col-sm-9">
             <div class="row other-enabled">
-                <div class="col-sm-<%= (user.hasPlace && user.currentResidence.type == 'other') ? '6' : '12' %>">
+                <div class="col-sm-<%= (user.hasPlace && user.currentResidence.residenceType == 'other') ? '6' : '12' %>">
                     <select class="form-control" id="res-type" name="resType">
                         <option value="null" <%= (isUserRegistered && user.hasPlace) ? '' : 'selected' %> disabled>Please select one</option>
-                        <option value="apartment" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'apartment') ? 'selected' : '' %>>Apartment</option>
-                        <option value="condo" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'condo') ? 'selected' : '' %>>Condominium</option>
-                        <option value="house" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'house') ? 'selected' : '' %>>House</option>
-                        <option value="other" <%= (isUserRegistered && user.hasPlace && user.currentResidence.type == 'other') ? 'selected' : '' %>>Other</option>
+                        <option value="apartment" <%= (isUserRegistered && user.hasPlace && user.currentResidence.residenceType == 'apartment') ? 'selected' : '' %>>Apartment</option>
+                        <option value="condo" <%= (isUserRegistered && user.hasPlace && user.currentResidence.residenceType == 'condo') ? 'selected' : '' %>>Condominium</option>
+                        <option value="house" <%= (isUserRegistered && user.hasPlace && user.currentResidence.residenceType == 'house') ? 'selected' : '' %>>House</option>
+                        <option value="other" <%= (isUserRegistered && user.hasPlace && user.currentResidence.residenceType == 'other') ? 'selected' : '' %>>Other</option>
                     </select>
                 </div>
-                <div class="col-sm-6" style="<%= (user.hasPlace && user.currentResidence.type == 'other') ? '' : 'display: none;' %>">
-                    <input type="text" class="form-control <%= (user.hasPlace && user.currentResidence.type == 'other') ? '' : 'optional' %>" name="resTypeCustom" id="resTypeCustom" placeholder="Enter residence type" maxlength="15" value="<%= user.hasPlace ? user.currentResidence.residenceTypeCustom : '' %>" />
+                <div class="col-sm-6" style="<%= (user.hasPlace && user.currentResidence.residenceType == 'other') ? '' : 'display: none;' %>">
+                    <input type="text" class="form-control <%= (user.hasPlace && user.currentResidence.residenceType == 'other') ? '' : 'optional' %>" name="resTypeCustom" id="resTypeCustom" placeholder="Enter residence type" maxlength="15" value="<%= user.hasPlace ? user.currentResidence.residenceTypeCustom : '' %>" />
                 </div>
             </div>
         </div>

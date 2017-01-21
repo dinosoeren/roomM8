@@ -80,14 +80,15 @@
         <div class="data-container">
             <div class="row">
                 <div class="col col-xs-6">
-                    <% showData('Start date', 'calendar', 'dateToFormat', isEmail ? startDate : user.startDate); %>
+                    <% showData('Start date', 'calendar', 'dateToFormat', 
+                        isEmail ? startDate : user.startDate); %>
                 </div>
                 <div class="col col-xs-6">
                     <% 
                         var duration;
                         var durationLabel = "Lease duration";
                         if(user.hasPlace) {
-                            duration = user.currentResidence.durationInMonths
+                            duration = user.currentResidence.durationInMonths;
                         } else {
                             duration = user.preferences.durationInMonths;
                             durationLabel = "Desired stay duration";
@@ -106,7 +107,9 @@
                         var resType;
                         var resTypeLabel = "Type of residence";
                         if(user.hasPlace) {
-                            resType = user.currentResidence.residenceType
+                            resType = user.currentResidence.residenceType;
+                            if(resType === "other")
+                                resType = user.currentResidence.residenceTypeCustom;
                         } else {
                             resType = user.preferences.residenceType;
                             resTypeLabel = "Desired residence";
@@ -124,7 +127,7 @@
                         var roommatesLabel = "Available/vacant rooms";
                         var word = "person";
                         if(user.hasPlace) {
-                            numRoommates = user.currentResidence.vacantRooms
+                            numRoommates = user.currentResidence.vacantRooms;
                             if(numRoommates > 1) {
                                 word = "people";
                             }
@@ -148,14 +151,17 @@
             <div class="row">
                 <% if(user.hasPlace) { %>
                     <div class="col col-xs-6">
-                        <% showData('City of residence', 'map-marker', '', user.currentResidence.location); %>
+                        <% showData('City of residence', 'map-marker', '', 
+                            user.currentResidence.location); %>
                     </div>
                     <div class="col col-xs-6">
-                        <% showData('Bathrooms in residence', 'tint', '', user.currentResidence.bathrooms + " bathrooms"); %>
+                        <% showData('Bathrooms in residence', 'tint', '', 
+                            user.currentResidence.bathrooms + " bathrooms"); %>
                     </div>
                 <% } else { %>
                     <div class="col col-xs-12">
-                        <% showData('Preferred cities to live in', 'map-marker', '', user.preferences.locations.join(', ')); %>
+                        <% showData('Preferred cities to live in', 'map-marker', '', 
+                            user.preferences.locations.join(', ')); %>
                     </div>
                 <% } %>
             </div>
