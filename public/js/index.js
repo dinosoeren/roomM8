@@ -3,6 +3,7 @@ var lastStep = 0;
 var isHash = window.location.hash === "#success";
 var tagsInputInitialized = false;
 var isModalReady = true;
+var hasSecretKeyInputChanged = false;
 const REG_STEP_DELETE = -1; // currentStep value for delete confirmation fieldset
 const REG_STEP_NO_PLACE = 3; // fieldset ID in registration form for users with no place
 const REG_STEP_HAS_PLACE = 4; // fieldset ID in registration form for users with a place
@@ -238,6 +239,9 @@ $(document).ready(function(){
     // Handle secret code events.
     $('#btn-check-code').on('click', function() {
         checkSecretKey();
+    });
+    $('#secretKey').on('change', function() {
+        hasSecretKeyInputChanged = true;
     });
     $('#secretKey').keypress(function (e) {
         if (e.which == 13) { // 'Enter' key.
@@ -593,8 +597,11 @@ function hideSuccessMessage(formSelector) {
 
 // Check if the secret code the user entered is valid.
 function checkSecretKey() {
+    if(!hasSecretKeyInputChanged)
+        return;
     if($("#secretKey").val() === "")
         return;
+    hasSecretKeyInputChanged = false;
     $.post("/access", {
         key: $("#secretKey").val()
     }).done(function(data) {
