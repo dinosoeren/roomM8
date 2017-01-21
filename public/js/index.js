@@ -15,7 +15,8 @@ $(document).ready(function(){
     $('#registerModal').on('shown.bs.modal', function() {
         hideErrorMessage();
         hideSuccessMessage();
-        $('#registration-form .modal-header').removeClass('bg-danger');
+        if(currentStep !== REG_STEP_DELETE)
+            $('#registration-form .modal-header').removeClass('bg-danger');
         if(!tagsInputInitialized && $('#pref-locations').length > 0) {
             readAndInitCityTags();
             tagsInputInitialized = true;
