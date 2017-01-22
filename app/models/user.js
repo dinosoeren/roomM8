@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const UserValues = require('./user-values');
+const moment = require('moment');
 const auth = require('../../config/auth');
 
 var userSchema = mongoose.Schema({
@@ -56,6 +58,32 @@ var userSchema = mongoose.Schema({
     mailRecipients: [String],
     agree1: Boolean,
     agree2: Boolean
+},
+{
+    toJSON: { virtuals: true }
+});
+
+// Calculate user age from date of birth.
+userSchema.virtual('age').get(function () {
+    var dob = moment(this.dateOfBirth).utc();
+    return moment().utc().diff(dob, 'years');
+});
+
+// Get a sorted list of user's factor ratings.
+userSchema.virtual('sortedFactors').get(function() {
+    var topFactors = [];
+    for(var i=0; i<UserValues.factors.all.length; i++) {
+        if(this.factors.hasOwnProperty(UserValues.factors.all[i])) {
+            topFactors.push({
+                factor : UserValues.factors.all[i],
+                rating : this.factors[UserValues.factors.all[i]]
+            });
+        }
+    }
+    topFactors.sort(function(a, b) {
+        return b.rating - a.rating;
+    });
+    return topFactors;
 });
 
 var selectRows = { 
@@ -65,6 +93,7 @@ var selectRows = {
     gender: 1,
     genderCustom: 1,
     dateOfBirth: 1,
+    age: 1,
     showAge: 1,
     showGender: 1,
     field: 1,
@@ -78,7 +107,8 @@ var selectRows = {
     hasPlace: 1,
     preferences: 1,
     currentResidence: 1,
-    factors: 1
+    factors: 1,
+    sortedFactors: 1
 };
 
 userSchema.statics.findPotentialRoommates = function(query, user, callback) {
@@ -90,15 +120,24 @@ userSchema.statics.findPotentialRoommates = function(query, user, callback) {
         // Make sure they wish to be listed publicly.
         displayProfile: true
     };
+    // Generate object to specify priority (and order) of sorted fields.
+    var sortBy = {};
+    // Only include factors that all users have 
+    // (so that results are not biased against users with residences).
+    var userTopFactors = user.sortedFactors;
+    for(var i=0; i<userTopFactors.length; i++) {
+        if(UserValues.factors.hasPlace.includes(userTopFactors[i].factor))
+            sortBy["factors."+userTopFactors[i].factor] = -1;
+    }
     if(query.name)
         findData.name = new RegExp(query.name, 'i');
     if(query.startLocation)
         findData.startLocation = query.startLocation
     this.find(findData).
+    sort(sortBy).
     skip(query.skip ? parseInt(query.skip) : 0).
     limit(query.limit ? parseInt(query.limit) : 20).
     select(selectRows).
-    lean(). // produce native json object
     exec(callback);
 };
 userSchema.statics.findById = function(id, callback) {

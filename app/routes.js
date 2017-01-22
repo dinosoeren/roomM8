@@ -59,7 +59,6 @@ module.exports = function(app, auth, passport) {
         if(req.user) {
             var userDOB = moment(req.user.dateOfBirth).utc();
             req.user.dateOfBirthFormatted = userDOB.format('YYYY-MM-DD');
-            req.user.age = moment().utc().diff(userDOB, 'years');
         }
         // Assemble page data.
         var pageData = {
@@ -299,11 +298,6 @@ module.exports = function(app, auth, passport) {
         User.findPotentialRoommates(query, req.user, (err, roomies) => {
             if(err)
                 return res.json({ error: err });
-            // Calculate age for every user.
-            for(var i=0; i<roomies.length; i++) {
-                var roomieDOB = moment(roomies[i].dateOfBirth).utc();
-                roomies[i].age = moment().utc().diff(roomieDOB, 'years');
-            }
             res.json(roomies);
         });
     });
@@ -549,7 +543,7 @@ function formatDateNumToWords(dateString) {
         year: "numeric", month: "long"
     };
     return new Date(dateString+"-02").toLocaleDateString("en-US", options);
-};
+}
 
 // Generate new token for session.
 function genNewToken() {

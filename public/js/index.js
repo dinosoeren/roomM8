@@ -357,13 +357,12 @@ $(document).ready(function(){
             $('#factorsModal .no-place').show();
             $('#factorsModal .factorsTable').removeClass('oddColor');
         }
+        console.log(roomieFactors.length);
         // Set factors table according to roomie factors.
-        for(var factor in roomieFactors) {
-            if(!factorsDict.hasOwnProperty(factor))
-                continue;
+        for(var f=0; f<roomieFactors.length; f++) {
+            var factor = roomieFactors[f].factor;
             var factorRow = $('#factorsModal #fac-'+factor+' > div:nth-child(2)');
-            var rating = roomieFactors[factor];
-            console.log(factor+': '+rating);
+            var rating = roomieFactors[f].rating;
             for(var i=1; i<=3; i++) {
                 var ratingCell = factorRow.children('div:nth-child('+i+')');
                 if(i === rating)
@@ -459,21 +458,9 @@ var factorsDict = {
 };
 // Get the top 3 most important factors from array.
 function selectTopFactors(factors) {
-    var sorted = [];
-    for(var factor in factors) {
-        if(!factorsDict.hasOwnProperty(factor))
-            continue;
-        sorted.push({ 
-            factor: factor, 
-            rating: factors[factor] 
-        });
-    }
-    sorted.sort(function(a, b) {
-        return b.rating - a.rating;
-    });
     var mostImportant = [];
     for(var i=0; i<3; i++) {
-        mostImportant.push(factorsDict[sorted[i].factor]);
+        mostImportant.push(factorsDict[factors[i].factor]);
     }
     return mostImportant.join(", ");
 };

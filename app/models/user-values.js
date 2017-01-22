@@ -35,6 +35,24 @@ module.exports.currentResTypes = [
     "condo",
     "other"
 ];
+module.exports.factors = {
+    noPlace: [
+        "location",
+        "residenceType",
+        "ownBedroom",
+        "ownBathroom",
+        "commuteTime"
+    ],
+    hasPlace: [
+        "cleanliness",
+        "quietTime",
+        "substanceFree",
+        "sameGender",
+        "sameAge",
+        "sameField"
+    ]
+};
+module.exports.factors.all = module.exports.factors.noPlace.concat(module.exports.factors.hasPlace);
 module.exports.startLocationMin = 0;
 module.exports.startLocationMax = 96;
 module.exports.roommatesMin = 1;

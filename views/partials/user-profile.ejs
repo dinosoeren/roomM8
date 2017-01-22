@@ -175,7 +175,7 @@
                             <label class="bg-<%= user.hasPlace ? 'info' : 'primary' %>">Importance ratings (1 - least, 3 - most):</label>
                         <% } %>
                             <% if(!isEmail) { %>
-                                <span id="factorsToSort" data-factors='<%- JSON.stringify(user.factors) %>'></span>
+                                <span id="factorsToSort" data-factors='<%- JSON.stringify(user.sortedFactors.slice(0,3)) %>'></span>
                             <% } else { %>
                                 <% var showTable = true; %>
                                 <% include factors-sliders.ejs %>
