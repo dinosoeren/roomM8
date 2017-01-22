@@ -71,12 +71,17 @@ userSchema.virtual('age').get(function () {
 
 // Get a sorted list of user's factor ratings.
 userSchema.virtual('sortedFactors').get(function() {
+    var factorsDict;
+    if(this.hasPlace)
+        factorsDict = UserValues.factors.hasPlace;
+    else
+        factorsDict = UserValues.factors.all;
     var topFactors = [];
-    for(var i=0; i<UserValues.factors.all.length; i++) {
-        if(this.factors.hasOwnProperty(UserValues.factors.all[i])) {
+    for(var i=0; i<factorsDict.length; i++) {
+        if(this.factors.hasOwnProperty(factorsDict[i])) {
             topFactors.push({
-                factor : UserValues.factors.all[i],
-                rating : this.factors[UserValues.factors.all[i]]
+                factor : factorsDict[i],
+                rating : this.factors[factorsDict[i]]
             });
         }
     }
@@ -85,6 +90,30 @@ userSchema.virtual('sortedFactors').get(function() {
     });
     return topFactors;
 });
+
+// Generate object to specify priority and order of sorted fields.
+function generateSortByFields(user) {
+    var sortBy = {};
+    // If age is important to user, show results with age showing first.
+    if(user.factors.sameAge > 2)
+        sortBy["showAge"] = -1;
+    // If gender is important to user, show results with gender showing first.
+    if(user.factors.sameGender > 2)
+        sortBy["showGender"] = -1;
+    // Only include factors that all users have 
+    // (so that results are not biased against users with residences).
+    var userTopFactors = user.sortedFactors;
+    for(var i=0; i<userTopFactors.length; i++) {
+        if(UserValues.factors.hasPlace.includes(userTopFactors[i].factor)) {
+            // If current user rated this factor high (2 or 3), put in descending order.
+            var order = userTopFactors[i].rating > 1 ? -1 : 1;
+            sortBy["factors."+userTopFactors[i].factor] = order;
+        }
+    }
+    // Finally, show newer users first.
+    sortBy["dateCreated"] = -1;
+    return sortBy;
+}
 
 var selectRows = { 
     _id: 1,
@@ -120,21 +149,12 @@ userSchema.statics.findPotentialRoommates = function(query, user, callback) {
         // Make sure they wish to be listed publicly.
         displayProfile: true
     };
-    // Generate object to specify priority (and order) of sorted fields.
-    var sortBy = {};
-    // Only include factors that all users have 
-    // (so that results are not biased against users with residences).
-    var userTopFactors = user.sortedFactors;
-    for(var i=0; i<userTopFactors.length; i++) {
-        if(UserValues.factors.hasPlace.includes(userTopFactors[i].factor))
-            sortBy["factors."+userTopFactors[i].factor] = -1;
-    }
     if(query.name)
         findData.name = new RegExp(query.name, 'i');
     if(query.startLocation)
         findData.startLocation = query.startLocation
     this.find(findData).
-    sort(sortBy).
+    sort(generateSortByFields(user)).
     skip(query.skip ? parseInt(query.skip) : 0).
     limit(query.limit ? parseInt(query.limit) : 20).
     select(selectRows).

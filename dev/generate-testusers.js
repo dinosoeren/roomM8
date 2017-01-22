@@ -49,7 +49,7 @@ for(var i=0; i<argv['gen']; i++) {
     var role_choice = randomArrayVal(UserValues.roles);
     var u = {
         "photoUrl": "http://theoldreader.com/kittens/200/200/?v="+randInt(0,999999999),
-        "dateCreated": (new Date()).toISOString(),
+        "dateCreated": new Date(),
         "dateOfBirth": new Date(Date.UTC(randInt(1980,1998), randInt(0,11), randInt(1,27))),
         "gender": gender_choice,
         "showAge": randInt(0,1) === 0,
@@ -64,7 +64,7 @@ for(var i=0; i<argv['gen']; i++) {
         "field": field_choice,
         "role": role_choice,
         "position": "Test Cat",
-        "startLocation": randInt(0,96),
+        "startLocation": randInt(UserValues.startLocationMin, UserValues.startLocationMax),
         "hasPlace": randInt(0,1) === 0,
         "factors": {
             "sameField": randInt(1,3),
