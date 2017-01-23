@@ -416,14 +416,21 @@ input[type='checkbox'].input-error {
 }
 
 /* Sign in form */
-.form-control-lg, .input-group-lg>.form-control, .input-group-lg>.input-group-addon, .input-group-lg>.input-group-btn>.btn {
-    font-size: 2.25rem;
+.form-control-lg, 
+.input-group-lg > .form-control, 
+.input-group-lg > .input-group-addon, 
+.input-group-lg > .input-group-btn>.btn {
+    font-size: 2.3rem;
     height: 63px;
 }
 .google-logo {
-    display: block;
-    max-height: 67px;
-    overflow: hidden;
+    display: table;
+    width: 100%;
+    height: 67px;
+}
+.google-logo > * {
+    display: table-cell;
+    height: 100%;
 }
 .google-logo .form-control {
     background-image: url('../img/g-logo.png');
@@ -431,15 +438,17 @@ input[type='checkbox'].input-error {
     background-position: center;
     background-size: 70%;
     width: 80px;
-    height: 67px;
+    height: 100%;
+    min-height: 67px;
     border: 2px solid #2780e3;
 }
 .google-logo .input-group-btn, .google-logo .btn {
     width: 100%;
+    min-height: 67px;
 }
 .google-logo .btn-lg {
     padding: 17px 30px;
-    font-size: 2.35rem;
+    font-size: 2.3rem;
 }
 .btn-google {
     display: block;
