@@ -25,7 +25,7 @@
                     <%- i_ng_model ? 'ng-model="'+i_ng_model+'"' : '' %>
                     <%- i_ng_change ? 'ng-change="'+i_ng_change+'"' : '' %>
                     <%- i_ng_options ? 'ng-options="'+i_ng_options+'"' : '' %>
-                    <%= i_disabled ? 'disabled' : '' %> 
+                    <%= i_disabled ? 'readonly' : '' %> 
                     <%- i_extra %> >
                 <%
                     if(options) {
@@ -46,8 +46,8 @@
 <div ng-app="roommatesApp" ng-controller="roomiesCtrl">
     <div class="container" id="roomieSearchContainer">
         <div class="jumbotron">
-            <div class="row side-padded">
-                <div class="col-md-9 mx-auto">
+            <div class="row">
+                <div class="col-lg-9 mx-auto">
                     <div class="input-group input-group-huge">
                         <span class="input-group-addon glyphicon glyphicon-search"></span>
                         <input type="text" class="h1" id="roommateSearchBox" 

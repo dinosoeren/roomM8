@@ -377,13 +377,26 @@ $(document).ready(function(){
 
     // Handle advanced search stuff.
     $("#advanced-search .filter-group").each(function() {
-        var inputField = $(this).find('.form-control');
-        var checkbox = $(this).find("input[type='checkbox']");
+        var inputField = $(this).find('.form-control').first();
+        var checkboxLabel = $(this).find(".input-group-addon").first();
+        var checkbox = $(this).find("input[type='checkbox']").first();
         checkbox.change(function() {
             if($(this).is(":checked")) {
-                inputField.prop('disabled', false);
+                inputField.attr('readonly', false);
             } else {
-                inputField.prop('disabled', true);
+                inputField.attr('readonly', true);
+            }
+        });
+        inputField.on('focus click mousedown', function(e) {
+            if(inputField.is('[readonly]')) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.blur();
+                window.focus();
+                checkboxLabel.stop().addClass("flash").delay(500).queue(function() {
+                    checkboxLabel.removeClass("flash").dequeue();
+                });
+                return false;
             }
         });
     });

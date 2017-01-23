@@ -243,8 +243,8 @@ input[type='checkbox'].input-error {
 }
 #advanced-search .filter-group {
     flex-grow: 1;
-    min-width: 200px;
-    max-width: 280px;
+    width: 33%;
+    padding: 0 10px;
     margin: 10px auto;
 }
 #advanced-search .filter-group label {
@@ -255,6 +255,10 @@ input[type='checkbox'].input-error {
 }
 #advanced-search .input-group-addon {
     position: relative;
+    transition: background-color 0.25s;
+}
+#advanced-search .input-group-addon.flash {
+    background-color: rgba(208, 62, 62, 0.5);
 }
 .sideLabel {
     position: absolute;
@@ -527,6 +531,16 @@ input[type='checkbox'].input-error {
     color: #2780e3;
 }
 
+@media (max-width: 1200px) {
+    #advanced-search .input-group-addon {
+        padding: 6px 12px;
+    }
+}
+@media (max-width: 992px) {
+    #advanced-search .filter-group {
+        width: 50%;
+    }
+}
 @media (max-width: 768px) { 
     .btn-photo {
         margin-right: auto;
