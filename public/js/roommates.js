@@ -312,9 +312,11 @@ app.controller('roomiesCtrl', ['$scope', '$http',
             $scope.find();
         };
         $scope.updateDateString = function() {
-            $scope.searchStartDateString = 
-                $scope.searchStartDate.getUTCFullYear() + '-' + 
-                pad($scope.searchStartDate.getUTCMonth()+1, 2);
+            if(typeof $scope.searchStartDate !== "undefined") {
+                $scope.searchStartDateString = 
+                    $scope.searchStartDate.getUTCFullYear() + '-' + 
+                    pad($scope.searchStartDate.getUTCMonth()+1, 2);
+            }
         };
         $scope.loadMoreResults = function() {
             if($scope.foundFirstBatch)

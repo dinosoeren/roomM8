@@ -4,6 +4,7 @@ var isHash = window.location.hash === "#success";
 var tagsInputInitialized = false;
 var isModalReady = true;
 var hasSecretKeyInputChanged = false;
+var invalidFieldErrorMessage = "";
 const REG_STEP_DELETE = -1; // currentStep value for delete confirmation fieldset
 const REG_STEP_NO_PLACE = 3; // fieldset ID in registration form for users with no place
 const REG_STEP_HAS_PLACE = 4; // fieldset ID in registration form for users with a place
@@ -548,15 +549,23 @@ function areAllFieldInputsValid(fieldsetSelector) {
     if (fieldsetSelector) {
         parent_fieldset = $(fieldsetSelector);
     }
-    var next_step = true;
-    $(parent_fieldset).find('.regRequired,.form-control:not(.optional)').each(function () {
+    var allValid = true;
+    $(parent_fieldset).find('.regRequired,.form-control').each(function () {
+        // Don't check optional fields that are blank.
+        if($(this).is('.optional') && $(this).val() === "")
+            return;
         var tagsInput = $(this).prev('.bootstrap-tagsinput');
         if (!isFieldValid(this)) {
+            invalidFieldErrorMessage = "";
+            if($(this).is("[type='date']") && $(this).val() !== "")
+                invalidFieldErrorMessage = " Date format: YYYY-MM-DD";
+            if($(this).is("[type='month']") && $(this).val() !== "")
+                invalidFieldErrorMessage = " Start date format: YYYY-MM";
             if(tagsInput.length > 0)
                 tagsInput.addClass('input-error');
             else
                 $(this).addClass('input-error');
-            next_step = false;
+            allValid = false;
         } else {
             if(tagsInput.length > 0)
                 tagsInput.removeClass('input-error');
@@ -564,13 +573,49 @@ function areAllFieldInputsValid(fieldsetSelector) {
                 $(this).removeClass('input-error');
         }
     });
-    return next_step;
+    return allValid;
 }
 // Check if a particular input field has a valid value.
 function isFieldValid(ele) {
     var supportsValidate = typeof ele.willValidate !== "undefined";
     if($(ele).is("[type='checkbox']")) {
         return $(ele).is(":checked");
+    }
+    if($(ele).is("[type='date']")) {
+        var dateComps = $(ele).val().split('-');
+        if(dateComps.length !== 3)
+            return false;
+        if(dateComps[0].length !== 4 || 
+                dateComps[1].length !== 2 || 
+                dateComps[2].length !== 2)
+            return false;
+        var yearComp = parseInt(dateComps[0]);
+        var monthComp = parseInt(dateComps[1]);
+        var dateComp = parseInt(dateComps[2]);
+        if(isNaN(yearComp) || isNaN(monthComp) || isNaN(dateComp))
+            return false;
+        if(yearComp < 1900 || monthComp < 1 || monthComp > 12 || 
+                dateComp < 1 || dateComp > 31)
+            return false;
+    }
+    if($(ele).is("[type='month']")) {
+        var dateComps = $(ele).val().split('-');
+        if(dateComps.length !== 2)
+            return false;
+        if(dateComps[0].length !== 4 || 
+                dateComps[1].length !== 2)
+            return false;
+        var yearComp = parseInt(dateComps[0]);
+        var monthComp = parseInt(dateComps[1]);
+        if(isNaN(yearComp) || isNaN(monthComp))
+            return false;
+        if(yearComp < 1900 || monthComp < 1 || monthComp > 12)
+            return false;
+    }
+    if($(ele).is("[type='number']")) {
+        console.log(ele);
+        if(isNaN(parseInt($(ele).val())))
+            return false;
     }
     var value = $(ele).val();
     // Make sure it's stripped of html.
@@ -638,10 +683,11 @@ function showErrorMessage(msg, formSelector, persistent=false) {
     if(!formSelector)
         formSelector = "#registerModal";
     if(msg) {
-        $(formSelector+' .error-message .msg').text(msg);
+        $(formSelector+' .error-message .msg').text(msg + invalidFieldErrorMessage);
     } else {
         $(formSelector+' .error-message .msg').text(
-            $(formSelector+' .error-message').attr("data-message")
+            $(formSelector+' .error-message').attr("data-message") 
+            + invalidFieldErrorMessage
         );
     }
     $(formSelector+' .error-message').stop().slideDown(200);
