@@ -420,6 +420,11 @@ input[type='checkbox'].input-error {
     font-size: 2.25rem;
     height: 63px;
 }
+.google-logo {
+    display: block;
+    max-height: 67px;
+    overflow: hidden;
+}
 .google-logo .form-control {
     background-image: url('../img/g-logo.png');
     background-repeat: no-repeat;
