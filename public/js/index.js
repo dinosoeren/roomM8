@@ -11,44 +11,44 @@ const REG_STEP_HAS_PLACE = 4; // fieldset ID in registration form for users with
 $(document).ready(function(){
     lastStep = $('#registration-form fieldset:not(#confirmDelete)').length-1;
 
-    // Load city data when modal is opened.
+    // Reset form errors when modal is opened.
     $('#registerModal').on('shown.bs.modal', function() {
         hideErrorMessage();
         hideSuccessMessage();
         if(currentStep !== REG_STEP_DELETE)
             $('#registration-form .modal-header').removeClass('bg-danger');
-        if(!tagsInputInitialized && $('#pref-locations').length > 0) {
-            readAndInitCityTags();
-            tagsInputInitialized = true;
-        }
     });
     // Show modal on page load if '#success' is in url.
     if(isHash) {
         $('#registerModal').modal("show");
     }
     // Initialize 'important factors' sliders.
-    $(".factors .slider").slider({
-        ticks: [1,2,3],
-        tooltip: 'hide'
-    });
-    $("#numRoommatesRange").slider({
-        ticks: [1,2,3,4,5,6],
-        ticks_labels: ["1","2","3","4","5","6"],
-        range: "true",
-        formatter: function(slider_val) {
-            var v = (slider_val + "").split(',');
-            var min = v[0];
-            var max = v[1];
-            var range = min+"-"+max;
-            var word = "people";
-            if(min === max) {
-                range = min;
-                if(min == 1)
-                    word = "person";
+    if($(".factors .slider").length > 0) {
+        $(".factors .slider").slider({
+            ticks: [1,2,3],
+            tooltip: 'hide'
+        });
+    }
+    if($("#numRoommatesRange").length > 0) {
+        $("#numRoommatesRange").slider({
+            ticks: [1,2,3,4,5,6],
+            ticks_labels: ["1","2","3","4","5","6"],
+            range: "true",
+            formatter: function(slider_val) {
+                var v = (slider_val + "").split(',');
+                var min = v[0];
+                var max = v[1];
+                var range = min+"-"+max;
+                var word = "people";
+                if(min === max) {
+                    range = min;
+                    if(min == 1)
+                        word = "person";
+                }
+                return range+" "+word;
             }
-            return range+" "+word;
-        }
-    });
+        });
+    }
 
     // Init registration form stuff.
     $('[data-toggle="tooltip"]').tooltip();
@@ -165,52 +165,55 @@ $(document).ready(function(){
             evalFormStatus();
         });
     });
-    // Handle 'Continue' button click.
+    // Handle 'Next/Edit' button click.
     $('#registration-form .btn-next').on('click', function () {
         if(!isModalReady)
             return;
         if(currentStep >= lastStep)
             return;
         isModalReady = false;
-        var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
-        if (areAllFieldInputsValid()) {
-            // If at step before step for NO_PLACE.
-            if(currentStep === REG_STEP_NO_PLACE - 1) {
-                if(userHasPlace()) {
-                    // Skip step for NO_PLACE if the user has a place already.
+        // Load city data if it hasn't been loaded.
+        readAndInitCityTags(function() {
+            var parent_fieldset = $('#registration-form fieldset#f'+currentStep);
+            if (areAllFieldInputsValid()) {
+                // If at step before step for NO_PLACE.
+                if(currentStep === REG_STEP_NO_PLACE - 1) {
+                    if(userHasPlace()) {
+                        // Skip step for NO_PLACE if the user has a place already.
+                        currentStep++;
+                        // Also hide irrelevant factors in 'importance' fieldset.
+                        $(".no-place").hide();
+                    } else {
+                        // Otherwise, show all factors in 'importance' fieldset.
+                        $(".no-place").show();
+                    }
+                // Else if at step for NO_PLACE.
+                } else if(currentStep == REG_STEP_NO_PLACE) {
+                    // Skip step for HAS_PLACE if the user does not have a place.
                     currentStep++;
-                    // Also hide irrelevant factors in 'importance' fieldset.
-                    $(".no-place").hide();
-                } else {
-                    // Otherwise, show all factors in 'importance' fieldset.
-                    $(".no-place").show();
                 }
-            // Else if at step for NO_PLACE.
-            } else if(currentStep == REG_STEP_NO_PLACE) {
-                // Skip step for HAS_PLACE if the user does not have a place.
                 currentStep++;
-            }
-            currentStep++;
-            parent_fieldset.fadeOut(200, function () {
-                hideErrorMessage();
-                hideSuccessMessage();
-                $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
-                    isModalReady = true;
-                    // Refresh bootstrap sliders in modal so labels/ticks appear correctly formatted.
-                    // Only refresh them once, though, so that the user's input does not get overridden.
-                    $(this).find("input.slider").each(function() {
-                        if($(this).attr('refreshed') !== "true") {
-                            $(this).slider('refresh');
-                            $(this).attr('refreshed', 'true');
-                        }
+                parent_fieldset.fadeOut(200, function () {
+                    hideErrorMessage();
+                    hideSuccessMessage();
+                    $('#registration-form fieldset#f'+currentStep).fadeIn(200, function() {
+                        isModalReady = true;
+                        // Refresh bootstrap sliders in modal so labels/ticks appear correctly formatted.
+                        // Only refresh them once, though, so that the user's input does not get overridden.
+                        $(this).find("input.slider").each(function() {
+                            if($(this).attr('refreshed') !== "true") {
+                                $(this).slider('refresh');
+                                $(this).attr('refreshed', 'true');
+                            }
+                        });
                     });
+                    evalFormStatus();
                 });
-                evalFormStatus();
-            });
-        } else {
-            showErrorMessage();
-            isModalReady = true;
-        }
+            } else {
+                showErrorMessage();
+                isModalReady = true;
+            }
+        });
     });
     // Handle 'Back' button click.
     $('#registration-form .btn-previous').on('click', function () {
@@ -357,7 +360,6 @@ $(document).ready(function(){
             $('#factorsModal .no-place').show();
             $('#factorsModal .factorsTable').removeClass('oddColor');
         }
-        console.log(roomieFactors.length);
         // Set factors table according to roomie factors.
         for(var f=0; f<roomieFactors.length; f++) {
             var factor = roomieFactors[f].factor;
@@ -465,7 +467,10 @@ function selectTopFactors(factors) {
     return mostImportant.join(", ");
 };
 
-function readAndInitCityTags() {
+function readAndInitCityTags(cb) {
+    if(tagsInputInitialized || $('#pref-locations').length === 0)
+        return cb();
+    startSpinner("#registerModal .modal-body");
     // Read cities json file and initialize cities input.
     $.getJSON('data/citynames.json', function(data) {
         var count = 0;
@@ -480,37 +485,48 @@ function readAndInitCityTags() {
                 callback(null, newObj);
             }
         }, function(err, results) {
+            if(err)
+                return console.log("Failed to fetch city data.");
             // Results is now an array of objects.
-            initializeCityTagsInput(results);
+            initializeCityTagsInput(results, cb);
         });
     });
 }
-function initializeCityTagsInput(data) {
+function initializeCityTagsInput(data, cb) {
     // Get typeahead data for Locations input.
     var citynames = new Bloodhound({
         local: data,
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace
     });
-    citynames.initialize();
-    // Initialize Locations input.
-    $('#pref-locations').tagsinput({
-        maxTags: 10,
-        maxChars: 20,
-        trimValue: true,
-        tagClass: 'label label-success',
-        confirmKeys: [13, 44],
-        typeaheadjs: {
-            name: 'citynames',
-            displayKey: 'name',
-            valueKey: 'name',
-            sufficient: 8,
-            source: citynames.ttAdapter()
-        },
-        freeInput: true
+    var promise = citynames.initialize();
+    promise.done(function() {
+        // Initialize Locations input.
+        $('#pref-locations').tagsinput({
+            maxTags: 10,
+            maxChars: 20,
+            trimValue: true,
+            tagClass: 'label label-success',
+            confirmKeys: [13, 44],
+            typeaheadjs: {
+                name: 'citynames',
+                displayKey: 'name',
+                valueKey: 'name',
+                source: citynames.ttAdapter()
+            },
+            freeInput: true
+        });
+        $('.bootstrap-tagsinput input').on('focus', function () {
+            $('.bootstrap-tagsinput').removeClass('input-error');
+        });
+        tagsInputInitialized = true;
+        stopSpinner();
+        cb();
     });
-    $('.bootstrap-tagsinput input').on('focus', function () {
-        $('.bootstrap-tagsinput').removeClass('input-error');
+    promise.fail(function() {
+        tagsInputInitialized = true;
+        stopSpinner();
+        cb();
     });
 }
 
@@ -667,4 +683,40 @@ function checkSecretKey() {
     }).fail(function() {
         showErrorMessage("An unexpected error occurred. Please try again.");
     });
+}
+
+// Build loading spinner!
+var opts = {
+  lines: 11 // The number of lines to draw
+, length: 9 // The length of each line
+, width: 10 // The line thickness
+, radius: 6 // The radius of the inner circle
+, scale: 1.5 // Scales overall size of the spinner
+, corners: 1 // Corner roundness (0..1)
+, color: '#000' // #rgb or #rrggbb or array of colors
+, opacity: 0.2 // Opacity of the lines
+, rotate: 0 // The rotation offset
+, direction: 1 // 1: clockwise, -1: counterclockwise
+, speed: 1 // Rounds per second
+, trail: 52 // Afterglow percentage
+, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+, zIndex: 2e9 // The z-index (defaults to 2000000000)
+, className: 'spinner' // The CSS class to assign to the spinner
+, top: '50px' // Top position relative to parent
+, left: '50%' // Left position relative to parent
+, shadow: false // Whether to render a shadow
+, hwaccel: false // Whether to use hardware acceleration
+, position: 'absolute' // Element positioning
+}
+var spinner;
+if (typeof Spinner !== "undefined")
+    spinner = new Spinner(opts).spin();
+function startSpinner(selector) {
+    if(!selector)
+        selector = '#roomiesContainer';
+    spinner.spin();
+    $(selector).append(spinner.el);
+}
+function stopSpinner() {
+    spinner.stop();
 }

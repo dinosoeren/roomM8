@@ -9,16 +9,16 @@
         You can search for Nooglers by their starting date, Google campus location, and living preferences." />
     <% include ../partials/imports/jquery.ejs %>
     <% include ../partials/imports/bootstrap.ejs %>
-    <% include ../partials/imports/bootstrap-tagsinput.ejs %>
-    <% include ../partials/imports/bootstrap-slider.ejs %>
     <% include ../partials/imports/bootstrap-theme.ejs %>
     <% if (user) { %>
+        <% include ../partials/imports/bootstrap-tagsinput.ejs %>
+        <% include ../partials/imports/bootstrap-slider.ejs %>
         <% include ../partials/imports/async.ejs %>
+        <% include ../partials/imports/spin.ejs %>
     <% } %>
     <!-- Custom scripts -->
     <script src="js/index.js"></script>
     <% if (isUserRegistered) { %>
-        <% include ../partials/imports/spin.ejs %>
         <% include ../partials/imports/angular.ejs %>
         <% include ../partials/imports/ng-infinite-scroll.ejs %>
         <% include ../partials/imports/roommates-angular.ejs %>

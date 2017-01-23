@@ -190,6 +190,9 @@ input[type='checkbox'].input-error {
     background-color: #2780e3;
     color: #fff;
 }
+#registerModal .spinner {
+    top: 50% !important;
+}
 
 /* Roommate Search Input */
 #roomieSearchContainer {

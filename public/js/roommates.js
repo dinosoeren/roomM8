@@ -37,39 +37,6 @@ $(document).ready(function() {
         }, 1000);
     });
 });
-// Build loading spinner!
-var opts = {
-  lines: 11 // The number of lines to draw
-, length: 9 // The length of each line
-, width: 10 // The line thickness
-, radius: 6 // The radius of the inner circle
-, scale: 1.5 // Scales overall size of the spinner
-, corners: 1 // Corner roundness (0..1)
-, color: '#000' // #rgb or #rrggbb or array of colors
-, opacity: 0.2 // Opacity of the lines
-, rotate: 0 // The rotation offset
-, direction: 1 // 1: clockwise, -1: counterclockwise
-, speed: 1 // Rounds per second
-, trail: 52 // Afterglow percentage
-, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-, zIndex: 2e9 // The z-index (defaults to 2000000000)
-, className: 'spinner' // The CSS class to assign to the spinner
-, top: '50px' // Top position relative to parent
-, left: '50%' // Left position relative to parent
-, shadow: false // Whether to render a shadow
-, hwaccel: false // Whether to use hardware acceleration
-, position: 'absolute' // Element positioning
-}
-var spinner = new Spinner(opts).spin();
-function startSpinner(selector) {
-    if(!selector)
-        selector = '#roomiesContainer';
-    spinner.spin();
-    $(selector).append(spinner.el);
-}
-function stopSpinner() {
-    spinner.stop();
-}
 // pad() from: http://stackoverflow.com/a/10073788/3673087
 function pad(n, width, z) {
     z = z || '0';
