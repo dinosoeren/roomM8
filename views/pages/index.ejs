@@ -7,6 +7,7 @@
     <title>roomM8 (for Nooglers)</title>
     <meta name="description" content="A place for Nooglers to find other Noogler roommates. 
         You can search for Nooglers by their starting date, Google campus location, and living preferences." />
+    <% include ../partials/imports/fire-when-ready.ejs %>
     <% include ../partials/imports/jquery.ejs %>
     <% include ../partials/imports/bootstrap.ejs %>
     <% include ../partials/imports/bootstrap-theme.ejs %>
@@ -17,7 +18,7 @@
         <% include ../partials/imports/spin.ejs %>
     <% } %>
     <!-- Custom scripts -->
-    <script src="js/index.js"></script>
+    <script async src="js/index.js"></script>
     <% if (isUserRegistered) { %>
         <% include ../partials/imports/angular.ejs %>
         <% include ../partials/imports/ng-infinite-scroll.ejs %>

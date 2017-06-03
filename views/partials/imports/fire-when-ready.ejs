@@ -1,0 +1,91 @@
+<script>
+var checkLoadedInterval = 20; // ms
+// Wait for jQuery to load.
+function fireWhenJQueryReady(callback) {
+    if (typeof $ !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenJQueryReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for Bootstrap to load.
+function fireWhenBootstrapReady(callback) {
+    if (typeof $.fn.popover !== 'undefined') {
+        callback();
+    } else {
+        console.log('waiting for bootstrap');
+        setTimeout(function() {
+            fireWhenBootstrapReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for jQuery, bootstrap, and bootstrap slider to load.
+function fireWhenSliderReady(callback) {
+    if (typeof $ !== 'undefined' &&
+            typeof $.fn.popover !== 'undefined' &&
+            typeof $.fn.slider !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenSliderReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for jQuery, bootstrap, and bootstrap tagsinput to load.
+function fireWhenTagsInputReady(callback) {
+    if (typeof $ !== 'undefined' &&
+            typeof $.fn.popover !== 'undefined' &&
+            typeof $.fn.tagsinput !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenTagsInputReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for spin to load.
+function fireWhenSpinnerReady(callback) {
+    if (typeof Spinner !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenSpinnerReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for async library to load.
+function fireWhenAsyncReady(callback) {
+    if (typeof async !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenAsyncReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for Angular to load.
+function fireWhenAngularReady(callback) {
+    if (typeof angular !== 'undefined') {
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenAngularReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+// Wait for Angular, jQuery, spinner, and ng-infinite-scroll to load.
+function fireWhenAllReady(callback) {
+    if (typeof angular !== 'undefined' && // angular
+            typeof $ !== 'undefined' && // jquery
+            typeof Spinner !== 'undefined' && // spin.js
+            typeof mod !== 'undefined' && mod !== null) { // ng-infinite-scroll
+        callback();
+    } else {
+        setTimeout(function() {
+            fireWhenAllReady(callback);
+        }, checkLoadedInterval);
+    }
+}
+</script>
