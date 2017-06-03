@@ -3,7 +3,7 @@ by Soeren Walls
 
 **roomM8** is a place for Nooglers to find roommates. It's a Heroku web app built with `NodeJS`, `Bootstrap`, `ExpressJS`, `MongoDB`, and `AngularJS`. roomM8 was built by [a Noogler](http://www.soerenwalls.com/) for other Nooglers.  It is a completely independent service that has no association with Google.
 
-> [https://my-roomm8.herokuapp.com](https://my-roomm8.herokuapp.com)
+> [https://roomm8.io](https://roomm8.io)
 
 ## What's it for?
 The purpose of roomM8 is to provide a **secure** and **searchable** database of people who will be working at Google soon and are looking for roommates. Roommates are great for several reasons:
