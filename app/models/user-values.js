@@ -54,6 +54,6 @@ module.exports.factors = {
 };
 module.exports.factors.all = module.exports.factors.noPlace.concat(module.exports.factors.hasPlace);
 module.exports.startLocationMin = 0;
-module.exports.startLocationMax = 96;
+module.exports.startLocationMax = 97;
 module.exports.roommatesMin = 1;
 module.exports.roommatesMax = 6;
