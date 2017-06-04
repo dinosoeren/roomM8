@@ -42,9 +42,8 @@ require('./app/routes')(app, auth, passport);
 app.use(function(req, res, next)
 {
     // for all *.min.css or *.min.js, do not minify it 
-    if (/\.min\.(css|js)$/.test(req.url)) {
+    if (/\.min\.(css|js)$/.test(req.url))
         res._no_minify = true;
-    }
     next();
 });
 app.use(minify());

@@ -11,7 +11,8 @@ if (!isset(process.env.SESSION_SECRET) ||
         !isset(process.env.MONGO_DB_URL) ||
         !isset(process.env.REDISCLOUD_URL) ||
         !isset(process.env.USE_SECURE_COOKIES) ||
-        !isset(process.env.NODEMAILER_TRANSPORT)) {
+        !isset(process.env.NODEMAILER_TRANSPORT) ||
+        !isset(process.env.FORCE_SSL)) {
     console.error("Error: Please set the proper authentication config variables in heroku.");
     process.exit(1);
 }
@@ -21,6 +22,7 @@ const auth = {
     env: process.env.NODE_ENV || 'dev',
     sessionSecret: process.env.SESSION_SECRET,
     useSecureCookies: process.env.USE_SECURE_COOKIES == true,
+    forceSsl: process.env.FORCE_SSL == true,
     secretKey: process.env.SECRET_KEY,
     google: {
         clientID: process.env.GOOGLE_CLIENT_ID,
