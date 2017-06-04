@@ -34,12 +34,23 @@ Unless a Noogler shares the secret registration code with a non-Noogler (if you 
 
 That being said, you should of course always be cautious when talking to anyone online. If you get a message that seems fishy/sketchy, just ignore it. If you become suspicious that someone might not be a Noogler, ask for proof. **If you are harassed or believe someone is abusing the service, please report them immediately.** Ultimately, however, roomM8's creator cannot be held responsible for anything bad that happens.
 
+### Can I temporarily hide my profile?
+Yes. If at any time you wish to stop receiving messages from other users and temporarily hide
+your profile from the public listing, just click the 'Hide profile' button. To unhide
+your profile, click the 'Show profile' button.
+
 ### Can I delete my account?
-Yes. Once you're done using roomM8, hopefully after you've found a fantastic roommate, it's very easy to delete your account and permenantly erase all your info from the database.
+Yes. Once you're done using roomM8, hopefully after you've found a fantastic roommate, it's very easy to delete your account and permenantly erase all your info from the database. This action cannot be undone.
 
 ## Deploying roomM8
 
 Want to deploy your own copy of roomM8?
+
+You will need:
+* A [Heroku](https://heroku.com/) dyno (can be local)
+* A [Redis Cloud](https://devcenter.heroku.com/articles/rediscloud) database to store persistent user sessions
+* A [MongoDB](https://mlab.com/) database to store user account data.
+* A [Google Cloud Platform](https://console.cloud.google.com/) project with an OAuth 2.0 client ID
 
 ### How to deploy
 
@@ -48,6 +59,21 @@ Want to deploy your own copy of roomM8?
 3. Download heroku CLI and run `heroku create`
 4. `git push heroku master`
 5. Set heroku config vars specified in [`config/auth.js`](config/auth.js)
+
+If your Heroku dyno is online, the config vars can be set in your Heroku app dashboard. Otherwise, if it's a local dyno, make a new file called `.env` in the root folder. Be sure to keep this file private (**never** commit it to a git repository), as it will contain highly sensitive information. Here is what the `.env` file should contain:
+
+```
+SESSION_SECRET='some_random_long_string' # You set this
+SECRET_KEY='the_secret_code_for_signing_up' # You set this
+GOOGLE_CLIENT_ID='xxx.apps.googleusercontent.com' # Get this from Google Cloud Platform API dashboard
+GOOGLE_CLIENT_SECRET='yyy' # Get this from Google Cloud Platform API dashboard
+GOOGLE_CALLBACK_URL='http://localhost:5000/auth/google/callback' # Must match value in Google Cloud Platform API dashboard
+MONGO_DB_URL='mongodb://<user>:<pass>@<host>:<port>/<db>' # Get this from MongoDB server
+REDISCLOUD_URL='redis://rediscloud:<host>:<port>' # Get this from Redis Cloud account
+USE_SECURE_COOKIES=true # You set this
+NODEMAILER_TRANSPORT='smtps://<your_support_email>%40gmail.com:<pass>@smtp.gmail.com' # Doesn't have to be gmail
+FORCE_SSL=true # You set this
+```
 
 ## License
 
