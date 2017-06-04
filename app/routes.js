@@ -41,10 +41,6 @@ module.exports = function(app, auth, passport) {
     // Create reusable transporter object using the default SMTP transport for sending emails.
     var transporter = nodemailer.createTransport(auth.nodemailerTransport);
 
-    // Force https.
-    if (auth.forceSsl)
-        app.use(forceSsl);
-
     // Load home page.
     app.get('/', (req, res) => {
         // Get locations.
@@ -365,14 +361,6 @@ module.exports = function(app, auth, passport) {
 // Check if a variable is valid.
 function isset(a) {
     return typeof a !== "undefined" && a !== null && a !== "";
-}
-
-// Route middleware to automatically redirect http to https.
-function forceSsl(req, res, next) {
-    if (req.header('x-forwarded-proto') != 'https')
-        res.redirect("https://"+req.header('host')+req.url);
-    else
-        return next();
 }
 
 // Route middleware to make sure user has entered keyphrase.

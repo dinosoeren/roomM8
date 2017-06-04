@@ -21,8 +21,8 @@ if (!isset(process.env.SESSION_SECRET) ||
 const auth = {
     env: process.env.NODE_ENV || 'dev',
     sessionSecret: process.env.SESSION_SECRET,
-    useSecureCookies: process.env.USE_SECURE_COOKIES == true,
-    forceSsl: process.env.FORCE_SSL == true,
+    useSecureCookies: process.env.USE_SECURE_COOKIES === 'true',
+    forceSsl: process.env.FORCE_SSL === 'true',
     secretKey: process.env.SECRET_KEY,
     google: {
         clientID: process.env.GOOGLE_CLIENT_ID,

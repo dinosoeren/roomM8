@@ -19,6 +19,10 @@ require('./config/database')(auth)
 // Configure passport.
 require('./config/passport')(auth, passport);
 
+// Force https.
+if (auth.forceSsl)
+    app.use(forceSsl);
+
 // Keep/read cookies (required to use oauth).
 app.use(cookieParser());
 // Extract data from <form> elements and add to request body.
@@ -39,13 +43,7 @@ app.use(compression());
 require('./app/routes')(app, auth, passport);
 
 // Minify and cache CSS and JS files.
-app.use(function(req, res, next)
-{
-    // for all *.min.css or *.min.js, do not minify it 
-    if (/\.min\.(css|js)$/.test(req.url))
-        res._no_minify = true;
-    next();
-});
+app.use(skipMinFiles);
 app.use(minify());
 // Always serve files in public (css, js, images, etc).
 app.use(express.static(__dirname + '/public'));
@@ -53,3 +51,18 @@ app.use(express.static(__dirname + '/public'));
 // Launch
 app.listen(port);
 console.log('Listening on port ' + port);
+
+// Route middleware to prevent minifying any *.min.css or *.min.js files
+function skipMinFiles(req, res, next) {
+    if (/\.min\.(css|js)$/.test(req.url))
+        res._no_minify = true;
+    next();
+}
+
+// Route middleware to automatically redirect http to https.
+function forceSsl(req, res, next) {
+    if (req.header('x-forwarded-proto') != 'https')
+        res.redirect("https://"+req.header('host')+req.url);
+    else
+        return next();
+}
