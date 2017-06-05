@@ -468,7 +468,7 @@ module.exports = function(app, auth, passport) {
                                     // Send mail with defined transport object.
                                     transporter.sendMail(mailOptions, (error, info) => {
                                         if(error) {
-                                            req.flash('error', 'Email failed to send.'+error);
+                                            req.flash('error', 'Email failed to send.');
                                             return res.redirect("/");
                                         }
                                         return res.redirect('/#success');
