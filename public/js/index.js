@@ -494,7 +494,7 @@ function readAndInitCityTags(cb) {
             if(count % 100 == 0) {
                 setTimeout(function() {
                     callback(null, newObj);
-                }, 500);
+                }, 100);
             } else {
                 callback(null, newObj);
             }
@@ -511,7 +511,8 @@ function initializeCityTagsInput(data, cb) {
     var citynames = new Bloodhound({
         local: data,
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        sufficient: 10
     });
     var promise = citynames.initialize();
     promise.done(function() {

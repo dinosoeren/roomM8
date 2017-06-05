@@ -12,16 +12,18 @@ var rd = readline.createInterface({
     terminal: false
 });
 
-newFile.write("[");
-var count = 0, info, cityName;
+var cities = [];
+
+var info, cityName;
 rd.on('line', function(line) {
-    // if(count > 20)
-    //    return rd.close();
     info = line.split('\t');
     cityName = info[2];
-    newFile.write('  "'+cityName+'",\n');
-    // count++;
+    if (!cities.includes(cityName))
+        cities.push(cityName);
 }).on('close', function() {
+    newFile.write("[");
+    for (cityName in cities)
+        newFile.write('  "'+cities[cityName]+'",\n');
     newFile.write(']\n');
     newFile.end();
 });
