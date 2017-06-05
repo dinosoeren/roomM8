@@ -63,14 +63,14 @@ You will need:
 
     If your Heroku dyno is online, the config vars can be set in your Heroku app dashboard. Otherwise, if it's a local dyno, make a new file called `.env` in the root folder. Be sure to keep this file private (**never** commit it to a git repository), as it will contain highly sensitive information. Here is what the `.env` file should contain:
 
-    ```
+    ```python
     SESSION_SECRET='some_random_long_string' # You set this
     SECRET_KEY='the_secret_code_for_signing_up' # You set this
     GOOGLE_CLIENT_ID='xxx.apps.googleusercontent.com' # Get this from Google Cloud Platform API dashboard
     GOOGLE_CLIENT_SECRET='yyy' # Get this from Google Cloud Platform API dashboard
     GOOGLE_CALLBACK_URL='http://localhost:5000/auth/google/callback' # Must match value in Google Cloud Platform API dashboard
     MONGO_DB_URL='mongodb://<user>:<pass>@<host>:<port>/<db>' # Get this from MongoDB server
-    REDISCLOUD_URL='redis://rediscloud:<host>:<port>' # Get this from Redis Cloud account
+    REDISCLOUD_URL='redis://rediscloud:<pass>@<endpoint>:<port>' # Get this from Redis Cloud account
     USE_SECURE_COOKIES=true # You set this
     NODEMAILER_TRANSPORT='smtps://<your_support_email>%40gmail.com:<pass>@smtp.gmail.com' # Doesn't have to be gmail
     FORCE_SSL=true # You set this
