@@ -1,4 +1,5 @@
 // Script to alter cities file to only contain ASCII names.
+// City files obtained from http://download.geonames.org/export/dump/
 
 const fs = require('fs');
 const readline = require('readline');

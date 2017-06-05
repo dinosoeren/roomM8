@@ -509,10 +509,22 @@ function readAndInitCityTags(cb) {
 function initializeCityTagsInput(data, cb) {
     // Get typeahead data for Locations input.
     var citynames = new Bloodhound({
+        initialize: false,
         local: data,
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        sufficient: 10
+        sufficient: 10,
+        sorter: function(a, b) {
+            if (a.name.length < b.name.length)
+                return -1;
+            if (a.name.length > b.name.length)
+                return 1;
+            if (a.name < b.name)
+                return -1;
+            if (a.name > b.name)
+                return 1;
+            return 0;
+        }
     });
     var promise = citynames.initialize();
     promise.done(function() {
