@@ -49,7 +49,7 @@ Want to deploy your own copy of roomM8?
 You will need:
 * A [Heroku](https://heroku.com/) dyno (can be local)
 * A [Redis Cloud](https://devcenter.heroku.com/articles/rediscloud) database to store persistent user sessions
-* A [MongoDB](https://mlab.com/) database to store user account data.
+* A [MongoDB](https://mlab.com/) database to store user account data
 * A [Google Cloud Platform](https://console.cloud.google.com/) project with an OAuth 2.0 client ID
 
 ### How to deploy
@@ -58,7 +58,8 @@ You will need:
 2. Run `npm install` in root directory to install dependencies
 3. Download heroku CLI and run `heroku create`
 4. `git push heroku master`
-5. Set heroku config vars specified in [`config/auth.js`](config/auth.js)
+5. Create MongoDB collections called `TestUsers` and `Users`, and a db user with read/write access
+6. Set heroku config vars specified in [`config/auth.js`](config/auth.js)
 
     If your Heroku dyno is online, the config vars can be set in your Heroku app dashboard. Otherwise, if it's a local dyno, make a new file called `.env` in the root folder. Be sure to keep this file private (**never** commit it to a git repository), as it will contain highly sensitive information. Here is what the `.env` file should contain:
 
@@ -75,7 +76,7 @@ You will need:
     FORCE_SSL=true # You set this
     ```
 
-6. (*Local only*) Run `heroku local dev` and navigate to http://localhost:5000
+7. (*Local only*) Run `heroku local dev` and navigate to http://localhost:5000
 
 ## License
 
