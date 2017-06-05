@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to roomM8!</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="cosmo-bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="email.css">
+</head>
+<body>
+    <div class="profile-card">
+        <div class="inner-container">
+            <div class="row profile-container message-title bg-primary" style="padding: 20px; text-align: left;">
+                <h2>Welcome, <%= user.name.split(' ')[0] %>!</h2>
+            </div>
+            <div class="data-container">
+                <div class="row">
+                    <p>
+                        Thank you for completing your profile on
+                        <strong><a href="https://roomm8.io/">roomM8</a></strong>!
+                    </p>
+                    <br/>
+                    <p>
+                        Now that you have finished setting up your account, other
+                        users on roomM8 will be able to see your profile and message you
+                        if they are interested. You can also search through the entire
+                        roomM8 database of Nooglers to find the perfect roommate for you.
+                        If there aren't a lot of people showing up in your search results,
+                        please be patient while more Nooglers continue to sign up.
+                    </p>
+                    <br/>
+                    <p>
+                        I sincerely hope you find roomM8 useful. If you experience any
+                        problems, or wish to address any concerns, please feel free to 
+                        reply to this email, or submit an issue on the 
+                        <a href="https://github.com/SWalls/roomM8">roomM8 github repository</a>.
+                    </p>
+                    <h3 style="text-align: right;">Happy matching!</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-card">
+        <strong>Here is your completed profile:</strong>
+    </div>
+    <% var isUserRegistered = typeof user !== "undefined"; %>
+    <% include ../partials/user-profile.ejs %>
+    <div class="profile-card">
+        <p>
+            <strong>What's this?</strong>
+        </p>
+        <p>
+            You received this email because you signed up for roomM8, a web app designed
+            to help Nooglers find roommates. To stop receiving messages in your inbox, head over to 
+            <a href="https://roomm8.io/">roomM8.io</a>, where you can login
+            and delete your profile.
+        </p>
+        <p>
+            If you received this email by mistake, please ignore it. Thank you.
+        </p>
+        <p>
+            <strong>Privacy Policy</strong>
+        </p>
+        <p>
+            None of the information you provide to roomM8 will ever be given
+            or sold to any third party, or used for any purpose other than
+            providing you with the services explicitly outlined on the roomM8
+            website. Period.
+        </p>
+    </div>
+</body>
+</html>

@@ -95,3 +95,6 @@
 .btn-photo img {
     max-width: 100%;
 }
+.bg-primary a {
+    color: #000;
+}

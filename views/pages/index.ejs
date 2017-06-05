@@ -45,13 +45,23 @@
         <div class="container">
             <div class="jumbotron">
                 <% if(!isUserRegistered) { %>
-                    <h1>Relocating for Google?</h1>
-                    <p>
-                        Me too! I wanted an easy way to find other Nooglers who 
-                        could be potentially good roommates, so I made this web app,
-                        where you can search for Nooglers by their starting date, 
-                        Google campus location, and living preferences.
-                    </p>
+                    <% if(user) { %>
+                        <h1>You're almost done, <%= user.name.split(' ')[0] %>!</h1>
+                        <p>
+                            Thank you for expressing interest in roomM8! You have
+                            successfully connected your Google account, but your profile
+                            won't be visible to others until you complete your registration.
+                            Click the button below to begin discovering potential roommates.
+                        </p>
+                    <% } else { %>
+                        <h1>Relocating for Google?</h1>
+                        <p>
+                            Me too! I wanted an easy way to find other Nooglers who 
+                            could be potentially good roommates, so I made this web app,
+                            where you can search for Nooglers by their starting date, 
+                            Google campus location, and living preferences.
+                        </p>
+                    <% } %>
                 <% } else { %>
                     <h1>Welcome, <%= user.name.split(' ')[0] %>!</h1>
                     <p>

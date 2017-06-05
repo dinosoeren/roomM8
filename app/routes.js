@@ -78,8 +78,7 @@ module.exports = function(app, auth, passport) {
 
     // Handle registration/profile form submission.
     app.post('/', isLoggedIn, isValidRegistrationForm, (req, res) => {
-        var user = req.user;
-        var isUpdate = user.completedRegistration ? true : false;
+        var isUpdate = req.user.completedRegistration ? true : false;
         var errorMessage = 'Registration failed. Please try again.';
         var successMessage = 'Welcome to roomM8!';
         if (isUpdate) {
@@ -91,7 +90,7 @@ module.exports = function(app, auth, passport) {
             req.flash('error', errorMessage);
             return res.redirect('/');
         }
-        var query = { 'googleId' : sanitizeMongo(user.googleId) };
+        var query = { 'googleId' : sanitizeMongo(req.user.googleId) };
         var newData = sanitizeMongo(parseUserData(req.body));
         // Make sure newData is valid before proceeding.
         if(typeof newData === "string") {
@@ -105,8 +104,64 @@ module.exports = function(app, auth, passport) {
                 req.flash('error', errorMessage);
                 return res.redirect("/");
             }
-            req.flash('success', successMessage);
-            return res.redirect("/");
+            if (isUpdate) {
+                req.flash('success', successMessage);
+                return res.redirect("/");
+            } else {
+                // Send confirmation email after new user registration.
+                // Parse email address from transport string.
+                var email = auth.nodemailerTransport.split(':')[1]
+                            .replace('//', '').replace('%40', '@');
+                // Get locations.
+                var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+                // Create user object for email.
+                var user = newData;
+                user.name = req.user.name;
+                user.email = req.user.email;
+                // Add age to user object.
+                var userDOB = moment(user.dateOfBirth).utc();
+                user.age = moment().utc().diff(userDOB, 'years');
+                // Setup html email
+                var emailPageData = {
+                    email: true,
+                    locations: locations,
+                    user: user,
+                    startDate: formatDateNumToWords(newData.startDate),
+                    urlDate: moment().format('YYYY-MM-DD')
+                };
+                // Render email using EJS.
+                ejs.renderFile('views/emails/new-user.ejs', emailPageData, (err, result) => {
+                    if(err) {
+                        req.flash('error', 'Unable to render email. Please try again.');
+                        return res.redirect("/");
+                    }
+                    var initialHTML = result;
+                    // Convert all CSS rules to inline.
+                    juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
+                        if(err) {
+                            req.flash('error', 'Unable to set inline CSS in email. Please try again.');
+                            return res.redirect("/");
+                        }
+                        // Setup message.
+                        var mailOptions = {
+                            from: '"roomM8" <'+email+'>',
+                            replyTo: '"roomM8" <'+email+'>',
+                            to: '"'+user.name+'" <'+user.email+'>',
+                            subject: "Welcome to roomM8!",
+                            text: "Thank you for signing up for roomM8.",
+                            html: htmlPage
+                        };
+                        // Send mail with defined transport object.
+                        transporter.sendMail(mailOptions, (error, info) => {
+                            if(error)
+                                req.flash('error', 'Email failed to send.');
+                            else
+                                req.flash('success', successMessage);
+                            return res.redirect("/");
+                        });
+                    });
+                });
+            }
         });
     });
 
@@ -136,36 +191,6 @@ module.exports = function(app, auth, passport) {
         }
     });
 
-    // Preview an email sent from the current user.
-    app.get('/preview/email', isLoggedIn, isRegistered, (req, res) => {
-        // Get locations.
-        var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
-        // Add age to user object.
-        var userDOB = moment(req.user.dateOfBirth).utc();
-        req.user.age = moment().utc().diff(userDOB, 'years');
-        var emailPageData = {
-            locations: locations,
-            user: req.user,
-            recipientName: "[Recipient]",
-            subject: "[Subject]",
-            message: "[Your message goes here]",
-            startDate: formatDateNumToWords(req.user.startDate),
-            urlDate: moment().format('YYYY-MM-DD')
-        };
-        // Render email using EJS.
-        ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
-            if(err)
-                return res.json({ error: 'Unable to render email. Please try again.' });
-            var initialHTML = result;
-            // Convert all CSS rules to inline.
-            juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
-                if(err)
-                    return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
-                res.send(htmlPage);
-            });
-        });
-    });
-
     // Handle submission of a new Message to another user.
     app.post('/message', isLoggedIn, isRegistered, (req, res) => {
         if (!isset(req.body.recipientID) ||
@@ -190,6 +215,7 @@ module.exports = function(app, auth, passport) {
             req.user.age = moment().utc().diff(userDOB, 'years');
             // Setup html email
             var emailPageData = {
+                email: true,
                 locations: locations,
                 user: req.user,
                 recipientName: recipient.name,
@@ -199,7 +225,7 @@ module.exports = function(app, auth, passport) {
                 urlDate: moment().format('YYYY-MM-DD')
             };
             // Render email using EJS.
-            ejs.renderFile('views/pages/email.ejs', emailPageData, (err, result) => {
+            ejs.renderFile('views/emails/user-message.ejs', emailPageData, (err, result) => {
                 if(err)
                     return res.json({ error: 'Unable to render email. Please try again.' });
                 var initialHTML = result;
@@ -226,6 +252,85 @@ module.exports = function(app, auth, passport) {
                         });
                     });
                 });
+            });
+        });
+    });
+
+    // Preview an email message sent from the current user.
+    app.get('/preview/email/message', isLoggedIn, isRegistered, (req, res) => {
+        // Get locations.
+        var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+        // Add age to user object.
+        var userDOB = moment(req.user.dateOfBirth).utc();
+        req.user.age = moment().utc().diff(userDOB, 'years');
+        var emailPageData = {
+            email: true,
+            locations: locations,
+            user: req.user,
+            recipientName: "[Recipient]",
+            subject: "[Subject]",
+            message: "[Your message goes here]",
+            startDate: formatDateNumToWords(req.user.startDate),
+            urlDate: moment().format('YYYY-MM-DD')
+        };
+        // Render email using EJS.
+        ejs.renderFile('views/emails/user-message.ejs', emailPageData, (err, result) => {
+            if(err)
+                return res.json({ error: 'Unable to render email. Please try again.' });
+            var initialHTML = result;
+            // Convert all CSS rules to inline.
+            juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
+                if(err)
+                    return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
+                res.send(htmlPage);
+            });
+        });
+    });
+
+    // Preview the email sent upon first sign in.
+    app.get('/preview/email/first-sign-in', isLoggedIn, isRegistered, (req, res) => {
+        var emailPageData = {
+            email: true,
+            user: req.user
+        };
+        // Render email using EJS.
+        ejs.renderFile('views/emails/first-sign-in.ejs', emailPageData, (err, result) => {
+            if(err)
+                return res.json({ error: 'Unable to render email. Please try again.' });
+            var initialHTML = result;
+            // Convert all CSS rules to inline.
+            juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
+                if(err)
+                    return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
+                res.send(htmlPage);
+            });
+        });
+    });
+
+    // Preview an email sent to a newly registered user.
+    app.get('/preview/email/new-user', isLoggedIn, isRegistered, (req, res) => {
+        // Get locations.
+        var locations = JSON.parse(fs.readFileSync('public/data/locations.json', 'utf8')).locations;
+        // Add age to user object.
+        var userDOB = moment(req.user.dateOfBirth).utc();
+        req.user.age = moment().utc().diff(userDOB, 'years');
+        var emailPageData = {
+            email: true,
+            locations: locations,
+            user: req.user,
+            startDate: formatDateNumToWords(req.user.startDate),
+            urlDate: moment().format('YYYY-MM-DD')
+        };
+        // Render email using EJS.
+        ejs.renderFile('views/emails/new-user.ejs', emailPageData, (err, result) => {
+            if(err)
+                return res.json({ error: 'Unable to render email. Please try again.' });
+            var initialHTML = result;
+            // Convert all CSS rules to inline.
+            juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
+                if(err)
+                    return res.json({ error: 'Unable to set inline CSS in email. Please try again.' });
+                res.send(htmlPage);
             });
         });
     });
@@ -323,12 +428,53 @@ module.exports = function(app, auth, passport) {
                     user.save((err) => {
                         if (err)
                             return next(err);
+                        // Log the user in.
                         req.logIn(user, function(err) {
                             if (err)
                                 return next(err);
                             // Create random token to use to confirm deletion.
                             req.session.deleteToken = genNewToken();
-                            return res.redirect('/#success');
+                            // Finally, send 'not done yet' email after signing in for the first time.
+                            // Parse email address from transport string.
+                            var email = auth.nodemailerTransport.split(':')[1]
+                                        .replace('//', '').replace('%40', '@');
+                            // Setup html email.
+                            var emailPageData = {
+                                email: true,
+                                user: user
+                            };
+                            // Render email using EJS.
+                            ejs.renderFile('views/emails/first-sign-in.ejs', emailPageData, (err, result) => {
+                                if(err) {
+                                    req.flash('error', 'Unable to render email. Please try again.');
+                                    return res.redirect("/");
+                                }
+                                var initialHTML = result;
+                                // Convert all CSS rules to inline.
+                                juice.juiceResources(initialHTML, juiceOptions, (err, htmlPage) => {
+                                    if(err) {
+                                        req.flash('error', 'Unable to set inline CSS in email. Please try again.');
+                                        return res.redirect("/");
+                                    }
+                                    // Setup message.
+                                    var mailOptions = {
+                                        from: '"roomM8" <'+email+'>',
+                                        replyTo: '"roomM8" <'+email+'>',
+                                        to: '"'+user.name+'" <'+user.email+'>',
+                                        subject: "roomM8 - You're almost done, "+user.name.split(' ')[0]+"!",
+                                        text: "Please complete your profile to continue using roomM8.",
+                                        html: htmlPage
+                                    };
+                                    // Send mail with defined transport object.
+                                    transporter.sendMail(mailOptions, (error, info) => {
+                                        if(error) {
+                                            req.flash('error', 'Email failed to send.');
+                                            return res.redirect("/");
+                                        }
+                                        return res.redirect('/#success');
+                                    });
+                                });
+                            });
                         });
                     });
                 } else {
@@ -449,7 +595,7 @@ function parseUserData(body) {
         showGender: (body.showGender === "yes"),
         field: field,
         role: role,
-        position: sanitizeInput(body.position),
+        position: sanitizeInput(body.position, 50),
         startDate: startDate.format('YYYY-MM'),
         startLocation: startLocation,
         hasPlace: (body.hasPlace === "yes"),
