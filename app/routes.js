@@ -118,6 +118,7 @@ module.exports = function(app, auth, passport) {
                 var user = newData;
                 user.name = req.user.name;
                 user.email = req.user.email;
+                user.photoUrl = req.user.photoUrl;
                 // Add age to user object.
                 var userDOB = moment(user.dateOfBirth).utc();
                 user.age = moment().utc().diff(userDOB, 'years');
