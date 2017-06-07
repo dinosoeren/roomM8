@@ -462,7 +462,7 @@ module.exports = function(app, auth, passport) {
                                         from: '"roomM8" <'+email+'>',
                                         replyTo: '"roomM8" <'+email+'>',
                                         to: '"'+user.name+'" <'+user.email+'>',
-                                        subject: "roomM8 - You're almost done, "+user.name.split(' ')[0]+"!",
+                                        subject: "You're almost done, "+user.name.split(' ')[0]+"!",
                                         text: "Please complete your profile to continue using roomM8.",
                                         html: htmlPage
                                     };
