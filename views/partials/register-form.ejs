@@ -47,7 +47,7 @@
     <div class="form-group row">
         <label for="dateOfBirth" class="col-sm-3 col-form-label">Date of birth</label>
         <div class="col-sm-9">
-            <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="Enter your date of birth" max="<%= maxDateOfBirth %>" value="<%= (isUserRegistered) ? user.dateOfBirthFormatted : '' %>" required />
+            <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="Enter your date of birth, YYYY-MM-DD" max="<%= maxDateOfBirth %>" value="<%= (isUserRegistered) ? user.dateOfBirthFormatted : '' %>" required />
             <small>
                 <label class="weight-normal">
                     <input type="checkbox" name="showAge" value="yes" <%= (user.showAge == '') ? '' : 'checked' %> /> 
